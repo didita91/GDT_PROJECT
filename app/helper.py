@@ -50,15 +50,3 @@ def registrar_version(itm, relaciones, archivos):
     """Se incrementa la version actual"""
     itm.version = itm.version + 1
     itm.save()           
-
-
-def tiene_hijo (padre, hijos):
-    for i in hijos:
-        if (i.fase.id == padre.fase.id + 1):
-            return True
-        else:
-            relaciones = RelItem.objects.filter(padre=i, habilitado=True).values_list('hijo', flat=True)
-            if (relaciones):
-                hijos = Item.objects.filter(id__in = relaciones)
-                return tiene_hijo (i, hijos)
-    return False
