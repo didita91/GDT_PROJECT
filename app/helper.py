@@ -1,19 +1,6 @@
 from app.models import *
 import datetime
 
-#def validar_fase(proyecto, fase):
-    #print proyecto.fase.id
-   # print fase
- #   if profase.id == 1: 
-  #      if int(fase) == 2 or int(fase) == 3: return False;
-   #     return True
-    #if proyecto.fase.id == 2:
-     #   if int(fase) == 1 or int(fase) == 2: return True
-      #  return False
-    #if proyecto.fase.id == 3:
-     #   if int(fase) == 2 or int(fase) == 3: return True
-      #  return False
-    #return False
 
 def obtener_relaciones_izq(itm, lista_existentes):
     relaciones = RelItem.objects.filter(hijo = itm, habilitado = True)
