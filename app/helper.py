@@ -3,11 +3,6 @@ import datetime
 
 
 
-
-
-	
-
-
 def get_permisos_sistema(user):
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
     permisos_obj = []
@@ -56,16 +51,6 @@ def registrar_version(itm, relaciones, archivos):
     itm.version = itm.version + 1
     itm.save()           
 
-def tiene_padre (hijo, padres):
-    for i in padres:
-        if (i.fase.id == hijo.fase.id - 1):
-            return True
-        else:
-            relaciones = RelItem.objects.filter(hijo=i, habilitado=True).values_list('padre', flat=True)
-            if (relaciones):
-                padres = Item.objects.filter(id__in = relaciones)
-                return tiene_padre (i, padres)
-    return False
 
 def tiene_hijo (padre, hijos):
     for i in hijos:
