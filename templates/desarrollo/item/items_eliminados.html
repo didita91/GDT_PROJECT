@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Items eliminados <br>{% endblock %}
+{% block content %}
+{% if abm_items %}
+<table>
+	<tr>
+		<td class="titulo">Nombre</td>        
+        <td class="titulo">Versi&oacute;n</td>
+		<td class="titulo">Estado</td>		
+		<td class="titulo">Complejidad</td>
+		<td class="titulo">Descripci&oacute;n Corta</td>
+			
+	
+		<td class="titulo">Tipo</td>
+		<td class="titulo">Acci&oacute;n</td>
+	</tr>
+	{% for i in lista %}
+	<tr>
+		<td>{{i.nombre}}</a></td>
+        <td>{{i.version}}</td>
+		<td>{{i.estado}}</td>        
+		<td>{{i.complejidad}}</td>
+		<td>{{i.descripcion_corta}}</td>
+				
+		<td>{{i.tipo}}</td>
+		<td><a href="/proyectos/fases/items&id={{proyecto.id}}/res&id={{i.id}}/">Restaurar</a></td>
+	</tr>
+	{% endfor %}
+</table><br>
+<input type="button" value="Volver" onClick = "location.href='/proyectos/fases/items&id={{proyecto.id}}' "/>	
+{% else %}
+	<p>Â¡No tiene permisos para ver esta p&aacute;gina!</p>
+{% endif %}
+{% endblock%}
+

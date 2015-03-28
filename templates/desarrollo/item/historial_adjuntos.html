@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Adjuntos de &lt;{{itm.nombre}}&gt; en la version &lt;{{ registro.version }}&gt;<br>{% endblock %}
+{% block content %}
+{% if abm_items %}
+<ul>  
+{% if lista %}
+
+    {% for item in lista %}
+    <li> {{ item.nombre }} </li>
+    {% endfor %}
+{% else %}
+    <li>No se registran adjuntos en esta version</li>
+{% endif %}
+</ul>
+<input type="button" value="Volver" onClick = "location.href='/proyectos/items&id={{proyecto.id}}/historial&id={{itm.id}}/' "/>
+
+{% else %}
+	<p>Â¡No tiene los permisos para ver esta pagina!</p>
+{% endif %}
+{% endblock %}
+

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Roles{% endblock %}
+{% block content %}
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+  <li><a class="text-danger" href="/roles"><strong>ADMINISTRACIÓN DE ROLES</strong></a></li>
+  {% ifequal rol.categoria 1 %}
+     <li><a class="text-danger" href="/roles/sist"><strong>ADMINISTRACIÓN DE ROLES DE SISTEMA</strong></a></li>
+     <li class="active"><strong>MODIFICACIÓN DE DATOS DE LOS ROLES DE SISTEMA</strong></li>
+  {% else %}
+     <li><a class="text-danger" href="/roles/proy"><strong>ADMINISTRACIÓN DE ROLES DE PROYECTO</strong></a></li>
+     <li class="active"><strong>MODIFICACIÓN DE DATOS DE LOS ROLES DE PROYECTO</strong></li>
+  {% endifequal %}
+</ol>
+{% ifequal rol.categoria 1 %}
+<center><h2 class="text-danger"><strong> MODIFICACIÓN DE DATOS DE LOS ROLES DE SISTEMA</strong></h2></center>
+{% else %}
+<center><h2 class="text-danger"><strong> MODIFICACIÓN DE DATOS DE LOS ROLES DE PROYECTO</strong></h2></center>
+{% endifequal %}
+<center><h2><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="glyphicon glyphicon-refresh" aria-hidden="true"></h2></center><br>
+
+{% if mod_rol %}
+   {% if mensaje %}
+      {% autoescape off %}
+         <center><h3><p> SE HA PRODUCIDO EL SIGUIENTE INCONVENIENTE: </p></h3>
+                  <h4><p><em> {{ mensaje }} </em></p></h4>
+         </center>
+      {% endautoescape %}
+         {% ifequal rol.categoria 1 %}
+	    <center><input type="button" class= "btn btn-default" value="VOLVER" onClick = "location.href='/roles/sist' "/></center>
+         {% else %}
+            <center><input type="button" class= "btn btn-default" value="VOLVER" onClick = "location.href='/roles/proy' "/></center>
+         {% endifequal %}
+   {% else %}
+      <center>
+             <table class="abm">
+                    <form id="form_id" action="." method="POST">
+                          {% csrf_token %}
+		          {{ form.as_table }}
+	                  <tr>
+                              <td class="buttonlist" colspan="2">
+                                  <br><br><br><center>
+                                          <input type="submit" class= "btn btn-default" value="GUARDAR" />&nbsp;&nbsp;&nbsp;&nbsp;
+                                          {% ifequal rol.categoria 1 %}
+	                                  <input type="button" class= "btn btn-default" value="CANCELAR" onClick = "location.href='/roles/sist'"/>
+                                           {% else %}
+                                             <input type="button" class= "btn btn-default" value="CANCELAR" onClick = "location.href='/roles/proy'"/>
+                                           {% endifequal %}
+                                  </center>
+                              </td>
+	                  </tr>
+	            </form>
+            </table>
+      </center>
+   {% endif %}
+{% else %}
+   <center><p><strong>NO POSEE PERMISOS PARA VER ESTA SECCIÓN</strong></p></center>
+{% endif %}
+{% endblock%}

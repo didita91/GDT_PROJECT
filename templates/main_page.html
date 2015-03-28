@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Pagina Principal{% endblock %}
+{% block content %}
+
+{% if user.username %}
+   <center><h2 class="text-danger"><strong> SISTEMA GDT </strong></h2>
+           <h3><strong> Bienvenido, {{ user.username }} </strong></h3>
+           <h3 class="text-danger"><strong> ADMINISTRACIÓN DEL SISTEMA </strong></h3>
+   </center>
+   <br><br><br><br>
+
+   {% if roles or user or proyectos or tipo_item %}
+      <div class="alert alert-danger">
+        <ul><h3>
+            {% if user %}
+               <button type="button"  class="btn btn-default" onClick ="location.href='/usuarios/'"><strong>U S U A R I O S</strong></button>
+            {% endif %}
+            
+            {% if roles %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+               <button type="button" class="btn btn-default" onClick ="location.href='/roles/'"><strong>R O L E S</strong></button>
+            {% endif %}
+
+            {% if proyectos %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+               <button type="button"  class="btn btn-default" onClick ="location.href='/proyectos/'"><strong>P R O Y E C T O S</strong></button>
+            {% endif %}
+       </ul></h3>
+   {% endif %}
+{% else %}
+   <p>Bienvenido, visitante</p>
+   <p>Puedes iniciar sesion <a href="/login/" class="text-danger"><strong> AQUI </strong></a></p>
+{% endif %}
+{% endblock %}
+

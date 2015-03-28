@@ -1,0 +1,177 @@
+body{
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+div#cabecera{
+	background-color: #D8BFD8;
+}
+
+h1{
+	text-shadow: gray 0.2em 0.1em 0.2em;
+}
+
+div.login{
+	text-align: center;
+}
+
+table.login{
+	padding:10px;
+	text-align: left;
+	border: double 4px #42426F;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+table.abm{
+	padding:10px;
+	text-align: left;
+	border: groove 4px #42426F;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+table.art-inf{
+	padding:10px;
+	text-align: left;
+	border: groove 4px #42426F;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+table.art-inf th{
+	font-size: bold;
+	border: dotted 1px #42426F;
+}
+
+table.art-inf td{
+	border: dotted 1px #42426F;
+}
+
+table.admin{
+	margin:10px auto 20px auto;
+}
+
+table.abm th{
+	text-align: center;
+}
+
+td.buttonlist{
+	text-align:center;
+	padding-top:10px;
+}
+
+h2{
+	border-top:dotted 1px #42426F;
+	border-bottom:dotted 1px #42426F;}
+a{
+	color: #5D478B
+}
+
+a:link, a:visited{
+	text-decoration:none;
+}
+
+a:hover{
+	/*text-decoration:underline;*/
+	border-top:dotted 1px;
+	border-bottom:dotted 1px;
+}
+
+table td{
+	padding-left:5px;
+	padding-right:5px;
+}
+
+div.login table td{
+	vertical-align: bottom;
+}
+
+div.login table th{
+	vertical-align: bottom;
+}
+
+table.abm th{
+	vertical-align: top;
+}
+
+table.abm ul{
+	margin-top: 2px;
+}
+
+td.titulo{
+	background-color:#42426F;
+	color: white;
+	text-align: center;
+	font-weight:bold;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+div.footer{
+	text-align:right;
+	background-color:#f8f8f8;
+}
+
+input[type=button]{
+	border: solid 1px black;
+	background-color: #DCDCDC;
+	color: black;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+input[type=submit]{
+	border: solid 1px black;
+	background-color: #DCDCDC;
+	color: black;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+select{
+	border: solid 1px black;
+	background-color: #DCDCDC;
+	color: black;
+	width: 150px;
+}
+
+input[type=checkbox]{
+	border: solid 1px black;
+	background-color: #DCDCDC;
+	color: black;
+}
+
+ul.errorlist{
+	color: red;
+	font-size:0.8em;
+	margin: 2px;
+}
+
+div.bienvenida{
+	text-align: right;
+	font-size: 0.9em;
+	color:#42426F;
+}
+
+span.optionbuttons{
+	padding-left: 10px;
+}
+
+span.optionbuttons input[type=button]{
+	width: 50px;
+}
+
+span.optionbuttons input[type=submit]{
+	width: 50px;
+}
+
+div.volver{
+	text-align:left; 
+	float:left;
+}
+
+div.comp{
+	margin: 0 auto 0 auto;
+	float: left;
+	padding: 0px 10px 0px 10px;
+}

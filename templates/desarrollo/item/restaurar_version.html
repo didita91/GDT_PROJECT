@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Restaurar Version<br>{% endblock %}
+{% block content %}
+{% if abm_items %}
+<form action=" " method="post">
+<p>Est&aacute; seguro?<span class="optionbuttons">
+	<input type="submit" value="S&iacute;" />
+	<input type="button" value="No" onClick = "location.href='/proyectos/items&id={{proyecto.id}}/historial&id={{itm.id}}/' "/></span></p>
+</form>
+{% else %}
+	<p>Â¡No tiene permisos para ver esta pagina!</p>
+    <input type="button" value="Aceptar" onClick = "location.href='/proyectos/items&id={{proyecto.id}}/historial&id={{itm.id}}/' "/>
+{% endif %}
+{% endblock%}
+

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Calculo del impacto de &lt;{{itm.nombre}}&gt;{% endblock %}
+{% block content %}
+{% if abm_items or ver_items%}
+<p>Complejidad de {{itm.nombre}}: {{itm.complejidad}}</p>
+<div class="comp"><p><strong>Items de los que depende {{itm.nombre}} (padres):</strong></p>
+<ul>
+{% for i in izq %}
+	<li>{{i.nombre}}: {{i.complejidad}} ({% ifequal i.fase itm.fase %}Fase Actual{% else %}{{i.fase}}{% endifequal %})</li>
+{% empty %}
+	<li>No depende de ningun item.</li>
+{% endfor %}
+</ul>
+</div>
+<div class="comp"><p><strong>Items dependientes de {{itm.nombre}} (hijos):</strong></p>
+<ul>
+{% for i in der %}
+	<li>{{i.nombre}}: {{i.complejidad}} ({% ifequal i.fase itm.fase %}fase actual{% else %}{{i.fase}}{% endifequal %})</li>
+{% empty %}
+	<li>Ning&uacute;n item depende de &eacute;l.</li>
+{% endfor %}
+</ul>
+</div>
+<div style="clear:left; padding: 5px;">
+<div style="background-color:#f8f8f8; font-style:italic;"><p>El impacto de cambio de {{itm.nombre}} es {{impacto}}</p></div>
+
+
+
+
+<input type="button" value="Volver" onClick = "location.href='/proyectos/fases/items&id={{ proyecto.id }}/'"/>
+
+
+
+</div>
+{% else %}
+    <p>¡No tiene los permisos para ver esta pagina!</p>
+{% endif %}
+{% endblock %}
+

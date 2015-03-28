@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+  <li><a class="text-danger" href="/usuarios"><strong>ADMINISTRACIÓN DE USUARIOS</strong></a></li>
+  <li class="active"><strong>CREACIÓN DE USUARIOS</strong></li>
+</ol>
+<center><h2 class="text-danger"><strong> CREACIÓN DE NUEVOS USUARIOS </strong></h2></center>
+<center><h2><span class="glyphicon glyphicon-user" aria-hidden="true"></span></h2></center><br>
+<form id="form_id" action="." method="POST">
+      {% csrf_token %} 
+	 <center><table>
+           {{ form.as_table }}
+	 </table><br><br>
+	 <input type="submit" class= "btn btn-default" value="GUARDAR" onClick ="location.href='/usuarios/rol&id={{usuario.id}}' " />
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class= "btn btn-default" value="CANCELAR" onClick = "location.href='/usuarios' "/></center>
+</form>
+{% endblock%}
+

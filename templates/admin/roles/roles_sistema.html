@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %} Roles de Sistema {% endblock %}
+{% block content %}
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+  <li><a class="text-danger" href="/roles"><strong>ADMINISTRACIÓN DE ROLES</strong></a></li>
+  <li class="active"><strong>ADMINISTRACIÓN DE ROLES DE SISTEMA</strong></li>
+</ol>
+<center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE ROLES DE SISTEMA </strong></h2></center><br><br>
+
+{% if ver_roles or crear_rol or mod_rol or eliminar_rol %}
+   <form action="" method="post">
+         {% csrf_token %}
+	    <table class="table table-bordered">
+              <thead>
+	       <tr>
+                   <th colspan="3"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                       {{form.filtro.label}}: {{form.filtro}}
+                   </th>
+                   <th align="right">
+                       {{form.paginas.label}}: {{form.paginas}}&nbsp;&nbsp;
+                       <input type="submit" name="Buscar" class= "btn btn-default" value="ACEPTAR"/>
+                   </th>
+               </tr>
+                 <tr>
+                     <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
+	             <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
+	             <th class="titulo"><b class="text-danger"><strong>CREADO EN FECHA</strong></b></th>
+	             <th class="titulo"><b class="text-danger"><strong>RESPONSABLE</strong></b></th>
+	             <th class="titulo"><b class="text-danger"><strong>ACCIONES</strong></b></th>
+                </tr>
+              </thead>
+              <tbody>
+	      {%for i in pag.object_list%}
+	        <tr>
+                   {% ifnotequal i.id 1 %}
+                      {% if mod_rol %}
+                         <td><a href="/roles/mod&id={{i.id}}/"><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></a></td>
+                      {% else %}
+                         <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
+                      {% endif %}
+                   {% else %}
+                      <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
+                   {% endifnotequal %}
+                      <td><strong>{{i.descripcion}}</strong></td>
+	              <td><strong>{{i.fecHor_creacion}}</strong></td>
+                      <td><strong>{{i.usuario_creador}}</strong></td>
+	           {% ifnotequal i.id 1 %}
+                      <td>
+                         {% if eliminar_rol%}
+                            <a class="btn btn-default" href="/roles/del&id={{i.id}}/"><strong>ELIMINAR</strong></a>&nbsp;&nbsp;&nbsp;
+                         {% endif %}
+                         {% if mod_rol %}
+                            <a class="btn btn-default" href="/roles/permisos&id={{i.id}}/"><strong>ESTABLECER PERMISOS</strong></a>
+                         {% endif %}
+                      </td>
+                   {% endifnotequal %}
+	       </tr>
+	      {% endfor %}
+              </tbody>
+	  </table>
+    </form>
+	
+    <a colspan="3">
+                    <br><h4 class="text-danger"><strong>Página {{ pag.number }} de {{ pag.paginator.num_pages }}<strong></h4><br>
+                    {% if pag.has_previous %}
+                       <a class="btn btn-mini btn btn-default" href="?page={{ pag.previous_page_number }}"><h5><strong> <span class=" glyphicon glyphicon-backward" aria-hidden="true"></span>&nbsp;&nbsp;ANTERIOR </strong></h5></a>
+                    {% endif %}
+                    {% if pag.has_next %}
+                       <a class="btn btn-mini btn btn-default" href="?page={{ pag.next_page_number }}"><h5><strong > SIGUIENTE &nbsp;&nbsp; <span class="glyphicon glyphicon-forward" aria-hidden="true"></span></strong></h5></a>
+                    {% endif %}
+    </a><br><br>
+
+   <div class="footer">
+        <div class="volver">
+             <a class="btn btn-default" href="/roles"><strong> VOLVER A ADMINISTRACIÓN DE ROLES</strong> </a>&nbsp;&nbsp;
+        </div>
+   </div>
+
+{% else %}
+	<center><p><strong>NO TINES PERMISOS PARA VER ESTA SECCION</strong></p></center>
+{% endif %}
+{% endblock %}

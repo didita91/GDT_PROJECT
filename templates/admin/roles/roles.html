@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %} Roles {% endblock %}
+{% block content %}
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+  <li class="active"><strong>ADMINISTRACIÓN DE ROLES</strong></li>
+</ol>
+<center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE ROLES </strong></h2></center><br><br>
+
+{% if ver_roles or crear_rol or mod_rol or eliminar_rol %}
+   <div class="alert alert-danger">
+     <ul><h3>
+            <center><button type="button"  class="btn btn-default" onClick ="location.href='/roles/sist/'"><strong>ADMINISTRACIÓN DE ROLES DE SISTEMA</strong></button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            
+    </center> </ul></h3><br><br>
+   </div>
+   <div class="footer">
+        <div class="volver">
+                <a class="btn btn-default" href="/principal"><strong> VOLVER A LA PÁGINA PRINCIPAL</strong> </a>&nbsp;&nbsp;
+                {% if crear_rol %}
+                   <a class="btn btn-default" href="/roles/crear/"><strong>CREAR NUEVO ROL </strong></a>
+                {% endif %}
+        </div>
+   </div>
+{% else %}
+	<p><strong>NO POSEE PERMISOS PARA VER ESTA SECCIÓN</strong></p>
+{% endif %}
+{% endblock %}

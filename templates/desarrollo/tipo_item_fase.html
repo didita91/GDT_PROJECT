@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{proyecto.nombre}}{% endblock %}
+{% block head %}Tipo de items por fase para {{proyecto.nombre}}<br>{% endblock %}
+{% block content %}
+{% if asignar_tipoItm %}
+    <table>
+      <tr><td class="titulo">Tipo de item</td>
+	  <td class="titulo">Fase actual</td>
+	  <td class="titulo">Acciones</td>
+      </tr>
+      {% for i in lista %}
+	<tr><td>{{i.tipo_item.descripcion}}</td>
+	    <td>{{i.fase.nombre}}</td>
+	    <td><a href="/proyectos/mod_tipoItem_fase&id={{i.proyecto.id}}/{{i.tipo_item.id}}/">Modificar fase </a>
+		<a href="/proyectos/quitar_tipoItem_fase&id={{i.proyecto.id}}/{{i.tipo_item.id}}/">| Quitar</a>
+	    </td>
+	</tr>
+      {% endfor %}
+    </table>
+    <br><a href="/proyectos/add_tipoItem_fase&id={{proyecto.id}}/">Agregar nuevo tipo de item</a>
+    <br><br><input type="button" value="Volver" onClick = "location.href='/proyectos/admin&id={{proyecto.id}}/' "/>
+{% else %}
+  <P>¡No tiene permisos para ver esta pagina!</p>
+{% endif %}
+{% endblock%}
+

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Relaciones de &lt;{{itm.nombre}}&gt;<br>{% endblock %}
+{% block content %}
+{% if abm_items %}
+{% if mensaje %}
+	<p>{{mensaje}}</p>
+{% else %}
+<div class="comp"><p><strong>Items que dependen de {{itm.nombre}} (hijos):</strong></p>
+<ul>
+{% for i in dependientes%}
+	<li>{{i.nombre}}</li>
+{% empty %}
+	<li>No hay dependientes</li>
+{% endfor %}
+</ul>
+</div>
+<div class="comp"><p><strong>Seleccione Items de los que depender&aacute; {{itm.nombre}} (padres):</strong></p>
+<table class="abm">
+	<form action="" method="post">
+	{{form.as_table}}
+	<tr><td colspan="2" class="buttonlist">
+	<input type="submit" value="Guardar" />
+	<input type="button" value="Cancelar" onClick = "location.href='/proyectos/items&id={{proyecto.id}}/' "/></td>
+	</tr>
+	</form>
+</table>
+</div>
+{% endif %}
+{% else %}
+	<p>Â¡No tiene los permisos para ver esta pagina!</p>
+{% endif %}
+{% endblock %}
+

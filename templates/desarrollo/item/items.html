@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Items<br>{% endblock %}
+{% block content %}
+{% if abm_items  or ver_items or revisar_items %}
+<table class="admin">
+	<tr>
+		<td class="titulo">Nombre</td>        
+		<td class="titulo">Version</td>
+		<td class="titulo">Estado</td>		
+		<td class="titulo">Complejidad</td>
+		<td class="titulo">Descripcion Corta</td>
+		
+		<td class="titulo">Tipo</td>
+		<td class="titulo">Acciones</td>
+	</tr>
+	{% for i in lista %}
+	<tr>
+		{% if abm_items%}<td>{% if not linea %}<a href="/proyectos/fases/items&id={{proyecto.id}}/mod&id={{i.id}}/">{% endif %}{{i.nombre}}</a></td>
+		{% else %}<td>{{i.nombre}}</td>{% endif %}
+		<td>{{i.version}}</td>
+		        
+		<td>{{i.complejidad}}</td>
+		<td>{{i.descripcion_corta}}</td>
+		
+		<td>{{i.tipo}}</td>
+		<td>{% if not linea %}{% if abm_items %}<a href="/proyectos/fases/items&id={{proyecto.id}}/del&id={{i.id}}/">Borrar</a>{% endif %}{% endif %}{% if abm_items %} | <a href="/proyectos/fases/items&id={{proyecto.id}}/historial&id={{i.id}}/">Historial</a> | <a href="/proyectos/fases/items&id={{proyecto.id}}/rel&id={{i.id}}/">Relaciones con la fase actual</a> | {% ifnotequal proyecto.fase.id 1 %}<a href="/proyectos/fases/items&id={{proyecto.id}}/rel&id={{i.id}}&fase={{proyecto.fase.id|add:"-1" }}/">Relaciones con la fase anterior</a> |{% endifnotequal %} <a href="/proyectos/fases/items&id={{proyecto.id}}/adj&id={{i.id}}/">Adjuntos</a> | {% endif %}<a href="/proyectos/fases/items&id={{proyecto.id}}/imp&id={{i.id}}/">Impacto</a>{% if not linea %}{% if revisar_items %} | <a href="/proyectos/fases/items&id={{proyecto.id}}/revisar&id={{i.id}}/ ">Revisar</a>{% endif %}{% endif %}</td>
+	</tr>
+	{% endfor %}
+</table><br>
+<div class="footer">
+  {% if not linea %}{% if abm_items %}<td><a href="/proyectos/fases/items&id={{proyecto.id}}/crear/">Registrar un nuevo i</a></td>
+  <td><a href="/proyectos/fases/items&id={{proyecto.id}}/res/">| Ver i eliminados</a></td>{% endif %}{% endif %}
+  </div>
+<br>
+<input type="button" value="Volver" onClick = "location.href='/proyectos/admin&id={{proyecto.id}}' "/>	
+{% else %}
+	<p>¡No tiene permisos para ver esta pagina!</p>
+    <input type="button" value="Aceptar" onClick = "location.href='/proyectos/admin&id={{proyecto.id}}' "/>
+{% endif %}
+{% endblock%}
+

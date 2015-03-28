@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Restaurar &lt;{{itm.nombre}}&gt;<br>{% endblock %}
+{% block content %}
+{% if abm_items %}
+<form action="/proyectos/fases/items&id={{proyecto.id}}/res&id={{itm.id}}/" method="post">
+<p>Est&aacute; seguro?<span class="optionbuttons">
+	<input type="submit" value="S&iacute;" />
+	<input type="button" value="No" onClick ="location.href='/proyectos/fases/items&id={{proyecto.id}}/res/' "/></span></p>
+</form>
+{% else %}
+	<p>Â¡No tiene permisos para ver esta pagina!</p>
+{% endif %}
+{% endblock%}
+

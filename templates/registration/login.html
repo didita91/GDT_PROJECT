@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<center><h2 class="text-danger"><strong> SISTEMA GDT </strong></h2></center>
+<center><h3 class="text-danger"><strong> INICIO DE SESIÓN </strong></h3></center><br><br>
+<div class="login">
+     <form method="POST" action=".">
+           {% csrf_token %}
+           <center><table class="login">
+                {{form.as_table}}
+		<tr>
+	        <td colspan="2" style="text-align:center; padding-top:10px;" >
+                <input type="hidden" name="next" value="/principal" /><br>
+                <input type="submit" class= "btn btn-default" value="ENTRAR" /><br></td>
+		</tr>
+	   </table></center>
+     </form>
+</div>
+<br><br><br><br><strong><center><p>&copy; GDT 2015 </p></center></strong>
+{% endblock %}
+

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+  <li><a class="text-danger" href="/usuarios"><strong>ADMINISTRACIÓN DE USUARIOS</strong></a></li>
+  <li class="active"><strong>ASIGNACIÓN DE ROLES DE SISTEMA A USUARIOS</strong></li>
+</ol>
+<center><h2 class="text-danger"><strong> ASIGNACIÓN DE ROLES DE SISTEMA A USUARIOS </strong></h2></center>
+<center><h2><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;&nbsp;<span class="glyphicon glyphicon-circle-arrow-right" aria-hidden="true">&nbsp;</span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></h2></center><br>
+
+{% if asignar_roles %}
+   {% if mensaje %}
+      {% autoescape off %}
+         <center><h3><p> SE HA PRODUCIDO EL SIGUIENTE INCONVENIENTE: </p></h3>
+                  <h4><p><em> {{ mensaje }} </em></p></h4>
+         </center>
+      {% endautoescape %}
+	 <center><input type="button" class= "btn btn-default" value="VOLVER" onClick = "location.href='/usuarios' "/></center>
+   {% else %}
+   <center>
+      <table class="abm">
+             <form id="form_id" action="." method="POST">
+                   {% csrf_token %}
+		   {{ form.as_table }}
+		   <tr>
+			<td colspan="2" class="buttonlist">
+                            <br><input type="submit" class= "btn btn-default" value="GUARDAR" />&nbsp;&nbsp;
+			    <input type="button" class= "btn btn-default" value="CANCELAR" onClick = "location.href='/usuarios' "/></center>
+                        </td>
+		   </tr>
+	     </form>
+      </table>
+   </center>
+    {% endif %}
+{% else %}
+	<center><h4><p><strong>NO POSEE LOS PERMISOS PARA VER ESTA SECCIÓN</p></h4></center>
+{% endif %}
+{% endblock%}

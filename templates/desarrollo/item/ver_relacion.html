@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Relaciones de &lt;{{itm.nombre}}&gt;<br>{% endblock %}
+{% block content %}
+{% if abm_items %}
+
+<ul>  
+{% if lista %}
+    {% for i in lista %}
+    <li> {{ i.nombre }} </li>
+    {% endfor %}
+{% else %}
+     <li>Este item no tiene relaciones en esta fase</li>
+{% endif %}
+</ul>
+
+<input type="button" value="Volver" onClick = "location.href='/proyectos/items&id={{ proyecto.id }}&fasesAnt={{ itm.fase.id }}/' "/>
+
+{% else %}
+	<p>¡No tiene los permisos para ver esta pagina!</p>
+{% endif %}
+{% endblock %}
+
