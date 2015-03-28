@@ -117,7 +117,7 @@ def mod_user(request, usuario_id):
 
 @login_required
 def cambiar_password(request):
-    """Cambia la contrasena del usuario logueado"""
+    """Cambia la contrasena del usuario logueado y lo direge a la pagina principal"""
     user = User.objects.get(username=request.user.username)
     if request.method == 'POST':
         form = CambiarPasswordForm(request.POST)
@@ -194,18 +194,7 @@ def borrar_usuario(request, usuario_id):
                                                                           'user':user,
                                                                           'eliminar_usuario': 'Eliminar usuario' in permisos})
             
-def lista(request, tipo):
-    """Metodo de prueba para listar items"""
-    user = User.objects.get(username=request.user.username)
-    if tipo == 'usuarios':
-        lista = User.objects.all()
-    elif tipo == 'proyectos':
-        lista = Proyecto.objects.all()
-    elif tipo == 'tipo_items':    
-        lista = TipoItems.objects.all()
-    else:
-        return render_to_response('error.html');
-    return render_to_response('lista.html',{'lista':lista, 'user':user, 'tipo':tipo})
+
 
 @login_required
 def admin_usuarios(request):
