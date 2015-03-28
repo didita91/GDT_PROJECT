@@ -1,19 +1,6 @@
 from app.models import *
 import datetime
 
-#def validar_fase(proyecto, fase):
-    #print proyecto.fase.id
-   # print fase
- #   if profase.id == 1: 
-  #      if int(fase) == 2 or int(fase) == 3: return False;
-   #     return True
-    #if proyecto.fase.id == 2:
-     #   if int(fase) == 1 or int(fase) == 2: return True
-      #  return False
-    #if proyecto.fase.id == 3:
-     #   if int(fase) == 2 or int(fase) == 3: return True
-      #  return False
-    #return False
 
 def obtener_relaciones_izq(itm, lista_existentes):
     relaciones = RelItem.objects.filter(hijo = itm, habilitado = True)
@@ -51,23 +38,8 @@ def get_permisos_proyecto(user, proyecto):
         permisos.append(i.nombre)
     return permisos
 
-def get_permisos_fase(user, proyecto):
-    roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto= proyecto).only('rol')
-    permisos_obj = []
-    permisos = []
-    for i in permisos_obj:
-        permisos.append(i.nombre)
-    return permisos
 	
-def get_permisos_proyecto_ant(user, proyecto, fase):
-    roles = UsuarioRolProyecto.objects.filter(usuario = user, proyecto = proyecto).only('rol')
-    permisos_obj = []
-    for i in roles:
-        permisos_obj.extend(i.rol.permisos.filter(rolpermiso__fase = fase))
-    permisos = []
-    for i in permisos_obj:
-        permisos.append(i.nombre)
-    return permisos
+
 
 def get_permisos_sistema(user):
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
