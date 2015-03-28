@@ -2,31 +2,6 @@ from app.models import *
 import datetime
 
 
-def obtener_relaciones_izq(itm, lista_existentes):
-    relaciones = RelItem.objects.filter(hijo = itm, habilitado = True)
-    ret = [itm]
-    if relaciones:
-        if itm.id in lista_existentes:
-            return None
-        lista_existentes.append(itm.id)
-        for i in relaciones:
-            aux = obtener_relaciones_izq(i.padre, lista_existentes)
-            if aux:
-                ret.extend(aux)
-    return ret
-
-def obtener_relaciones_der(itm, lista_existentes):
-    relaciones = RelItem.objects.filter(padre = itm, habilitado = True)
-    ret = [itm]
-    if relaciones:
-        if itm.id in lista_existentes:
-            return None
-        lista_existentes.append(itm.id)
-        for i in relaciones:
-            aux = obtener_relaciones_der(i.hijo, lista_existentes)
-            if aux:
-                ret.extend(aux)
-    return ret
 
 
 
