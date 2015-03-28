@@ -20,7 +20,7 @@ class TestAdministracion(TestCase):
    
     def crear_rol(self, nombre='administrador', descripcion ='Se encarga de la administracion general', categoria=1):
         return  Rol.objects.create(nombre=nombre, descripcion=descripcion, categoria= categoria)
-
+#Test para crear Rol
     def test_crear_rol(self):
         rol= self.crear_rol(nombre ='administrador')
         self.assertTrue(isinstance(rol,Rol))
