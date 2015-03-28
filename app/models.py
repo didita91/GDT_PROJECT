@@ -3,29 +3,21 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
+
+""" Categorias de Rol """
 CATEGORY_CHOICES = (
                  ('1', 'Rol de Sistema'),
                 
              )    
 
-COMPLEXITY_CHOICES = (
-                      ('1', '1'),
-                      ('2', '2'),
-                      ('3', '3'),
-                      ('4', '4'),
-                      ('5', '5'),
-                      ('6', '6'),
-                      ('7', '7'),
-                      ('8', '8'),
-                      ('9', '9'),
-                      ('10', '10'),
- 	        )    
-"""
+
+class Permiso(models.Model):
+
+    """
     Contiene datos de permisos para cada usuario
     - nombre: nombre del permiso
     - categoria: se refiere al tipo de rol al que puede pertenecer, puede ser rol de sistema o rol de proyecto
-"""
-class Permiso(models.Model):
+    """
     nombre = models.CharField(unique=True, max_length = 50)
     categoria = models.IntegerField(max_length=1, choices=CATEGORY_CHOICES)
     
@@ -33,7 +25,9 @@ class Permiso(models.Model):
         return self.nombre
 
 
-"""
+class Rol(models.Model):
+
+    """
     Contiene datos de cada rol
     - nombre: nombre del permiso
     - categoria: puede ser de sistema o de proyecto
@@ -41,8 +35,7 @@ class Permiso(models.Model):
     - fecHor_creacion: fecha y hora de creacion del rol
     - usuario_creador: usuario responsable de la creacion del rol
     - permisos: permisos admitidos para el rol
-"""
-class Rol(models.Model):
+    """
     nombre = models.CharField(unique=True, max_length=50)
     categoria = models.IntegerField(max_length=1, choices=CATEGORY_CHOICES)
     descripcion = models.TextField(null=True, blank=True)
@@ -54,18 +47,20 @@ class Rol(models.Model):
         return self.nombre
 
 
-"""
-    Clasifica los permisos que pertenecen a rol sistema o rol proyecto
-"""
+
 class RolPermiso(models.Model):
+    """
+    Clasifica los permisos que pertenecen a rol sistema o rol proyecto
+    """
     rol = models.ForeignKey(Rol)
     permiso = models.ForeignKey(Permiso)
 
 
-"""
-    Tabla que contiene la lista de usuarios pertenecientes a cada rol
-"""
+
 class UsuarioRolSistema(models.Model):
+    """
+    Tabla que contiene la lista de usuarios pertenecientes a cada rol
+    """
     usuario = models.ForeignKey(User)
     rol = models.ForeignKey(Rol)
     
