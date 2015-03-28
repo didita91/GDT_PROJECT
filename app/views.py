@@ -22,7 +22,7 @@ from app.helper import *
 from django.contrib.auth.forms import UserCreationForm
 @login_required
 def principal(request):
-    """Muestra la pagina principal del proyecto"""
+    """Muestra la pagina principal del sistema"""
     user = User.objects.get(username=request.user.username)
      #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -62,6 +62,7 @@ def add_user(request):
     for i in permisos_obj:
         permisos.append(i.nombre)
     #--------------------------------------------------------------------
+    #Agrega los datos del nuevo usuario
     if request.method == 'POST':
         form = UsuariosForm(request.POST)
         if form.is_valid():
@@ -75,7 +76,7 @@ def add_user(request):
             nuevo.is_staff = True
             nuevo.is_active = True
 	    
-            nuevo.is_superuser = True #no se si esta bien este
+            nuevo.is_superuser = True
             nuevo.last_login = datetime.datetime.now()
             nuevo.date_joined = datetime.datetime.now()
             nuevo.save()
@@ -88,7 +89,7 @@ def add_user(request):
 
 @login_required
 def mod_user(request, usuario_id):
-    """Modifica los datos de un usuario y los actualiza e el sistema"""
+    """Modifica los datos de un usuario y los actualiza en el sistema"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos----------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -100,6 +101,7 @@ def mod_user(request, usuario_id):
         permisos.append(i.nombre)
     #--------------------------------------------------------------------
     usuario = get_object_or_404(User, id=usuario_id)
+    #Datos nuevos del usuario
     if request.method == 'POST':
         form = ModUsuariosForm(request.POST)
         if form.is_valid():
