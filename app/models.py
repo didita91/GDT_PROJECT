@@ -1,14 +1,15 @@
 # -*- coding: iso-8859-15 -*-
 from django.db import models
 from django.contrib.auth.models import User
-
+#from Proyecto.models import Proyecto
 # Create your models here.
 
 """ Categorias de Rol """
 CATEGORY_CHOICES = (
                  ('1', 'Rol de Sistema'),
-                
-             )    
+		 ('2', 'Rol de Proyecto'),
+
+             )
 
 
 class Permiso(models.Model):
@@ -20,7 +21,7 @@ class Permiso(models.Model):
     """
     nombre = models.CharField(unique=True, max_length = 50)
     categoria = models.IntegerField(max_length=1, choices=CATEGORY_CHOICES)
-    
+
     def __unicode__(self):
         return self.nombre
 
@@ -42,7 +43,7 @@ class Rol(models.Model):
     fecHor_creacion = models.DateTimeField(auto_now=False, auto_now_add=True, null=True, blank=True, editable=False)
     usuario_creador = models.ForeignKey(User, null=True)
     permisos = models.ManyToManyField(Permiso, through='RolPermiso')
-    
+
     def __unicode__(self):
         return self.nombre
 
@@ -61,10 +62,32 @@ class UsuarioRolSistema(models.Model):
     """
     Tabla que contiene la lista de usuarios pertenecientes a cada rol
     """
+
     usuario = models.ForeignKey(User)
     rol = models.ForeignKey(Rol)
-    
+
     class Meta:
         unique_together = [("usuario", "rol")]
-        
 
+class RolUsuario(models.Model):
+	usuario =models.ForeignKey(User)
+	def __unicode__(self):
+		return self.usuario.username
+	class Meta:
+		unique_together = [("usuario")]
+
+
+class Proyecto(models.Model):
+        nombre = models.CharField(unique=True, max_length=50)
+        usuario_scrum = models.ForeignKey(RolUsuario)
+        descripcion = models.TextField(null=True, blank= True)
+        fecha_inicio = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+        def __unicode__(self):
+                return self.nombre
+class UsuarioRolProyecto(models.Model):
+    usuario = models.ForeignKey(User)
+    rol = models.ForeignKey(Rol, null=True)
+    proyecto = models.ForeignKey(Proyecto)
+
+    class Meta:
+        unique_together = [("usuario", "rol", "proyecto")]
