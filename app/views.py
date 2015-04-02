@@ -153,7 +153,7 @@ def asignar_roles_sistema(request, usuario_id):
     usuario = get_object_or_404(User, id=usuario_id)
     lista_roles = UsuarioRolSistema.objects.filter(usuario = usuario)
     lista_permisos = RolPermiso.objects.filter()
-
+    lista_rolusuario = RolUsuario.objects.filter(usuario=usuario)
     print lista_permisos
     tam=len(lista_permisos)
     print tam
@@ -163,16 +163,17 @@ def asignar_roles_sistema(request, usuario_id):
             lista_nueva = form.cleaned_data['roles']
             for i in lista_roles:
                 i.delete()
+                lista_rolusuario.delete()
+
             for i in lista_nueva:
                 nuevo = UsuarioRolSistema()
-		rel = RolUsuario()
+                rel = RolUsuario()
                 nuevo.usuario = usuario
                 nuevo.rol = i
-		nuevo.save()
-		if i.id == 2:
-			rel.usuario = usuario
-
-			rel.save()
+                nuevo.save()
+                if i.id == 2:
+                    rel.usuario = usuario
+                    rel.save()
 
             return HttpResponseRedirect("/usuarios")
     else:
@@ -185,7 +186,7 @@ def asignar_roles_sistema(request, usuario_id):
         dict = {}
         for i in lista_roles:
             print i.rol
-            dict[i.rol.id] = True
+            dict[i.rol.id] = False
         form = AsignarRolesForm(1,initial = {'roles': dict})
     return render_to_response("admin/usuarios/asignar_roles.html", {'form':form, 'usuario':usuario, 'user':user, 'asignar_roles': 'Asignar rol' in permisos},context_instance=RequestContext(request))
 

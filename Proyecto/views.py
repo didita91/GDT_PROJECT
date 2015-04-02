@@ -145,10 +145,10 @@ def mod_proyecto(request, proyecto_id):
         if form.is_valid():
             p.nombre = form.cleaned_data['nombre']
             if p.usuario_scrum != form.cleaned_data['usuario_scrum']:
-                relacion = UsuarioRolProyecto.objects.filter(usuario = User.objects.get(pk = p.usuario_scrum.usuario.id), proyecto = p, rol = Rol.objects.get(pk=2))[0]
+                relacion = UsuarioRolProyecto.objects.filter(usuario = User.objects.get(pk = p.usuario_scrum.usuario_id), proyecto = p, rol = Rol.objects.get(pk=2))
                 relacion.delete()
                 relacion = UsuarioRolProyecto()
-                relacion.usuario = p.usuario_scrum
+                relacion.usuario = p.usuario_scrum.usuario
                 relacion.rol = Rol.objects.get(id=2)
                 relacion.proyecto = p
                 relacion.save()
@@ -159,7 +159,7 @@ def mod_proyecto(request, proyecto_id):
             return HttpResponseRedirect('/proyectos')
     else:
         form = ModProyectosForm(p, initial = {'nombre': p.nombre,
-                                        'usuario_scrum': p.usuario_scrum.id,
+                                        'usuario_scrum': p.usuario_scrum.usuario.id,
                                         'descripcion': p.descripcion,
                                         'fecha_inicio': p.fecha_inicio,})
     return render_to_response('admin/proyectos/mod_proyecto.html',{'form':form,
