@@ -83,6 +83,7 @@ class RolesForm(forms.Form):
 					raise forms.ValidationError('Ya existe ese nombre de rol. Elija otro')
 			return nombre
 
+
 class PermisosForm(forms.Form):
 	permisos = forms.ModelMultipleChoiceField(queryset = Permiso.objects.filter(categoria = 1), widget = forms.CheckboxSelectMultiple, required = False)
 	
@@ -105,4 +106,46 @@ class FilterForm2(forms.Form):
 
 
 
+class ProyectosForm(forms.Form):
+    """Formulario para la creacion de proyectos."""
+    nombre = forms.CharField(max_length=50, label='NOMBRE')
+    usuario_scrum = forms.ModelChoiceField(queryset=None, label='SCRUM')
+    descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
+    fecha_inicio = forms.DateField(required=False, label='FECHA DE INICIO')
+    #fecha_fin = forms.DateField(required=False, label='FECHA DE FINAIZACIÓN')
+    #cronograma = forms.FileField(required=False, label='CRONOGRAMA')
+    #cantidad = forms.IntegerField(required=False, label='CANTIDAD')
+    #cant_actual = forms.IntegerField(required=False, label='Actual')
+    def __init__(self, *args, **kwargs):
+                super(ProyectosForm, self).__init__(*args, **kwargs)
+                self.fields['usuario_scrum'].queryset = RolUsuario.objects.filter()
+
+    def clean_nombre(self):
+        if 'nombre' in self.cleaned_data:
+                nuevo = self.cleaned_data['nombre']
+                proyectos = Proyecto.objects.all()
+                nuevo = self.cleaned_data['nombre']
+                for proyecto in proyectos:
+                        if proyecto.nombre == nuevo:
+                                raise forms.ValidationError('Ya existe ese nombre. Elija otro')
+                return nuevo
+
+class UsuarioProyectoForm(forms.Form):
+    usuario = forms.ModelChoiceField(queryset = User.objects.all())
+    #roles = forms.ModelMultipleChoiceField(queryset = Rol.objects.filter(categoria=2).exclude(id=2), widget = forms.CheckboxSelectMultiple, required=False)
+
+    proyecto = Proyecto()
+
+    def __init__(self, proyecto, *args, **kwargs):
+        super(UsuarioProyectoForm, self).__init__(*args, **kwargs)
+        self.fields['usuario'].queryset = User.objects.filter(~Q(id = proyecto.usuario_scrum.id))
+
+
+    def clean_usuario(self):
+        if 'usuario' in self.cleaned_data:
+            usuarios_existentes = UsuarioRolProyecto.objects.filter(id = self.proyecto.id)
+            for i in usuarios_existentes:
+                if(usuarios_existentes.usuario == form.clean_data['usuario']):
+                    raise forms.ValidationError('Ya existe este usuario')
+            return self.cleaned_data['usuario']
 

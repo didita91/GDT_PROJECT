@@ -36,6 +36,20 @@
                <button type="button"  class="btn btn-default" onClick ="location.href='/proyectos/'"><strong>P R O Y E C T O S</strong></button>
             {% endif %}
        </ul></h3>
+	 <center><br><h3 class="text-danger"><strong><u>LISTA DE PROYECTOS </u>: </strong></h3>
+      <ul>
+          {% for proyecto in lista %}
+             {% for i in permisos_proyecto %}
+                {% ifequal proyecto.id i %}
+                   <h4><br><a href="/proyectos/admin&id={{proyecto.id}}/"><font color="gray"><strong><em><u>{{proyecto.nombre}}</u></em></strong></font>
+                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             {% endifequal %}
+             {% endfor %}
+             {% empty %}
+                  <h4><strong><em>NO HAY PROYECTOS</em></strong></h4>
+          {% endfor %}
+      </ul></center>
+
    {% endif %}
 {% else %}
    <p>Bienvenido, visitante</p>

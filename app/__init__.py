@@ -1,2 +1,3 @@
-from django.conf import settings
+#from django.contrib import settings
 from app.forms import *
+#from Proyecto.models import *

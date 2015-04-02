@@ -10,7 +10,7 @@
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>views</strong></big></big></font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/didi/Desktop/gdt_project/app/views.py">/home/didi/Desktop/gdt_project/app/views.py</a></font></td></tr></table>
-    <p><tt>#&nbsp;-*-&nbsp;coding:&nbsp;utf-8&nbsp;-*-</tt></p>
+    <p><tt>VIEWS&nbsp;DE&nbsp;LA&nbsp;ADMINISTRACION&nbsp;GENERAL</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -38,15 +38,14 @@
  <dl><dt><a name="-asignar_roles_sistema"><strong>asignar_roles_sistema</strong></a>(request, *args, **kwargs)</dt><dd><tt>Asigna&nbsp;roles&nbsp;de&nbsp;sistema&nbsp;a&nbsp;un&nbsp;usuario</tt></dd></dl>
  <dl><dt><a name="-borrar_rol"><strong>borrar_rol</strong></a>(request, *args, **kwargs)</dt><dd><tt>Borra&nbsp;un&nbsp;rol&nbsp;con&nbsp;las&nbsp;comprobaciones&nbsp;de&nbsp;consistencia</tt></dd></dl>
  <dl><dt><a name="-borrar_usuario"><strong>borrar_usuario</strong></a>(request, *args, **kwargs)</dt><dd><tt>Borra&nbsp;un&nbsp;usuario,&nbsp;comprobando&nbsp;las&nbsp;dependencias&nbsp;primero</tt></dd></dl>
- <dl><dt><a name="-cambiar_password"><strong>cambiar_password</strong></a>(request, *args, **kwargs)</dt><dd><tt>Cambia&nbsp;la&nbsp;contrasena&nbsp;del&nbsp;usuario&nbsp;logueado</tt></dd></dl>
+ <dl><dt><a name="-cambiar_password"><strong>cambiar_password</strong></a>(request, *args, **kwargs)</dt><dd><tt>Cambia&nbsp;la&nbsp;contrasena&nbsp;del&nbsp;usuario&nbsp;logueado&nbsp;y&nbsp;lo&nbsp;direge&nbsp;a&nbsp;la&nbsp;pagina&nbsp;principal</tt></dd></dl>
  <dl><dt><a name="-crear_rol"><strong>crear_rol</strong></a>(request, *args, **kwargs)</dt><dd><tt>Agrega&nbsp;un&nbsp;nuevo&nbsp;rol</tt></dd></dl>
  <dl><dt><a name="-index_view"><strong>index_view</strong></a>(request)</dt></dl>
- <dl><dt><a name="-lista"><strong>lista</strong></a>(request, tipo)</dt><dd><tt>Metodo&nbsp;de&nbsp;prueba&nbsp;para&nbsp;listar&nbsp;items</tt></dd></dl>
  <dl><dt><a name="-login_redirect"><strong>login_redirect</strong></a>(request)</dt><dd><tt>Redirige&nbsp;de&nbsp;/accounts/login&nbsp;a&nbsp;/login.</tt></dd></dl>
  <dl><dt><a name="-logout_pagina"><strong>logout_pagina</strong></a>(request)</dt><dd><tt>Pagina&nbsp;de&nbsp;logout</tt></dd></dl>
  <dl><dt><a name="-mod_rol"><strong>mod_rol</strong></a>(request, rol_id)</dt></dl>
- <dl><dt><a name="-mod_user"><strong>mod_user</strong></a>(request, *args, **kwargs)</dt><dd><tt>Modifica&nbsp;los&nbsp;datos&nbsp;de&nbsp;un&nbsp;usuario&nbsp;y&nbsp;los&nbsp;actualiza&nbsp;e&nbsp;el&nbsp;sistema</tt></dd></dl>
- <dl><dt><a name="-principal"><strong>principal</strong></a>(request, *args, **kwargs)</dt><dd><tt>Muestra&nbsp;la&nbsp;pagina&nbsp;principal&nbsp;del&nbsp;proyecto</tt></dd></dl>
+ <dl><dt><a name="-mod_user"><strong>mod_user</strong></a>(request, *args, **kwargs)</dt><dd><tt>Modifica&nbsp;los&nbsp;datos&nbsp;de&nbsp;un&nbsp;usuario&nbsp;y&nbsp;los&nbsp;actualiza&nbsp;en&nbsp;el&nbsp;sistema</tt></dd></dl>
+ <dl><dt><a name="-principal"><strong>principal</strong></a>(request, *args, **kwargs)</dt><dd><tt>Muestra&nbsp;la&nbsp;pagina&nbsp;principal&nbsp;del&nbsp;sistema</tt></dd></dl>
  <dl><dt><a name="-terminar"><strong>terminar</strong></a>(request, *args, **kwargs)</dt><dd><tt>Muestra&nbsp;una&nbsp;pagina&nbsp;de&nbsp;confirmacion&nbsp;de&nbsp;exito</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -56,7 +55,6 @@
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><strong>CATEGORY_CHOICES</strong> = (('1', 'Rol de Sistema'),)<br>
-<strong>COMPLEXITY_CHOICES</strong> = (('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10'))<br>
-<strong>__warningregistry__</strong> = {("Not importing directory '/usr/lib/python2.7/django': missing __init__.py", &lt;type 'exceptions.ImportWarning'&gt;, 3): True}<br>
+<strong>__warningregistry__</strong> = {("Not importing directory '/usr/lib/python2.7/django': missing __init__.py", &lt;type 'exceptions.ImportWarning'&gt;, 4): True}<br>
 <strong>validate_email</strong> = &lt;django.core.validators.EmailValidator object&gt;</td></tr></table>
 </body></html>
