@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Proyecto{% endblock %}
+{% block content %}
+<center><h2> ELIMINAR MIEMBRO DE PROYECTO </h2></center>
+<form id="form_id" action="" method="post">
+      <p>¿ESTA SEGURO DE QUERER ELIMINAR AL MIEMBRO?</p>
+      <input type="submit" class= "btn btn-default" value="ACEPTAR" />
+      <input type="button" class= "btn btn-deafault" value="CANCELAR" onClick = "location.href='/proyectos/miembros&id={{proyecto.id}}' "/>
+</form>
+{% endblock%}

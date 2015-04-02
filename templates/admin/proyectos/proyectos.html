@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Proyectos{% endblock %}
+{% block content %}
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+  <li class="active"><strong>ADMINISTRACIÓN DE PROYECTOS</strong></li>
+</ol>
+<center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE PROYECTOS </strong></h2></center><br><br>
+
+{% if ver_proyectos or crear_proyecto or mod_proyecto or eliminar_proyecto %}
+   <form action="." method="POST">
+         {% csrf_token %}
+            <table class="table table-bordered">
+              <thead>
+               <tr>
+                    <th colspan="3"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        {{form.filtro.label}}: {{form.filtro}}
+                    </th>
+                    <th>
+                        {{form.paginas.label}}: {{form.paginas}}&nbsp;&nbsp;
+                        <input type="submit" name="Buscar" class= "btn btn-default" value="ACEPTAR"/>
+                    </th>
+               </tr>
+	        <tr>
+                    <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
+	            <th class="titulo"><b class="text-danger"><strong>SCRUM MASTER</strong></b></th>
+                    <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
+	            <th class="titulo"><b class="text-danger"><strong>FECHA DE INICIO</strong></b></th>
+	        </tr>
+               </thead>
+               <tbody>
+	       {%for i in pag.object_list%}
+		    <tr>
+		        {% if mod_proyecto %}
+                           <td><a href="/proyectos/mod&id={{i.id}}/"><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></a></td>
+			{% else %}
+                           <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
+                        {% endif %}
+                         <td><strong>{{i.usuario_scrum}}</strong></td>
+		         <td><strong>{{i.descripcion}}</strong></td>
+		         <td><strong>{{i.fecha_inicio}}</strong></td>
+
+                 <td>
+		      {% if eliminar_proyecto %}
+                                <a class="btn btn-default btn-xs" href="/proyectos/del&id={{i.id}}/"><strong>ELIMINAR</strong></a>
+                      {% endif %}
+		 </td>
+		     </tr>
+	       {% endfor %}
+              </tbody>
+	    </table>
+     </form>
+     <a colspan="3">
+                    <br><h4 class="text-danger"><strong>Página {{ pag.number }} de {{ pag.paginator.num_pages }}<strong></h4><br>
+                    {% if pag.has_previous %}
+                       <a class="btn btn-mini btn btn-default" href="?page={{ pag.previous_page_number }}"><h5><strong> <span class=" glyphicon glyphicon-backward" aria-hidden="true"></span>&nbsp;&nbsp;ANTERIOR </strong></h5></a>
+                    {% endif %}
+                    {% if pag.has_next %}
+                       <a class="btn btn-mini btn btn-default" href="?page={{ pag.next_page_number }}"><h5><strong > SIGUIENTE &nbsp;&nbsp; <span class="glyphicon glyphicon-forward" aria-hidden="true"></span></strong></h5></a>
+                    {% endif %}
+    </a><br><br>
+   {% if crear_proyecto %}
+      <div class="footer">
+           <div class="volver">
+                <a class="btn btn-default" href="/principal"><strong> VOLVER A LA PÁGINA PRINCIPAL</strong> </a>&nbsp;&nbsp;
+                <a class="btn btn-default" href="/proyectos/crear/"><strong>CREAR NUEVO PROYECTO </strong></a>
+           </div>
+     </div>
+   {% endif %}
+   {% else %}
+	<center><p><strong>NO TIENE PERMISO PARA VER ESTA SECCIÓN</strong></p></center>
+   {% endif %}
+{% endblock %}
