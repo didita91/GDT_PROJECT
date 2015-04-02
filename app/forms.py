@@ -87,6 +87,9 @@ class RolesForm(forms.Form):
 class PermisosForm(forms.Form):
 	permisos = forms.ModelMultipleChoiceField(queryset = Permiso.objects.filter(categoria = 1), widget = forms.CheckboxSelectMultiple, required = False)
 
+class PermisosProyectoForm(forms.Form):
+
+	permisos = forms.ModelMultipleChoiceField(queryset = Permiso.objects.filter(categoria = 2), widget = forms.CheckboxSelectMultiple, required = False, label = u'PERMISOS')
 
 
 class ModRolesForm(forms.Form):

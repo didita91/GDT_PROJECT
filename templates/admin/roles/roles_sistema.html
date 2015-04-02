@@ -35,10 +35,10 @@
 	        <tr>
                    {% ifnotequal i.id 1 %}
                       {% if mod_rol %}
-                         <td><a href="/roles/mod&id={{i.id}}/"><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></a></td>
+                         <td><a href="/roles/mod&id={{i.id}}/"><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></></a></td>
                       {% else %}
                          <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
-                      {% endif %}
+                      {% endif %}font
                    {% else %}
                       <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
                    {% endifnotequal %}
