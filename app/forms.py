@@ -145,6 +145,28 @@ class UsuarioProyectoForm(forms.Form):
         if 'usuario' in self.cleaned_data:
             usuarios_existentes = UsuarioRolProyecto.objects.filter(id = self.proyecto.id)
             for i in usuarios_existentes:
-                if(usuarios_existentes.usuario == form.clean_data['usuario']):
+                if(usuarios_existentes.usuario == forms.clean_data['usuario']):
                     raise forms.ValidationError('Ya existe este usuario')
             return self.cleaned_data['usuario']
+
+class ModProyectosForm(forms.Form):
+    """Formulario para la creacion de proyectos."""
+    nombre = forms.CharField(max_length=50, label='NOMBRE')
+    usuario_scrum = forms.ModelChoiceField(queryset=User.objects.all(), label='SCRUM')
+    descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
+    fecha_inicio = forms.DateField(required=False, label='FECHA DE INICIO')
+
+    def __init__(self, proyecto, *args, **kwargs):
+        super(ModProyectosForm, self).__init__(*args, **kwargs)
+        self.proyecto = proyecto
+
+    def clean_nombre(self):
+        if 'nombre' in self.cleaned_data:
+            nuevo = self.cleaned_data['nombre']
+            if nuevo != self.proyecto.nombre:
+                proyectos = Proyecto.objects.all()
+                nuevo = self.cleaned_data['nombre']
+                for proyecto in proyectos:
+                    if proyecto.nombre == nuevo:
+                        raise forms.ValidationError('Ya existe ese nombre. Elija otro')
+            return nuevo
