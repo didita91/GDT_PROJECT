@@ -44,12 +44,12 @@
 		          {% ifnotequal i.username user.username %}
 		             <td>
                                  {% if eliminar_usuario %}
-                                    <a class="btn btn-default" href="/usuarios/del&id={{i.id}}/"><strong>ELIMINAR</strong></a>  
-                                 {% endif %} 
+                                    <a class="btn btn-default" href="/usuarios/del&id={{i.id}}/"><strong>ELIMINAR</strong></a>
+                                 {% endif %}
 				{% if asignar_roles %}&nbsp;&nbsp;
                                     <a class="btn btn-default" href="/usuarios/rol&id={{i.id}}/"><strong>ASIGNAR ROLES DE SISTEMA</a>
                                  {% endif %}
-				                       
+
                                  </td>
 		          {% endifnotequal %}
 		       {% endifequal %}
