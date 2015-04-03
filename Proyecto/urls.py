@@ -1,5 +1,5 @@
 __author__ = 'tere'
-#i-*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 from django.conf.urls import *
 from django.views.generic import *
 from django.contrib.auth.models import User
