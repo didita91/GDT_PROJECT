@@ -12,7 +12,7 @@
    {% if roles or user or proyectos or tipo_item %}
       <div class="alert alert-danger">
         <ul><h3>
-            {% if user %}
+            {% if user.id == 1 %}
                <button type="button"  class="btn btn-default" onClick ="location.href='/usuarios/'"><strong>U S U A R I O S</strong></button>
             {% endif %}
 
