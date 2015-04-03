@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 """ Categorias de Rol """
 CATEGORY_CHOICES = (
                  ('1', 'Rol de Sistema'),
-		 ('2', 'Rol de Proyecto'),
+		         ('2', 'Rol de Proyecto'),
 
              )
 
