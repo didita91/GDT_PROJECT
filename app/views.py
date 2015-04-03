@@ -357,7 +357,7 @@ def admin_roles_proy(request):
                 pag = paginator.page(page)
             except (EmptyPage, InvalidPage):
                 pag = paginator.page(paginator.num_pages)
-            return render_to_response('admin/roles/roles_sistema.html',{'lista':lista,'form':form,
+            return render_to_response('admin/roles/roles_proyecto.html',{'lista':lista,'form':form,
                                                         'user':user, 'pag': pag,
                                                         'ver_roles':'Ver roles' in permisos,
                                                         'crear_rol': 'Crear rol' in permisos,
@@ -381,6 +381,7 @@ def admin_roles_proy(request):
                                                         'user':user,'pag': pag,
                                                         'ver_roles':'Ver roles' in permisos,
                                                         'crear_rol': 'Crear rol' in permisos,
+                                                        'eliminar_rol': 'Eliminar rol' in permisos,
                                                         'mod_rol': 'Modificar rol' in permisos},context_instance=RequestContext(request))
 
 
@@ -420,7 +421,6 @@ def crear_rol(request):
 
 @login_required
 def admin_permisos(request, rol_id):
-    """Administracion general de permisos que pueden ser asignados"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -448,37 +448,51 @@ def admin_permisos(request, rol_id):
                     nuevo.permiso = i
                     nuevo.save()
                else:
-                    lista_req = form.cleaned_data['permisos1']
-                    lista_dis = form.cleaned_data['permisos2']
-                    lista_impl = form.cleaned_data['permisos3']
+                    lista_req = form.cleaned_data['permisos']
+                    #lista_dis = form.cleaned_data['permisos2']
+                    #lista_impl = form.cleaned_data['permisos3']
                     for i in lista_req:
                       nuevo = RolPermiso()
                       nuevo.rol = actual
                       nuevo.permiso = i
-                    #nuevo.fase = Fase.objects.get(pk=1)
+                      nuevo.fase = Fase.objects.get()
                       nuevo.save()
-                    for i in lista_dis:
-                      nuevo = RolPermiso()
-                      nuevo.rol = actual
-                      nuevo.permiso = i
+                    #for i in lista_dis:
+                     # nuevo = RolPermiso()
+                      #nuevo.rol = actual
+                      #nuevo.permiso = i
                     #nuevo.fase = Fase.objects.get(pk=2)
-                      nuevo.save()
-                    for i in lista_impl:
-                      nuevo = RolPermiso()
-                      nuevo.rol = actual
-                      nuevo.permiso = i
-
-                      nuevo.save()
-        return HttpResponseRedirect("/roles/sist")
+                      #nuevo.save()
+                    #for i in lista_impl:
+                     # nuevo = RolPermiso()
+                      #nuevo.rol = actual
+                      #nuevo.permiso = i
+                    #nuevo.fase = Fase.objects.get(pk=3)
+                      #nuevo.save()
+        if actual.categoria == 1:
+           return HttpResponseRedirect("/roles/sist")
+        return HttpResponseRedirect("/roles/proy")
     else:
-
+        #form = PermisosForm(actual.categoria, initial={'permisos': dict})
         if actual.categoria == 1:
             dict = {}
 
             for i in actual.permisos.all():
                 dict[i.id] = True
             form = PermisosForm(initial={'permisos': dict})
+        else:
 
+            dict1 = {}
+            for i in actual.permisos.all():
+                dict1[i.id] = True
+
+            dict2 = {}
+            #for i in actual.permisos.filter():
+             #   dict2[i.id] = True
+            dict3 = {}
+            #for i in actual.permisos.filter():
+             #   dict3[i.id] = True
+            form = PermisosProyectoForm(initial={'permisos': dict1})
     return render_to_response("admin/roles/admin_permisos.html", {'form': form,
                                                                   'rol': actual,
                                                                   'user':user,

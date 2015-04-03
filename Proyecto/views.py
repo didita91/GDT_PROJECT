@@ -224,7 +224,9 @@ def administrar_proyecto(request, proyecto_id):
     """Administracion de proyecto para el modulo de desarrollo."""
     user = User.objects.get(username=request.user.username)
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
-    permisos = get_permisos_proyecto(user, proyecto)
+    permisos = get_permisos_sistema(user)
+    print proyecto
+    print user
     print permisos
    # permisos_ant = []
    # if proyecto.fase.id == 2:
