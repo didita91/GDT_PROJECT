@@ -127,47 +127,6 @@ def crear_proyecto(request):
 
 
 @login_required
-def mod_proyecto(request, proyecto_id):
-    user = User.objects.get(username=request.user.username)
-    p = get_object_or_404(Proyecto, id = proyecto_id)
-    #Validacion de permisos---------------------------------------------
-    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
-    permisos_obj = []
-    for i in roles:
-        permisos_obj.extend(i.rol.permisos.all())
-    permisos = []
-    for i in permisos_obj:
-        permisos.append(i.nombre)
-    print permisos
-    #-------------------------------------------------------------------
-    if request.method == 'POST':
-        form = ModProyectosForm(p, request.POST, request.FILES)
-        if form.is_valid():
-            p.nombre = form.cleaned_data['nombre']
-            if p.usuario_scrum != form.cleaned_data['usuario_scrum']:
-                relacion = UsuarioRolProyecto.objects.filter(usuario = User.objects.get(pk = p.usuario_scrum.usuario_id), proyecto = p, rol = Rol.objects.get(pk=2))
-                relacion.delete()
-                relacion = UsuarioRolProyecto()
-                relacion.usuario = p.usuario_scrum.usuario
-                relacion.rol = Rol.objects.get(id=2)
-                relacion.proyecto = p
-                relacion.save()
-                p.usuario_scrum != form.cleaned_data['usuario_scrum']
-            p.descripcion = form.cleaned_data['descripcion']
-            p.fecha_inicio = form.cleaned_data['fecha_inicio']
-            p.save()
-            return HttpResponseRedirect('/proyectos')
-    else:
-        form = ModProyectosForm(p, initial = {'nombre': p.nombre,
-                                        'usuario_scrum': p.usuario_scrum.usuario.id,
-                                        'descripcion': p.descripcion,
-                                        'fecha_inicio': p.fecha_inicio,})
-    return render_to_response('admin/proyectos/mod_proyecto.html',{'form':form,
-                                                                   'user':user,
-                                                                   'proyecto': p,
-                                                                   'mod_proyecto':'Modificar proyecto' in permisos}, context_instance=RequestContext(request))
-
-@login_required
 def del_proyecto(request, proyecto_id):
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id = proyecto_id)
@@ -418,3 +377,71 @@ def eliminar_miembro_proyecto(request, proyecto_id, user_id):
                                                                        'user':user,
                                                                        'abm_miembros': 'ABM miembros' in permisos},context_instance=RequestContext(request))
 
+
+@login_required
+def admin_flujos(request, proyecto_id):
+    """Administracion de flujos para el modulo de desarrollo."""
+    user = User.objects.get(username=request.user.username)
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+    permisos = get_permisos_sistema(user)
+    print proyecto
+    print user
+    print permisos
+   # permisos_ant = []
+   # if proyecto.fase.id == 2:
+   #     permisos_ant = get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=1))
+    #elif proyecto.fase.id == 3:
+     #   permisos_ant = get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=1)) + get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=2))
+   # print permisos_ant
+   # linea = LineaBase.objects.filter(proyectos=proyecto, fase=3)
+    return render_to_response("flujo/admin_flujo.html", {'proyecto':proyecto,
+                                                                 'user':user,
+                                                               #  'fin':linea,
+                                                                 'ver_items': 'Ver items',
+                                                                 'abm_items': 'ABM items',
+                                                                 'ver_miembros': 'Ver miembros' in permisos,
+                                                                 'abm_miembros': 'ABM miembros' in permisos,
+                                                                 'asignar_roles': 'Asignar roles' in permisos,
+                                                                 'generarlb':'Generar LB',
+                                                                 'asignar_tipoItm': 'Asignar tipo-item fase'},context_instance=RequestContext(request) )
+
+@login_required
+def mod_proyecto(request, proyecto_id):
+    user = User.objects.get(username=request.user.username)
+    p = get_object_or_404(Proyecto, id = proyecto_id)
+    #Validacion de permisos---------------------------------------------
+    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    permisos_obj = []
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    print permisos
+    #-------------------------------------------------------------------
+    if request.method == 'POST':
+        form = ModProyectosForm(p, request.POST, request.FILES)
+        if form.is_valid():
+                p.nombre = form.cleaned_data['nombre']
+
+                relacion = UsuarioRolProyecto.objects.filter(usuario = User.objects.get(pk = p.usuario_scrum.usuario_id), proyecto = p, rol = Rol.objects.get(pk=2))
+                relacion.delete()
+                relacion = UsuarioRolProyecto()
+                relacion.usuario = p.usuario_scrum.usuario
+                relacion.rol = Rol.objects.get(id=2)
+                relacion.proyecto = p
+                relacion.save()
+
+                p.descripcion = form.cleaned_data['descripcion']
+                #p.fecha_inicio = form.cleaned_data['fecha_inicio']
+                p.save()
+                return HttpResponseRedirect('/proyectos')
+    else:
+        form = ModProyectosForm(p, initial = {'nombre': p.nombre,
+
+                                        'descripcion': p.descripcion,
+                                      })
+    return render_to_response('admin/proyectos/mod_proyecto.html',{'form':form,
+                                                                   'user':user,
+                                                                   'proyecto': p,
+                                                                   'mod_proyecto':'Modificar proyecto' in permisos}, context_instance=RequestContext(request))

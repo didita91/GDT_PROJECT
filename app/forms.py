@@ -155,9 +155,9 @@ class UsuarioProyectoForm(forms.Form):
 class ModProyectosForm(forms.Form):
     """Formulario para la creacion de proyectos."""
     nombre = forms.CharField(max_length=50, label='NOMBRE')
-    usuario_scrum = forms.ModelChoiceField(queryset=User.objects.all(), label='SCRUM')
+    #usuario_scrum = forms.ModelChoiceField(queryset=User.objects.all(), label='SCRUM')
     descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
-    fecha_inicio = forms.DateField(required=False, label='FECHA DE INICIO')
+    #fecha_inicio = forms.DateField(required=False, label='FECHA DE INICIO')
 
     def __init__(self, proyecto, *args, **kwargs):
         super(ModProyectosForm, self).__init__(*args, **kwargs)
