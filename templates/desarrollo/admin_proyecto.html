@@ -10,7 +10,7 @@
 <center><h2><span class="glyphicon glyphicon-book" aria-hidden="true"></span>&nbsp;<span class="glyphicon glyphicon-saved" aria-hidden="true"></span></h2></center><br>
 
 {% if ver_items or abm_items or ver_miembros or abm_miembros or asignar_roles or generarlb or ver_items_ant%}
-   <center><h4><strong> <u>LIDER DEL PROYECTO</u>: <em class="text-danger">"{{proyecto.usuario_lider}}"</em></strong></h4><br><br></center>
+   <center><h4><strong> <u>SCRUM MASTER DEL PROYECTO</u>: <em class="text-danger">"{{proyecto.usuario_scrum.usuario}}"</em></strong></h4><br><br></center>
 
    {% if ver_miembros or abm_miembros or asignar_roles %}
       <h4 class="text-default"><strong> <u>ACCIONES</u>:</strong></h4><br>
