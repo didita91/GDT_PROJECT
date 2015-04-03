@@ -48,6 +48,7 @@
 		    {% ifnotequal i.id 2 %}
                        <td>
                           {% if eliminar_rol %}
+
                              <a class="btn btn-default" href="/roles/del&id={{i.id}}/"><strong>ELIMINAR</strong></a>&nbsp;&nbsp;&nbsp;
                              <a class="btn btn-default" href="/roles/permisos&id={{i.id}}/"><strong>PERMISOS</strong></a>&nbsp;&nbsp;&nbsp;
                           {% endif %}
@@ -77,6 +78,6 @@
     </div>
 
 {% else %}
-	<center><p><strong>NO TINES PERMISOS PARA VER ESTA SECCION</strong></p></center>
+	<center><p><strong>NO TIENES PERMISOS PARA VER ESTA SECCION</strong></p></center>
 {% endif %}
 {% endblock %}

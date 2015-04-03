@@ -19,33 +19,32 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
+                    
                         {{form.paginas.label}}: {{form.paginas}}
                         <input type="submit" name="Buscar" class= "btn btn-default" value="ACEPTAR"/>
                     </th>
               </tr>
               <tr>
 		     <th class="titulo"><b class="text-danger"><strong>USUARIO</strong></b></th>
-
+                      
 	             <th class="titulo"><b class="text-danger"><strong>ACCIONES</strong></b></th>
 	        </tr>
 	      </thead>
               <tbody>
 	       {% for i in miembros %}
+
                    <tr>
                      <td><strong>{{i.username}}</strong></td>
-                     {% if abm_miembros  %}
-			  {% ifnotequal proyecto.usuario_scrum.usuario.id i.id%}
-
+                     {% if abm_miembros %}
+                              {% ifnotequal proyecto.usuario_scrum.usuario.id i.id%}
  		        <td><a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/cambiar&id={{i.id}}"><strong>ADMINISTRAR ROLES</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
-
+                            
                          <a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/del&id={{i.id}}"><strong>QUITAR</strong></a>
-                	{% endifnotequal%}
-
-		   {% endif %}</td>
+                      {% endifnotequal%}
+                     {% endif %}</td>
                    </tr>
 
-
+                
 	      {% endfor %}
               </tbody>
 	    </table>
