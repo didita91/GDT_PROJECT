@@ -13,13 +13,38 @@
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
         <style type="text/css">
 	   body{
-                background-color: #610B21;
-		padding-top: 60px;
-		padding-bottom: 40px;
+
+            background: rgba(225,209,199,1);
+            background: -moz-linear-gradient(left, rgba(225,209,199,1) 7%, rgba(163,136,117,1) 52%, rgba(163,136,117,1) 52%, rgba(211,193,182,1) 92%);
+            background: -webkit-gradient(left top, right top, color-stop(7%, rgba(225,209,199,1)), color-stop(52%, rgba(163,136,117,1)), color-stop(52%, rgba(163,136,117,1)), color-stop(92%, rgba(211,193,182,1)));
+            background: -webkit-linear-gradient(left, rgba(225,209,199,1) 7%, rgba(163,136,117,1) 52%, rgba(163,136,117,1) 52%, rgba(211,193,182,1) 92%);
+            background: -o-linear-gradient(left, rgba(225,209,199,1) 7%, rgba(163,136,117,1) 52%, rgba(163,136,117,1) 52%, rgba(211,193,182,1) 92%);
+            background: -ms-linear-gradient(left, rgba(225,209,199,1) 7%, rgba(163,136,117,1) 52%, rgba(163,136,117,1) 52%, rgba(211,193,182,1) 92%);
+            background: linear-gradient(to right, rgba(225,209,199,1) 7%, rgba(163,136,117,1) 52%, rgba(163,136,117,1) 52%, rgba(211,193,182,1) 92%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e1d1c7', endColorstr='#d3c1b6', GradientType=1 );
+		    padding-top: 70px;
+		    padding-bottom: 10px;
 	   }
+            .navbar-inverse {
+                background-image: -webkit-linear-gradient(top,#8B0000 0,#8B0000 100%);
+                background-image: linear-gradient(to bottom#8B0000 0,#8B0000 100%);
+                background-repeat: repeat-x;
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c', endColorstr='#ff222222', GradientType=0);
+                filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+            }
+        .text-danger-pull{
+            color: #C0C0C0;
+            }
 	   .sidebar-nav{
-		padding: 9px;
+		    padding: 9px;
 	   }
+
+       .well{
+            border-color: #808080;
+            }
+       a{
+            color: white;
+            }
          img.pequeña{width: 50px; height: 50px;}
          img.mediana{width: 100px; height: 100px;}
          img.grande{width: 200px; height: 200px;}
@@ -30,16 +55,16 @@
 	<div class= "navbar navbar-inverse navbar-fixed-top">
 	     <div class= "navbar-inner">
                   <p class="navbar-text pull-left">
-		  <strong><a href='/principal' class="text-danger"> PROYECTO GDT &nbsp;</a></strong>
+		  <strong><a href='/principal' class="text-danger-pull"> PROYECTO GDT &nbsp;</a></strong>
 		     {% if user.is_authenticated %}
 		      <p class="navbar-text pull-right">
 		        <strong> USTED A INGRESADO COMO, {{ user.username }}|
-		        <a href='/logout' class="text-danger">CERRAR</a> | 
-			<a href ="/changepass/" class="text-danger">CAMBIAR CONTRASEÑA</a> |</strong>
+		        <a href='/logout' class="text-danger-pull">CERRAR</a> |
+			<a href ="/changepass/" class="text-danger-pull">CAMBIAR CONTRASEÑA</a> |</strong>
 		      </p>
 		     {% else %}
 	              <p class="navbar-text pull-right">
-		      <strong><a href='/login' class="text-danger">LOGIN</a></strong>
+		      <strong><a href='/login' class="text-danger-pull">LOGIN</a></strong>
 		      </p>
 		     {% endif %}
 	     </div>
