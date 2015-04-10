@@ -1,6 +1,66 @@
 {% extends "base.html" %}
 {% block title %} Roles de Sistema {% endblock %}
 {% block content %}
+
+<style type="text/css">
+        .alert-danger {
+            background: rgba(196,196,196,1);
+background: -moz-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -webkit-gradient(left top, right top, color-stop(0%, rgba(196,196,196,1)), color-stop(0%, rgba(191,191,191,1)), color-stop(100%, rgba(181,181,181,1)));
+background: -webkit-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -o-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -ms-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: linear-gradient(to right, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c4c4c4', endColorstr='#b5b5b5', GradientType=1 );
+            border-color: #808080;
+        border-radius: 0px 0px 10px 0px;
+
+        display: block;
+font-size: 15px;
+font-weight: bold;
+color: white;
+text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+margin-left: -5px;
+
+        }
+
+
+        .nav-list-tools>li.nav-header-tools {
+background-color: #8B0000;
+background-position: 8px 5px !important;
+color: #FFF;
+-webkit-border-radius: 10px 0px 0px;
+-moz-border-radius: 10px 0px 0px;
+border-radius: 10px 0px 0px ;
+padding-top: 15px;
+padding-bottom: 15px;
+display: block;
+padding: 8px 15px;
+font-size: 18px;
+font-weight: bold;
+line-height: 18px;
+color: white;
+text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+text-transform: uppercase;
+margin-left: -5px;
+
+
+}
+
+.btn-default{
+font-weight: bold;
+
+    }
+
+select{
+    color: black;
+    }
+    #largo-button{
+            font-size: 12px;
+        }
+    </style>
+
+
 <ol class="breadcrumb">
   <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
   <li><a class="text-danger" href="/roles"><strong>ADMINISTRACIÓN DE ROLES</strong></a></li>
@@ -8,7 +68,27 @@
 </ol>
 <center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE ROLES DE PROYECTO </strong></h2></center><br><br>
 
-{% if ver_roles or crear_rol or mod_rol or eliminar_rol %}
+        <div class="row">
+            {% if ver_roles or crear_rol or mod_rol or eliminar_rol %}
+
+             <div class="col-sm-3">
+           <ul class="nav nav-list-tools">
+                <li class="nav-header-tools">Barra de Herramientas</li>
+                <li class="alert alert-danger">
+             <a id="largo-button" class="btn btn-default" href="/roles"><strong> VOLVER A ADMINISTRACIÓN DE ROLES</strong> </a>&nbsp;&nbsp;
+                </li>
+               </ul>
+             </div>
+
+
+{% else %}
+	<center><p><strong>NO TIENES PERMISOS PARA VER ESTA SECCION</strong></p></center>
+{% endif %}
+
+<div class="col-sm-9">
+ <ul class="nav nav-list-tools">
+          <li class="nav-header-tools">Usuarios </li>
+          <li class="alert alert-danger">
    <form action="" method="post">
          {% csrf_token %}
 	    <table class="table table-bordered">
@@ -60,6 +140,9 @@
               </tbody>
          </table>
    </form>
+     </li>
+     </ul>
+            </div>
 	     
    <a colspan="3">
                     <br><h4 class="text-danger"><strong>Página {{ pag.number }} de {{ pag.paginator.num_pages }}<strong></h4><br>
@@ -71,13 +154,5 @@
                     {% endif %}
     </a><br><br>
 
-    <div class="footer">
-        <div class="volver">
-             <a class="btn btn-default" href="/roles"><strong> VOLVER A ADMINISTRACIÓN DE ROLES</strong> </a>&nbsp;&nbsp;
-        </div>
-    </div>
 
-{% else %}
-	<center><p><strong>NO TIENES PERMISOS PARA VER ESTA SECCION</strong></p></center>
-{% endif %}
 {% endblock %}
