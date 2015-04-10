@@ -422,6 +422,7 @@ def crear_rol(request):
 
 @login_required
 def admin_permisos(request, rol_id):
+    """Administración de permisos"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -501,6 +502,7 @@ def admin_permisos(request, rol_id):
 
 
 def mod_rol(request, rol_id):
+    """Modificar roles"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')

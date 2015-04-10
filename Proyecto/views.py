@@ -128,6 +128,7 @@ def crear_proyecto(request):
 
 @login_required
 def del_proyecto(request, proyecto_id):
+    """Eliminar proyecto del sistema"""
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id = proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -207,6 +208,7 @@ def administrar_proyecto(request, proyecto_id):
 
 @login_required
 def admin_usuarios_proyecto(request, proyecto_id):
+    """Administración de usuarios del proyecto"""
     user = User.objects.get(username=request.user.username)
     p = Proyecto.objects.get(pk = proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -269,6 +271,7 @@ def admin_usuarios_proyecto(request, proyecto_id):
 
 @login_required
 def add_usuario_proyecto(request, proyecto_id):
+    """Agregar usuarios al proyecto"""
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id = proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -301,6 +304,7 @@ def add_usuario_proyecto(request, proyecto_id):
 
 @login_required
 def cambiar_rol_usuario_proyecto(request, proyecto_id, user_id):
+    """Cambiar rol a un usuario de proyecto"""
     user = User.objects.get(username=request.user.username)
     p = Proyecto.objects.get(pk = proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -353,6 +357,7 @@ def cambiar_rol_usuario_proyecto(request, proyecto_id, user_id):
 
 @login_required
 def eliminar_miembro_proyecto(request, proyecto_id, user_id):
+    """Eliminar miembros del proyecto"""
     user = User.objects.get(username=request.user.username)
     usuario = get_object_or_404(User, pk=user_id)
     proy = get_object_or_404(Proyecto, pk=proyecto_id)
@@ -407,6 +412,7 @@ def admin_flujos(request, proyecto_id):
 
 @login_required
 def mod_proyecto(request, proyecto_id):
+    """Modificar Proyecto"""
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id = proyecto_id)
     #Validacion de permisos---------------------------------------------
