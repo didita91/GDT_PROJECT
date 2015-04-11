@@ -384,12 +384,10 @@ def eliminar_miembro_proyecto(request, proyecto_id, user_id):
 
 
 @login_required
-def admin_flujos(request, proyecto_id):
+def admin_flujos(request):
     """Administracion de flujos para el modulo de desarrollo."""
     user = User.objects.get(username=request.user.username)
-    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
     permisos = get_permisos_sistema(user)
-    print proyecto
     print user
     print permisos
    # permisos_ant = []
@@ -399,7 +397,7 @@ def admin_flujos(request, proyecto_id):
      #   permisos_ant = get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=1)) + get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=2))
    # print permisos_ant
    # linea = LineaBase.objects.filter(proyectos=proyecto, fase=3)
-    return render_to_response("flujo/admin_flujo.html", {'proyecto':proyecto,
+    return render_to_response("flujo/admin_flujo.html", {
                                                                  'user':user,
                                                                #  'fin':linea,
                                                                  'ver_items': 'Ver items',
