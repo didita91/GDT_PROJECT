@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 {% block title %}Usuarios{% endblock %}
 {% block content %}
@@ -9,7 +10,7 @@
 <center><h2 class="text-danger"><strong> CREACIÓN DE NUEVOS USUARIOS </strong></h2></center>
 <center><h2><span class="glyphicon glyphicon-user" aria-hidden="true"></span></h2></center><br>
 <form id="form_id" action="." method="POST">
-      {% csrf_token %} 
+      {% csrf_token %}
 	 <center><table>
            {{ form.as_table }}
 	 </table><br><br>

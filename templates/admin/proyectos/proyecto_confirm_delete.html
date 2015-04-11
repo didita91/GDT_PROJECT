@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Proyecto{% endblock %}
+{% block content %}
+<center><h2 class="text-danger"><strong> ELIMINACIÓN DE PROYECTOS </strong></h2></center>
+<center><h2><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></h2></center><br>
+
+{% if eliminar_proyecto %}
+   {% if mensaje %}
+      {% autoescape off %}
+         <center><h3><p> SE HA PRODUCIDO EL SIGUIENTE INCONVENIENTE: </p></h3>
+                 <h4><p><em> {{ mensaje }} </em></p></h4>
+         </center>
+      {% endautoescape %}
+         <center><input type="button" class= "btn btn-default" value="VOLVER" onClick = "location.href='/proyectos' "/></center>
+   {% else %}
+      <form id="form_id" action="" method="post">
+         {% csrf_token %}
+            <center><p>
+                       <h4><strong>¿ESTÁS SEGURO DE QUERER ELIMINAR EL PROYECTO: "{{proyecto}}"?</strong></h4><br>
+                       <span class="optionbuttons">
+                          <input type="submit" class= "btn btn-default" value="SI"/>&nbsp;&nbsp;&nbsp;&nbsp;
+	                  <input type="button" class= "btn btn-default" value="NO" onClick = "location.href='/proyectos/'"/>
+                       </span>
+                    </p>
+            </center>
+      </form>
+   {% endif %}
+{% else %}
+   <center><h4><p><strong>NO POSEE LOS PERMISOS PARA VER ESTA SECCIÓN</p></h4></center>
+{% endif %}
+{% endblock%}

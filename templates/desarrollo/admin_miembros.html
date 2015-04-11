@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+  <li><a class="text-danger" href="/proyectos/admin&id={{proyecto.id}}/"><strong>PROYECTO</strong></a></li>
+  <li class="active"><strong>MIEMBROS DEL PROYECTO</strong></li>
+</ol>
+<center><h2 class="text-danger"><strong> MIEMBROS DEL PROYECTO: "{{proyecto}}" </strong></h2></center><br><br>
+
+{% if ver_miembros or abm_miembros %}
+   <form action="." method="POST">
+         {% csrf_token %}
+            <table class="table table-bordered">
+	      <thead>
+	       <tr>
+                    <th colspan="3"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        {{form.filtro.label}}: {{form.filtro}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    
+                        {{form.paginas.label}}: {{form.paginas}}
+                        <input type="submit" name="Buscar" class= "btn btn-default" value="ACEPTAR"/>
+                    </th>
+              </tr>
+              <tr>
+		     <th class="titulo"><b class="text-danger"><strong>USUARIO</strong></b></th>
+                      
+	             <th class="titulo"><b class="text-danger"><strong>ACCIONES</strong></b></th>
+	        </tr>
+	      </thead>
+              <tbody>
+	       {% for i in miembros %}
+
+                   <tr>
+                     <td><strong>{{i.username}}</strong></td>
+                     {% if abm_miembros %}
+                              {% ifnotequal proyecto.usuario_scrum.usuario.id i.id%}
+ 		        <td><a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/cambiar&id={{i.id}}"><strong>ADMINISTRAR ROLES</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                            
+                         <a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/del&id={{i.id}}"><strong>QUITAR</strong></a>
+                      {% endifnotequal%}
+                     {% endif %}</td>
+                   </tr>
+
+                
+	      {% endfor %}
+              </tbody>
+	    </table>
+     </form>
+
+<a colspan="3">
+                    <br><h4 class="text-danger"><strong>Página {{ pag.number }} de {{ pag.paginator.num_pages }}<strong></h4><br>
+                    {% if pag.has_previous %}
+                       <a class="btn btn-mini btn btn-default" href="?page={{ pag.previous_page_number }}"><h5><strong> <span class=" glyphicon glyphicon-backward" aria-hidden="true"></span>&nbsp;&nbsp;ANTERIOR </strong></h5></a>
+                    {% endif %}
+                    {% if pag.has_next %}
+                       <a class="btn btn-mini btn btn-default" href="?page={{ pag.next_page_number }}"><h5><strong > SIGUIENTE &nbsp;&nbsp; <span class="glyphicon glyphicon-forward" aria-hidden="true"></span></strong></h5></a>
+                    {% endif %}
+    </a><br><br>
+
+   {% if abm_miembros %}
+      <div class="footer">
+           <div class="volver">
+                <a class="btn btn-default" href="/proyectos/admin&id={{proyecto.id}}/"><strong> VOLVER A DESCRIPCIÓN DEL PROYECTO</strong> </a>&nbsp;&nbsp;
+                <a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/nuevo/"><strong>AGREGAR NUEVO MIEMBRO </strong></a>
+           </div>
+     </div>
+   {% endif %}
+   {% else %}
+	<center><p><strong>NO TIENE PERMISO PARA VER ESTA SECCIÓN</strong></p></center>
+   {% endif %}
+{% endblock %}

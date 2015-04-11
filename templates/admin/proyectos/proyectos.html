@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Usuarios{% endblock %}
+{% block title %}Proyectos{% endblock %}
 {% block content %}
 
 <style type="text/css">
@@ -59,91 +59,82 @@ select{
 
     </style>
 
+
 <ol class="breadcrumb">
   <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
-  <li class="active"><strong>ADMINISTRACIÓN DE USUARIOS</strong></li>
+  <li class="active"><strong>ADMINISTRACIÓN DE PROYECTOS</strong></li>
 </ol>
-<center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE USUARIOS </strong></h2></center><br><br>
+<center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE PROYECTOS </strong></h2></center><br><br>
 
-{% if ver_usuarios or crear_usuario or mod_usuario or eliminar_usuario or asignar_roles%}
-
+{% if ver_proyectos or crear_proyecto or mod_proyecto or eliminar_proyecto %}
         <div class="row">
 
-             {% if crear_usuario %}
-
-      <div class="col-sm-3">
+            {% if crear_proyecto %}
+       <div class="col-sm-3">
            <ul class="nav nav-list-tools">
                 <li class="nav-header-tools">Barra de Herramientas</li>
                 <li class="alert alert-danger">
                 <a class="btn btn-default" href="/principal"><strong> VOLVER A LA PÁGINA PRINCIPAL</strong> </a>&nbsp;&nbsp;
-                <a class="btn btn-default" href="/usuarios/crear/"><strong>CREAR NUEVO USUARIO </strong></a>
-                </li>
-           </ul>
-     </div>
+                <a class="btn btn-default" href="/proyectos/crear/"><strong>CREAR NUEVO PROYECTO </strong></a>
+               </li>
+               </ul>
+           </div>
    {% endif %}
    {% else %}
 	<center><p><strong>NO TIENE PERMISO PARA VER ESTA SECCIÓN</strong></p></center>
    {% endif %}
-      <div class="col-sm-8">
+
+            <div class="col-sm-8">
  <ul class="nav nav-list-tools">
           <li class="nav-header-tools">Usuarios </li>
           <li class="alert alert-danger">
-    <form action="." method="POST">
+   <form action="." method="POST">
          {% csrf_token %}
             <table class="table table-bordered">
-	      <thead>
-	       <tr>
+              <thead>
+               <tr>
                     <th colspan="3"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                         {{form.filtro.label}}: {{form.filtro}}
                     </th>
-                    <th align="right">
+                    <th>
                         {{form.paginas.label}}: {{form.paginas}}&nbsp;&nbsp;
                         <input type="submit" name="Buscar" class= "btn btn-default" value="ACEPTAR"/>
                     </th>
-              </tr>
+               </tr>
 	        <tr>
-		     <th class="titulo"><b class="text-danger"><strong>USUARIO</strong></b></th>
-	             <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
-	             <th class="titulo"><b class="text-danger"><strong>APELLIDO</strong></b></th>
-	             <th class="titulo"><b class="text-danger"><strong>ACCIONES</strong></b></th>
+                    <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
+	            <th class="titulo"><b class="text-danger"><strong>SCRUM MASTER</strong></b></th>
+                    <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
+	            <th class="titulo"><b class="text-danger"><strong>FECHA DE INICIO</strong></b></th>
 	        </tr>
-	      </thead>
-              <tbody>
-	      {%for i in pag.object_list%}
-		   <tr>
-		       {% if mod_usuario %}
-                          <td><a href="/usuarios/mod&id={{i.id}}/"><font color="black"><strong><em><u>{{i.username}}</u></em></strong></font></a></td>
-		       {% else %}
-                          <td><font color="black"><strong><em><u>{{i.username}}</u></em></strong></font></td>
-                       {% endif %}
-		          <td><strong>{{i.first_name}}</strong></td>
-		          <td><strong>{{i.last_name}}</strong></td>
-		       {% ifequal i.id 1 %}
-		          <td><strong>SUPERUSUARIO</strong></td>
-		       {% else %}
-		          {% ifnotequal i.username user.username %}
-		             <td>
-                                 {% if eliminar_usuario %}
-                                    <a class="btn btn-default" href="/usuarios/del&id={{i.id}}/"><strong>ELIMINAR</strong></a>
-                                 {% endif %}
-				{% if asignar_roles %}&nbsp;&nbsp;
-                                    <a class="btn btn-default" href="/usuarios/rol&id={{i.id}}/"><strong>ASIGNAR ROLES DE SISTEMA</a>
-                                 {% endif %}
+               </thead>
+               <tbody>
+	       {%for i in pag.object_list%}
+		    <tr>
+		        {% if mod_proyecto %}
+                           <td><a href="/proyectos/mod&id={{i.id}}/"><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></a></td>
+			{% else %}
+                           <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
+                        {% endif %}
+                         <td><strong>{{i.usuario_scrum}}</strong></td>
+		         <td><strong>{{i.descripcion}}</strong></td>
+		         <td><strong>{{i.fecha_inicio}}</strong></td>
 
-                                 </td>
-		          {% endifnotequal %}
-		       {% endifequal %}
-	           </tr>
-	    {% endfor %}
-            </tbody>
-	  </table>
-   </form>
-              </li>
+                 <td>
+		      {% if eliminar_proyecto %}
+                                <a class="btn btn-default btn-xs" href="/proyectos/del&id={{i.id}}/"><strong>ELIMINAR</strong></a>
+                      {% endif %}
+		 </td>
+		     </tr>
+	       {% endfor %}
+              </tbody>
+	    </table>
+     </form>
+     </li>
      </ul>
-          </div>
-
             </div>
- <a colspan="3">
+            </div>
+     <a colspan="3">
                     <br><h4 class="text-danger"><strong><center>Página {{ pag.number }} de {{ pag.paginator.num_pages }}</center><strong></h4><br>
                     {% if pag.has_previous %}
                        <a class="btn btn-mini btn btn-default" href="?page={{ pag.previous_page_number }}"><h5><strong> <span class=" glyphicon glyphicon-backward" aria-hidden="true"></span>&nbsp;&nbsp;ANTERIOR </strong></h5></a>
@@ -151,5 +142,6 @@ select{
                     {% if pag.has_next %}
                        <a class="btn btn-mini btn btn-default" href="?page={{ pag.next_page_number }}"><h5><strong > SIGUIENTE &nbsp;&nbsp; <span class="glyphicon glyphicon-forward" aria-hidden="true"></span></strong></h5></a>
                     {% endif %}
-    </a>
+    </a><br><br>
+
 {% endblock %}

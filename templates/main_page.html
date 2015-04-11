@@ -3,115 +3,43 @@
 {% block content %}
 
 {% if user.username %}
-
-    <style type="text/css">
-        .alert-danger {
-            background: rgba(196,196,196,1);
-background: -moz-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
-background: -webkit-gradient(left top, right top, color-stop(0%, rgba(196,196,196,1)), color-stop(0%, rgba(191,191,191,1)), color-stop(100%, rgba(181,181,181,1)));
-background: -webkit-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
-background: -o-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
-background: -ms-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
-background: linear-gradient(to right, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c4c4c4', endColorstr='#b5b5b5', GradientType=1 );
-            border-color: #808080;
-        border-radius: 0px 0px 10px 0px;
-
-        display: block;
-font-size: 13px;
-font-weight: bold;
-color: white;
-text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
-text-transform: uppercase;
-margin-left: -5px;
-
-        }
-
-
-        .nav-list-tools>li.nav-header-tools {
-background-color: #8B0000;
-background-position: 8px 5px !important;
-color: #FFF;
--webkit-border-radius: 10px 0px 0px;
--moz-border-radius: 10px 0px 0px;
-border-radius: 10px 0px 0px ;
-padding-top: 15px;
-padding-bottom: 15px;
-/* padding-left: 40px; */
-        display: block;
-padding: 8px 15px;
-font-size: 18px;
-font-weight: bold;
-line-height: 18px;
-color: white;
-text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
-text-transform: uppercase;
-margin-left: -5px;
-
-
-}
-
-
-
-
-
-    </style>
-
-
-
-   <center><h2 class="text-danger"><strong> PROYECTO GDT </strong></h2>
+   <center><h2 class="text-danger"><strong> SISTEMA GDT </strong></h2>
            <h3><strong> Bienvenido, {{ user.username }} </strong></h3>
            <h3 class="text-danger"><strong> ADMINISTRACIÓN DEL SISTEMA </strong></h3>
    </center>
-
+   <br><br><br><br>
 
    {% if roles or user or proyectos or tipo_item %}
-    <div class="row">
-    <div class="col-sm-3">
-            <ul class="nav nav-list-tools">
-                <li class="nav-header-tools">Administración</li>
-                <li class="alert alert-danger">
-                            {% if user.id == 1 %}
-               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/usuarios/'"><strong>U S U A R I O S</strong></a>
-                            {% endif %}
-
-                {% if roles %}
-               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/roles/'"><strong>R O L E S</strong></a>
+      <div class="alert alert-danger">
+        <ul><h3>
+            {% if user %}
+               <button type="button"  class="btn btn-default" onClick ="location.href='/usuarios/'"><strong>U S U A R I O S</strong></button>
+            {% endif %}
+            
+            {% if roles %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+               <button type="button" class="btn btn-default" onClick ="location.href='/roles/'"><strong>R O L E S</strong></button>
             {% endif %}
 
-
-                {% if proyectos %}
-               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/proyectos/'"><strong>P R O Y E C T O S</strong></a>
-            {% endif %}<br>
-
-                {% if flujos %}
-               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/flujos/'"><strong>F L U J O S</strong></a>
+            {% if proyectos %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+               <button type="button"  class="btn btn-default" onClick ="location.href='/proyectos/'"><strong>P R O Y E C T O S</strong></button>
             {% endif %}
-                </li>
-            </ul>
-            </div>
-      <div class="col-sm-8">
-          <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">LISTA DE PROYECTOS </li>
-          <li class="alert alert-danger">
-          {% for proyecto in lista %}
-             {% for i in permisos_proyecto %}
-                {% ifequal proyecto.id i %}
-                   <h4><br><a href="/proyectos/admin&id={{proyecto.id}}/"><font color="gray"><strong><em><u>{{proyecto.nombre}}</u></em></strong></font>
-                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                             {% endifequal %}
-             {% endfor %}
-             {% empty %}
-                  <h4><strong>No hay proyectos</strong></h4>
-          {% endfor %}
-          </li>
-      </ul>
-        </div>
-          </div>
-</div>
+       </ul></h3>
    {% endif %}
 {% else %}
    <p>Bienvenido, visitante</p>
    <p>Puedes iniciar sesion <a href="/login/" class="text-danger"><strong> AQUI </strong></a></p>
 {% endif %}
 {% endblock %}
+
