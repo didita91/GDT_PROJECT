@@ -46,7 +46,8 @@ def principal(request):
             variables['usuarios'] = True
 	if i == 'Ver proyectos' or i == 'Crear proyecto' or i == 'Modificar proyecto' or i == 'Eliminar proyecto':
     	    variables['proyectos'] = True
-
+    if i == 'Ver flujos' or i == 'Crear flujo' or i == 'Modificar flujo' or i == 'Eliminar flujo':
+    	    variables['flujos'] = True
     variables['user'] = user
     print variables
     rolesp = UsuarioRolProyecto.objects.filter(usuario = user).only('rol')
