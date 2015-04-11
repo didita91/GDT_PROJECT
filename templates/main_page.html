@@ -15,10 +15,7 @@ background: -ms-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1
 background: linear-gradient(to right, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c4c4c4', endColorstr='#b5b5b5', GradientType=1 );
             border-color: #808080;
-        border-radius: 0px 0px 0px 0px;
-
-
-
+        border-radius: 0px 0px 10px 0px;
 
         display: block;
 font-size: 13px;
@@ -37,13 +34,13 @@ background-position: 8px 5px !important;
 color: #FFF;
 -webkit-border-radius: 10px 0px 0px;
 -moz-border-radius: 10px 0px 0px;
-border-radius: 10px 0px 0px;
-padding-top: 10px;
-padding-bottom: 10px;
+border-radius: 10px 0px 0px ;
+padding-top: 15px;
+padding-bottom: 15px;
 /* padding-left: 40px; */
         display: block;
-padding: 3px 15px;
-font-size: 13px;
+padding: 8px 15px;
+font-size: 18px;
 font-weight: bold;
 line-height: 18px;
 color: white;
@@ -72,10 +69,10 @@ margin-left: -5px;
     <div class="row">
     <div class="col-sm-3">
             <ul class="nav nav-list-tools">
-                <li class="nav-header-tools">Barra de Herramientas</li>
+                <li class="nav-header-tools">Administración</li>
                 <li class="alert alert-danger">
                             {% if user.id == 1 %}
-               <button type="button"  class="btn btn-default" onClick ="location.href='/usuarios/'"><strong>U S U A R I O S</strong></button><br>
+               <a type="button" class="btn btn-default" onClick ="location.href='/usuarios/'"><strong>U S U A R I O S</strong></a>
                             {% endif %}
 
                 {% if roles %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -85,7 +82,7 @@ margin-left: -5px;
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-               <button type="button" class="btn btn-default" onClick ="location.href='/roles/'"><strong>R O L E S</strong></button><br>
+               <a type="button" class="btn btn-default" onClick ="location.href='/roles/'"><strong>R O L E S</strong></a>
             {% endif %}
 
 
@@ -96,7 +93,7 @@ margin-left: -5px;
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-               <button type="button"  class="btn btn-default" onClick ="location.href='/proyectos/'"><strong>P R O Y E C T O S</strong></button>
+               <a type="button" class="btn btn-default" onClick ="location.href='/proyectos/'"><strong>P R O Y E C T O S</strong></a>
             {% endif %}
                 </li>
             </ul>

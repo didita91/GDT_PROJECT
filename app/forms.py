@@ -43,11 +43,13 @@ class UsuariosForm(forms.Form):
 			raise forms.ValidationError("Ya esta registrado este email.")
 		return email
 class ModUsuariosForm(forms.Form):
+    #Modificar datos del usuario
 	first_name = forms.CharField(max_length=30, label='NOMBRE')
 	last_name = forms.CharField(max_length=30, label='APELLIDO')
 	email = forms.EmailField(max_length=75, label='EMAIL')
 
 class CambiarPasswordForm(forms.Form):
+    #Cambiar contraseñas
 	password1 = forms.CharField(widget = forms.PasswordInput, max_length=128, label = u'ESCRIBA SU NUEVA CONTRASEÑA')
 	password2 = forms.CharField(widget = forms.PasswordInput, max_length=128, label = u'REPITA SU NUEVA CONTRASEÑA')
 
@@ -60,6 +62,7 @@ class CambiarPasswordForm(forms.Form):
 		raise forms.ValidationError('Las contraseñas no coinciden')
 
 class AsignarRolesForm(forms.Form):
+    #Asignar roles
 	roles = forms.ModelMultipleChoiceField(queryset = None, widget = forms.CheckboxSelectMultiple, label = 'ROLES DISPONIBLES', required=False)
 
 	def __init__(self, cat, *args, **kwargs):
@@ -69,6 +72,7 @@ class AsignarRolesForm(forms.Form):
 
 
 class RolesForm(forms.Form):
+    #Formulario de roles
 	nombre = forms.CharField(max_length=50, label='NOMBRE')
 	descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
 	categoria = forms.CharField(max_length=1, widget=forms.Select(choices=CATEGORY_CHOICES), label='ELIJA UNA CATEGORIA')
