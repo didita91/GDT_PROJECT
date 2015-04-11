@@ -23,9 +23,7 @@ from app.models import *
 from app.forms import *
 from app.helper import *
 from django.shortcuts import render
-#from Proyecto.models import *
-#from Proyecto.forms import *
-# Create your views here.
+
 @login_required
 def admin_proyectos(request):
     """Administracion general de proyectos"""
