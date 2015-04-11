@@ -43,11 +43,13 @@ class UsuariosForm(forms.Form):
 			raise forms.ValidationError("Ya esta registrado este email.")
 		return email
 class ModUsuariosForm(forms.Form):
+    #Modificar datos del usuario
 	first_name = forms.CharField(max_length=30, label='NOMBRE')
 	last_name = forms.CharField(max_length=30, label='APELLIDO')
 	email = forms.EmailField(max_length=75, label='EMAIL')
 
 class CambiarPasswordForm(forms.Form):
+    #Cambiar contraseñas
 	password1 = forms.CharField(widget = forms.PasswordInput, max_length=128, label = u'ESCRIBA SU NUEVA CONTRASEÑA')
 	password2 = forms.CharField(widget = forms.PasswordInput, max_length=128, label = u'REPITA SU NUEVA CONTRASEÑA')
 
@@ -60,6 +62,7 @@ class CambiarPasswordForm(forms.Form):
 		raise forms.ValidationError('Las contraseñas no coinciden')
 
 class AsignarRolesForm(forms.Form):
+    #Asignar roles
 	roles = forms.ModelMultipleChoiceField(queryset = None, widget = forms.CheckboxSelectMultiple, label = 'ROLES DISPONIBLES', required=False)
 
 	def __init__(self, cat, *args, **kwargs):
@@ -69,6 +72,7 @@ class AsignarRolesForm(forms.Form):
 
 
 class RolesForm(forms.Form):
+    #Formulario de roles
 	nombre = forms.CharField(max_length=50, label='NOMBRE')
 	descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
 	categoria = forms.CharField(max_length=1, widget=forms.Select(choices=CATEGORY_CHOICES), label='ELIJA UNA CATEGORIA')
@@ -87,6 +91,9 @@ class RolesForm(forms.Form):
 class PermisosForm(forms.Form):
 	permisos = forms.ModelMultipleChoiceField(queryset = Permiso.objects.filter(categoria = 1), widget = forms.CheckboxSelectMultiple, required = False)
 
+class PermisosProyectoForm(forms.Form):
+
+	permisos = forms.ModelMultipleChoiceField(queryset = Permiso.objects.filter(categoria = 2), widget = forms.CheckboxSelectMultiple, required = False, label = u'PERMISOS')
 
 
 class ModRolesForm(forms.Form):
@@ -145,6 +152,28 @@ class UsuarioProyectoForm(forms.Form):
         if 'usuario' in self.cleaned_data:
             usuarios_existentes = UsuarioRolProyecto.objects.filter(id = self.proyecto.id)
             for i in usuarios_existentes:
-                if(usuarios_existentes.usuario == form.clean_data['usuario']):
+                if(usuarios_existentes.usuario == forms.clean_data['usuario']):
                     raise forms.ValidationError('Ya existe este usuario')
             return self.cleaned_data['usuario']
+
+class ModProyectosForm(forms.Form):
+    """Formulario para la creacion de proyectos."""
+    nombre = forms.CharField(max_length=50, label='NOMBRE')
+    #usuario_scrum = forms.ModelChoiceField(queryset=User.objects.all(), label='SCRUM')
+    descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
+    #fecha_inicio = forms.DateField(required=False, label='FECHA DE INICIO')
+
+    def __init__(self, proyecto, *args, **kwargs):
+        super(ModProyectosForm, self).__init__(*args, **kwargs)
+        self.proyecto = proyecto
+
+    def clean_nombre(self):
+        if 'nombre' in self.cleaned_data:
+            nuevo = self.cleaned_data['nombre']
+            if nuevo != self.proyecto.nombre:
+                proyectos = Proyecto.objects.all()
+                nuevo = self.cleaned_data['nombre']
+                for proyecto in proyectos:
+                    if proyecto.nombre == nuevo:
+                        raise forms.ValidationError('Ya existe ese nombre. Elija otro')
+            return nuevo

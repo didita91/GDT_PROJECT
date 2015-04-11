@@ -27,6 +27,12 @@ a { text-decoration:none }
     cursor:pointer;
 }
 
+.navbar-inverse {
+    background-color: #808080;
+    border-color: #080808;
+}
+
+
 /* Login Button Text */
 #loginButton span {
     color:#445058; 

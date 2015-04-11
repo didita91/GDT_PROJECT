@@ -1,6 +1,65 @@
 {% extends "base.html" %}
 {% block title %} Roles {% endblock %}
 {% block content %}
+
+
+    <style type="text/css">
+        .alert-danger {
+            background: rgba(196,196,196,1);
+background: -moz-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -webkit-gradient(left top, right top, color-stop(0%, rgba(196,196,196,1)), color-stop(0%, rgba(191,191,191,1)), color-stop(100%, rgba(181,181,181,1)));
+background: -webkit-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -o-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -ms-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: linear-gradient(to right, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c4c4c4', endColorstr='#b5b5b5', GradientType=1 );
+            border-color: #808080;
+        border-radius: 0px 0px 10px 0px;
+
+        display: block;
+font-size: 13px;
+font-weight: bold;
+color: white;
+text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+text-transform: uppercase;
+margin-left: -5px;
+
+        }
+
+
+        .nav-list-tools>li.nav-header-tools {
+background-color: #8B0000;
+background-position: 8px 5px !important;
+color: #FFF;
+-webkit-border-radius: 10px 0px 0px;
+-moz-border-radius: 10px 0px 0px;
+border-radius: 10px 0px 0px ;
+padding-top: 15px;
+padding-bottom: 15px;
+/* padding-left: 40px; */
+        display: block;
+padding: 8px 15px;
+font-size: 18px;
+font-weight: bold;
+line-height: 18px;
+color: white;
+text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+text-transform: uppercase;
+margin-left: -5px;
+
+
+}
+.btn-default{
+font-weight: bold;
+
+    }
+        #largo-button{
+            width: 350px;
+        }
+
+    </style>
+
+
 <ol class="breadcrumb">
   <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
   <li class="active"><strong>ADMINISTRACIÓN DE ROLES</strong></li>
@@ -8,28 +67,42 @@
 <center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE ROLES </strong></h2></center><br><br>
 
 {% if ver_roles or crear_rol or mod_rol or eliminar_rol %}
-   <div class="alert alert-danger">
-     <ul><h3>
-            <center><button type="button"  class="btn btn-default" onClick ="location.href='/roles/sist/'"><strong>ADMINISTRACIÓN DE ROLES DE SISTEMA</strong></button>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-    </center> </ul></h3><br><br>
-   </div>
-   <div class="footer">
-        <div class="volver">
+<div class="row">
+    <div class="col-sm-3">
+            <ul class="nav nav-list-tools">
+                <li class="nav-header-tools">Administración</li>
+                <li class="alert alert-danger">
+
                 <a class="btn btn-default" href="/principal"><strong> VOLVER A LA PÁGINA PRINCIPAL</strong> </a>&nbsp;&nbsp;
                 {% if crear_rol %}
                    <a class="btn btn-default" href="/roles/crear/"><strong>CREAR NUEVO ROL </strong></a>
                 {% endif %}
+                </li>
+                </ul>
         </div>
-   </div>
+
 {% else %}
 	<p><strong>NO POSEE PERMISOS PARA VER ESTA SECCIÓN</strong></p>
 {% endif %}
+    <div class="col-sm-8">
+ <ul class="nav nav-list-tools">
+          <li class="nav-header-tools">Roles </li>
+          <li class="alert alert-danger">
+
+            <a id="largo-button" class="btn btn-default" onClick ="location.href='/roles/sist/'"><strong>ADMINISTRACIÓN DE ROLES DE SISTEMA</strong></a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a id="largo-button" class="btn btn-default" onClick ="location.href='/roles/proy'"><strong>ADMINISTRACIÓN DE ROLES DE PROYECTO</strong></a>
+
+     </li>
+     </ul>
+        </div>
+   </div>
+
+</div>
 {% endblock %}

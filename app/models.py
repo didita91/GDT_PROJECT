@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 """ Categorias de Rol """
 CATEGORY_CHOICES = (
                  ('1', 'Rol de Sistema'),
-		 ('2', 'Rol de Proyecto'),
+		         ('2', 'Rol de Proyecto'),
 
              )
 
@@ -73,18 +73,23 @@ class RolUsuario(models.Model):
 	usuario =models.ForeignKey(User)
 	def __unicode__(self):
 		return self.usuario.username
-	class Meta:
-		unique_together = [("usuario")]
+
 
 
 class Proyecto(models.Model):
-        nombre = models.CharField(unique=True, max_length=50)
-        usuario_scrum = models.ForeignKey(RolUsuario)
-        descripcion = models.TextField(null=True, blank= True)
-        fecha_inicio = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
-        def __unicode__(self):
-                return self.nombre
+    """
+    Contiene los datos de cada proyecto
+    """
+    nombre = models.CharField(unique=True, max_length=50)
+    usuario_scrum = models.ForeignKey(RolUsuario)
+    descripcion = models.TextField(null=True, blank= True)
+    fecha_inicio = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    def __unicode__(self):
+        return self.nombre
 class UsuarioRolProyecto(models.Model):
+    """
+    Contiene la lista de usuarios con sus roles en cada proyecto
+    """
     usuario = models.ForeignKey(User)
     rol = models.ForeignKey(Rol, null=True)
     proyecto = models.ForeignKey(Proyecto)
