@@ -32,7 +32,7 @@ def admin_proyectos(request):
         form = FilterForm(request.POST)
         if form.is_valid():
             palabra = form.cleaned_data['filtro']
-            lista = Proyecto.objects.filter(Q(nombre__icontains = palabra) | Q(descripcion__icontains = palabra) | Q(usuario_scrum__username__icontains = palabra)).order_by('id')
+            lista = Proyecto.objects.filter(Q(nombre__icontains = palabra) | Q(descripcion__icontains = palabra) | Q(usuario_scrum__usuario__username__icontains = palabra)).order_by('id')
             paginas = form.cleaned_data['paginas']
             request.session['nro_items'] = paginas
             paginator = Paginator(lista, int(paginas))
@@ -187,13 +187,7 @@ def administrar_proyecto(request, proyecto_id):
     print proyecto
     print user
     print permisos
-   # permisos_ant = []
-   # if proyecto.fase.id == 2:
-   #     permisos_ant = get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=1))
-    #elif proyecto.fase.id == 3:
-     #   permisos_ant = get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=1)) + get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=2))
-   # print permisos_ant
-   # linea = LineaBase.objects.filter(proyectos=proyecto, fase=3)
+
     return render_to_response("desarrollo/admin_proyecto.html", {'proyecto':proyecto,
                                                                  'user':user,
                                                                #  'fin':linea,
@@ -379,31 +373,19 @@ def eliminar_miembro_proyecto(request, proyecto_id, user_id):
 
 
 @login_required
-def admin_flujos(request, proyecto_id):
+def admin_flujos(request):
     """Administracion de flujos para el modulo de desarrollo."""
     user = User.objects.get(username=request.user.username)
-    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
     permisos = get_permisos_sistema(user)
-    print proyecto
+
     print user
     print permisos
-   # permisos_ant = []
-   # if proyecto.fase.id == 2:
-   #     permisos_ant = get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=1))
-    #elif proyecto.fase.id == 3:
-     #   permisos_ant = get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=1)) + get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=2))
-   # print permisos_ant
-   # linea = LineaBase.objects.filter(proyectos=proyecto, fase=3)
-    return render_to_response("flujo/admin_flujo.html", {'proyecto':proyecto,
+
+    return render_to_response("flujo/admin_flujo.html", {
                                                                  'user':user,
                                                                #  'fin':linea,
-                                                                 'ver_items': 'Ver items',
-                                                                 'abm_items': 'ABM items',
-                                                                 'ver_miembros': 'Ver miembros' in permisos,
-                                                                 'abm_miembros': 'ABM miembros' in permisos,
-                                                                 'asignar_roles': 'Asignar roles' in permisos,
-                                                                 'generarlb':'Generar LB',
-                                                                 'asignar_tipoItm': 'Asignar tipo-item fase'},context_instance=RequestContext(request) )
+                                                                 'ver_items': 'Ver flujos' in permisos
+                                                                 },context_instance=RequestContext(request) )
 
 @login_required
 def mod_proyecto(request, proyecto_id):

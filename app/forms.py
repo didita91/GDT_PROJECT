@@ -97,7 +97,7 @@ class ModRolesForm(forms.Form):
 
 
 class FilterForm(forms.Form):
-    filtro = forms.CharField(max_length = 30, label = 'BUSCAR', required=False)
+    filtro = forms.CharField(max_length = 30, label = 'Buscar', required=False)
     paginas = forms.CharField(max_length=2, widget=forms.Select(choices=(('5','5'),('10','10'),('15','15'),('20','20'))), label='MOSTRAR')
 
 class FilterForm2(forms.Form):

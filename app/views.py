@@ -46,7 +46,8 @@ def principal(request):
             variables['usuarios'] = True
 	if i == 'Ver proyectos' or i == 'Crear proyecto' or i == 'Modificar proyecto' or i == 'Eliminar proyecto':
     	    variables['proyectos'] = True
-
+    if i == 'Ver flujos' or i == 'Crear flujo' or i == 'Modificar flujo' or i == 'Eliminar flujo':
+    	    variables['flujos'] = True
     variables['user'] = user
     print variables
     rolesp = UsuarioRolProyecto.objects.filter(usuario = user).only('rol')
@@ -60,6 +61,20 @@ def principal(request):
     #-------------------------------------------------------------------
     lista = Proyecto.objects.all()
     variables['lista'] = lista
+    try:
+            page = int(request.GET.get('page', '1'))
+    except ValueError:
+            page = 1
+    if not 'nro_items' in request.session:
+                request.session['nro_items'] = 5
+    paginas = request.session['nro_items']
+    paginator = Paginator(lista, int(paginas))
+    try:
+            pag = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+            pag = paginator.page(paginator.num_pages)
+    form = FilterForm(initial={'paginas': paginas})
+    variables['pag']=pag
     return render_to_response('main_page.html', variables, context_instance=RequestContext(request))
 
 
@@ -231,10 +246,14 @@ def admin_usuarios(request):
         form = FilterForm(request.POST)
         if form.is_valid():
             palabra = form.cleaned_data['filtro']
-            lista = User.objects.filter(Q(username__icontains = palabra) | Q(first_name__icontains = palabra) | Q(last_name__icontains = palabra)).order_by('id')
+
+            lista = User.objects.filter(Q(username__icontains = palabra2) | Q(first_name__icontains = palabra2) | Q(last_name__icontains = palabra2)).order_by('id')
+
             paginas = form.cleaned_data['paginas']
+
             request.session['nro_items'] = paginas
             paginator = Paginator(lista, int(paginas))
+
             try:
                 page = int(request.GET.get('page', '1'))
             except ValueError:
@@ -260,12 +279,16 @@ def admin_usuarios(request):
         if not 'nro_items' in request.session:
             request.session['nro_items'] = 5
         paginas = request.session['nro_items']
+
         paginator = Paginator(lista, int(paginas))
+
+
         try:
             pag = paginator.page(page)
         except (EmptyPage, InvalidPage):
             pag = paginator.page(paginator.num_pages)
         form = FilterForm(initial={'paginas': paginas})
+
     return render_to_response('admin/usuarios/usuarios.html',{ 'pag':pag,
                                                                'form': form,
                                                                'lista':lista,

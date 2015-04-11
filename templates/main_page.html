@@ -68,53 +68,51 @@ margin-left: -5px;
    </center>
 
 
-   {% if roles or user or proyectos or tipo_item %}
+   {% if roles or user or proyectos  %}
     <div class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-2">
             <ul class="nav nav-list-tools">
                 <li class="nav-header-tools">Barra de Herramientas</li>
                 <li class="alert alert-danger">
                             {% if user.id == 1 %}
-               <button type="button"  class="btn btn-default" onClick ="location.href='/usuarios/'"><strong>U S U A R I O S</strong></button><br>
+               <button type="button"  class="btn btn-default btn-lg btn-block" onClick ="location.href='/usuarios/'"><strong>U S U A R I O S</strong></button><br>
                             {% endif %}
 
-                {% if roles %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-               <button type="button" class="btn btn-default" onClick ="location.href='/roles/'"><strong>R O L E S</strong></button><br>
+                {% if roles %}
+               <button type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/roles/'"><strong>R O L E S</strong></button><br>
             {% endif %}
 
 
-                {% if proyectos %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-               <button type="button"  class="btn btn-default" onClick ="location.href='/proyectos/'"><strong>P R O Y E C T O S</strong></button>
+
+                {% if proyectos %}
+               <button type="button"  class="btn btn-default btn-lg btn-block" onClick ="location.href='/proyectos/'"><strong>P R O Y E C T O S</strong></button>
+            {% endif %}<br>
+
+
+                 {% if flujos %}
+
+               <button type="button"  class="btn btn-default btn-lg btn-block" onClick ="location.href='/flujos/'"><strong>F L U J O S</strong></button>
             {% endif %}
                 </li>
             </ul>
             </div>
-      <div class="col-sm-8">
+      <div class="col-sm-10">
           <ul class="nav nav-list-tools">
           <li class="nav-header-tools">LISTA DE PROYECTOS </li>
           <li class="alert alert-danger">
           {% for proyecto in lista %}
              {% for i in permisos_proyecto %}
                 {% ifequal proyecto.id i %}
-                   <h4><br><a href="/proyectos/admin&id={{proyecto.id}}/"><font color="gray"><strong><em><u>{{proyecto.nombre}}</u></em></strong></font>
+                   <h4><br><a href="/proyectos/admin&id={{proyecto.id}}/"><font color="#8b0000"><strong><u>{{proyecto.nombre}}</u></em></strong></font>
                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                             {% endifequal %}
+                {% endifequal %}
+
              {% endfor %}
-             {% empty %}
+                {% empty %}
                   <h4><strong>No hay proyectos</strong></h4>
           {% endfor %}
+
+
           </li>
       </ul>
         </div>
