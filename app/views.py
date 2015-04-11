@@ -456,7 +456,7 @@ def admin_permisos(request, rol_id):
                       nuevo = RolPermiso()
                       nuevo.rol = actual
                       nuevo.permiso = i
-                      nuevo.fase = Fase.objects.get()
+                    #  nuevo.fase = Fase.objects.get()
                       nuevo.save()
                     #for i in lista_dis:
                      # nuevo = RolPermiso()
