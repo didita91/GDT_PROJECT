@@ -116,17 +116,15 @@ class FilterForm2(forms.Form):
 class ProyectosForm(forms.Form):
     """Formulario para la creacion de proyectos."""
     nombre = forms.CharField(max_length=50, label='NOMBRE')
-    usuario_scrum = forms.ModelChoiceField(queryset=None, label='SCRUM')
+    usuario_scrum = forms.ModelChoiceField(queryset=None, label='SCRUM MASTER')
+    product_owner = forms.ModelChoiceField(queryset=None, label='PRODUCT OWNER')
     descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
     fecha_inicio = forms.DateField(required=False, label='FECHA DE INICIO')
-    #fecha_fin = forms.DateField(required=False, label='FECHA DE FINAIZACIÓN')
-    #cronograma = forms.FileField(required=False, label='CRONOGRAMA')
-    #cantidad = forms.IntegerField(required=False, label='CANTIDAD')
-    #cant_actual = forms.IntegerField(required=False, label='Actual')
-    def __init__(self, *args, **kwargs):
+    sprint = forms.IntegerField(max_length=2)
+    def __init__(self,*args, **kwargs):
                 super(ProyectosForm, self).__init__(*args, **kwargs)
                 self.fields['usuario_scrum'].queryset = RolUsuario.objects.filter()
-
+                self.fields['product_owner'].queryset = ProductOwner.objects.filter()
     def clean_nombre(self):
         if 'nombre' in self.cleaned_data:
                 nuevo = self.cleaned_data['nombre']
@@ -145,7 +143,7 @@ class UsuarioProyectoForm(forms.Form):
 
     def __init__(self, proyecto, *args, **kwargs):
         super(UsuarioProyectoForm, self).__init__(*args, **kwargs)
-        self.fields['usuario'].queryset = User.objects.filter(~Q(id = proyecto.usuario_scrum.id))
+        self.fields['usuario'].queryset = User.objects.filter(~Q(id = proyecto.usuario_scrum.usuario.id))
 
 
     def clean_usuario(self):
@@ -177,3 +175,60 @@ class ModProyectosForm(forms.Form):
                     if proyecto.nombre == nuevo:
                         raise forms.ValidationError('Ya existe ese nombre. Elija otro')
             return nuevo
+
+class FlujosForm(forms.Form):
+    """Formulario para la creacion de proyectos."""
+    nombre = forms.CharField(max_length=50, label='NOMBRE')
+
+
+    def clean_nombre(self):
+        if 'nombre' in self.cleaned_data:
+                nuevo = self.cleaned_data['nombre']
+                flujos = Flujo.objects.all()
+                nuevo = self.cleaned_data['nombre']
+                for flujo in flujos:
+                        if flujo.nombre == nuevo:
+                                raise forms.ValidationError('Ya existe ese nombre. Elija otro')
+                return nuevo
+
+class ActividadesForm(forms.Form):
+    """Formulario para la creacion de proyectos."""
+    nombre = forms.CharField(max_length=50, label='NOMBRE')
+
+
+    def clean_nombre(self):
+        if 'nombre' in self.cleaned_data:
+                nuevo = self.cleaned_data['nombre']
+                acti = Actividades.objects.all()
+                nuevo = self.cleaned_data['nombre']
+                for activ in acti:
+                        if activ.nombre == nuevo:
+                                raise forms.ValidationError('Ya existe ese nombre. Elija otro')
+                return nuevo
+
+class AddActividadesForm(forms.Form):
+    #Asignar roles
+    actividades = forms.ModelMultipleChoiceField(queryset = None, label = 'ACTIVIDADES DISPONIBLES', required=False)
+    def __init__(self, proyecto, *args, **kwargs):
+		super(AddActividadesForm, self).__init__(*args, **kwargs)
+		self.fields['actividades'].queryset = Actividades.objects.filter(proyecto=proyecto)
+#**********************USER STORY
+class UserStoryForm(forms.Form):
+    nombre = forms.CharField(max_length=50)
+    usuario = forms.ModelChoiceField(queryset=None, label='Asignar a ')
+    prioridad = forms.IntegerField()
+    #valor_negocio=models.IntegerField(max_length=2) #del 1 al 10 donde 10 es de mas valor que 1
+    #valor_tecnico=models.IntegerField(max_length=2) #del 1 al 10 donde 10 es de mas valor que 1
+    duracion= forms.IntegerField() #Duracion estimativa en dias de la historia de usuario
+    descripcion= forms.CharField(widget=forms.Textarea(), required=False, label='Descripcion')
+    #adjuntos = forms
+    def __init__(self,proyecto,*args, **kwargs):
+        super(UserStoryForm, self).__init__(*args, **kwargs)
+        self.fields['usuario'].queryset = UsuarioRolProyecto.objects.filter(Q(proyecto=proyecto))
+
+       # self.fields['usuario'].queryset =  UsuarioRolProyecto.objects.filter(Q(proyecto=proyecto))
+
+
+#************
+class AdjuntoForm(forms.Form):
+	archivo = forms.FileField(required = False)
