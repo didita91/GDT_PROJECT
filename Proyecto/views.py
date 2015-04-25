@@ -24,7 +24,11 @@ from app.helper import *
 # Create your views here.
 @login_required
 def admin_proyectos(request):
-    """Administracion general de proyectos"""
+    """
+Administracion general de proyectos
+:param request:
+:return:
+"""
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     lista = Proyecto.objects.all().order_by('id')
@@ -75,7 +79,12 @@ def admin_proyectos(request):
 
 @login_required
 def crear_proyecto(request):
-    """Crea un nuevo proyecto."""
+    """
+Crea un nuevo proyecto.
+:param request:
+:return:
+"""
+
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -115,7 +124,13 @@ def crear_proyecto(request):
 
 @login_required
 def del_proyecto(request, proyecto_id):
-    """Eliminar proyecto del sistema"""
+    """
+Eliminar proyecto del sistema
+:param request:
+:param proyecto_id:
+:return:
+"""
+    """"""
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id = proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -168,7 +183,13 @@ def add_usuario_proyecto(request, object_id):
                                                               'abm_miembros': 'ABM miembros' in permisos},context_instance=RequestContext(request))'''
 @login_required
 def administrar_proyecto(request, proyecto_id):
-    """Administracion de proyecto para el modulo de desarrollo."""
+    """
+Administracion de proyecto
+:param request:
+:param proyecto_id:
+:return:
+"""
+
     user = User.objects.get(username=request.user.username)
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
     permisos = get_permisos_sistema(user)
@@ -198,7 +219,12 @@ def administrar_proyecto(request, proyecto_id):
 
 @login_required
 def admin_usuarios_proyecto(request, proyecto_id):
-    """Administración de usuarios del proyecto"""
+    """
+Administración de usuarios del proyecto
+:param request:
+:param proyecto_id:
+:return:
+"""
     user = User.objects.get(username=request.user.username)
     p = Proyecto.objects.get(pk = proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -261,7 +287,12 @@ def admin_usuarios_proyecto(request, proyecto_id):
 
 @login_required
 def add_usuario_proyecto(request, proyecto_id):
-    """Agregar usuarios al proyecto"""
+    """
+Agregar usuarios al proyecto
+:param request:
+:param proyecto_id:
+:return:
+"""
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id = proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -294,7 +325,13 @@ def add_usuario_proyecto(request, proyecto_id):
 
 @login_required
 def cambiar_rol_usuario_proyecto(request, proyecto_id, user_id):
-    """Cambiar rol a un usuario de proyecto"""
+    """
+Cambiar rol a un usuario de proyecto
+:param request:
+:param proyecto_id:
+:param user_id:
+:return:
+"""
     user = User.objects.get(username=request.user.username)
     p = Proyecto.objects.get(pk = proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -347,7 +384,13 @@ def cambiar_rol_usuario_proyecto(request, proyecto_id, user_id):
 
 @login_required
 def eliminar_miembro_proyecto(request, proyecto_id, user_id):
-    """Eliminar miembros del proyecto"""
+    """
+Eliminar miembros del proyecto
+:param request:
+:param proyecto_id:
+:param user_id:
+:return:
+"""
     user = User.objects.get(username=request.user.username)
     usuario = get_object_or_404(User, pk=user_id)
     proy = get_object_or_404(Proyecto, pk=proyecto_id)
@@ -424,7 +467,12 @@ def mod_proyecto(request, proyecto_id):
 
 @login_required
 def admin_flujos(request, proyecto_id):
-    """Administracion de flujos para el modulo de desarrollo."""
+    """
+Administracion de flujos
+:param request:
+:param proyecto_id:
+:return:
+"""
     user = User.objects.get(username=request.user.username)
     proyectos = Proyecto.objects.get(id= proyecto_id)
     permisos = get_permisos_sistema(user)
@@ -441,6 +489,12 @@ def admin_flujos(request, proyecto_id):
 
 @login_required
 def crear_flujos(request, proyecto_id):
+    """
+Creacion de Flujos para proyectos
+:param request:
+:param proyecto_id:
+:return:
+"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolProyecto.objects.filter(usuario = user).only('rol')
@@ -473,6 +527,12 @@ def crear_flujos(request, proyecto_id):
 
 @login_required
 def crear_actividades(request, proyecto_id):
+    """
+Crear Actividades
+:param request:
+:param proyecto_id:
+:return:
+"""
 
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
@@ -505,7 +565,13 @@ def crear_actividades(request, proyecto_id):
 
 @login_required
 def add_actividades(request, proyecto_id, flujo_id):
-    """Asigna roles de sistema a un usuario"""
+    """
+Adhiere actividades a un flujo dado
+:param request:
+:param proyecto_id:
+:param flujo_id:
+:return:
+"""
     user = User.objects.get(username=request.user.username)
     flujo= Flujo.objects.get(id=flujo_id)
     permisos = get_permisos_sistema(user)
@@ -551,7 +617,13 @@ def add_actividades(request, proyecto_id, flujo_id):
 
 @login_required
 def ver_actividades(request, proyecto_id, flujo_id):
-    """Administracion de proyecto para el modulo de desarrollo."""
+    """
+Visualizar las actividades
+:param request:
+:param proyecto_id:
+:param flujo_id:
+:return:
+"""
     user = User.objects.get(username=request.user.username)
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
     flujo = get_object_or_404(Flujo, id=flujo_id)
@@ -696,6 +768,13 @@ def crear_user_story(request, proyecto_id):
 
 @login_required
 def ver_historial(request, proyecto_id, us_id):
+    """
+Ver historial
+:param request:
+:param proyecto_id:
+:param us_id:
+:return:
+"""
     us =UserStory.objects.get(pk=us_id)
     user = User.objects.get(username=request.user.username)
     proyecto = Proyecto.objects.get(pk = proyecto_id)
