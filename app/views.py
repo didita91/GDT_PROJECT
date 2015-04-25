@@ -1,5 +1,5 @@
 """VIEWS DE LA ADMINISTRACION GENERAL """
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import base64
 from django.views.decorators.csrf import csrf_protect
 from django.core.context_processors import csrf
@@ -11,7 +11,7 @@ from django.contrib.auth import logout
 from django.template import *
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.contrib import*
+from django.contrib import *
 from django.template import Context, RequestContext
 from django.template.loader import get_template
 from django.contrib.auth.models import User
@@ -23,13 +23,14 @@ from app.models import *
 from app.helper import *
 from django.contrib.auth.forms import UserCreationForm
 
+
 @login_required
 @csrf_protect
 def principal(request):
     """Muestra la pagina principal del sistema"""
     user = User.objects.get(username=request.user.username)
-     #Validacion de permisos---------------------------------------------
-    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    #Validacion de permisos---------------------------------------------
+    roles = UsuarioRolSistema.objects.filter(usuario=user).only('rol')
     print roles
     permisos_obj = []
     for i in roles:
@@ -37,20 +38,20 @@ def principal(request):
     permisos_sistema = []
     for i in permisos_obj:
         permisos_sistema.append(i.nombre)
-    variables ={}
+    variables = {}
     for i in permisos_sistema:
         if i == 'Ver roles' or i == 'Crear rol' or i == 'Modificar rol' or i == 'Eliminar rol' or i == 'Asignar rol':
             variables['roles'] = True
 
         if i == 'Ver usuarios' or i == 'Crear usuario' or i == 'Modificar usuario' or i == 'Eliminar usuario':
             variables['usuarios'] = True
-	if i == 'Ver proyectos' or i == 'Crear proyecto' or i == 'Modificar proyecto' or i == 'Eliminar proyecto':
-    	    variables['proyectos'] = True
-    if i == 'Ver flujos' or i == 'Crear flujo' or i == 'Modificar flujo' or i == 'Eliminar flujo':
-    	    variables['flujos'] = True
-    variables['user'] = user
+        if i == 'Ver proyectos' or i == 'Crear proyecto' or i == 'Modificar proyecto' or i == 'Eliminar proyecto':
+            variables['proyectos'] = True
+        if i == 'Ver flujos' or i == 'Crear flujo' or i == 'Modificar flujo' or i == 'Eliminar flujo':
+            variables['flujos'] = True
+            variables['user'] = user
     print variables
-    rolesp = UsuarioRolProyecto.objects.filter(usuario = user).only('rol')
+    rolesp = UsuarioRolProyecto.objects.filter(usuario=user).only('rol')
     lista_proyectos = []
     for i in rolesp:
         if not i.proyecto.id in lista_proyectos:
@@ -64,13 +65,12 @@ def principal(request):
     return render_to_response('main_page.html', variables, context_instance=RequestContext(request))
 
 
-
 @login_required
 def add_user(request):
     """Agrega un nuevo usuario en el sistema."""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos----------------------------------------------
-    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    roles = UsuarioRolSistema.objects.filter(usuario=user).only('rol')
     permisos_obj = []
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
@@ -82,7 +82,7 @@ def add_user(request):
     if request.method == 'POST':
         form = UsuariosForm(request.POST)
         if form.is_valid():
-            nuevo=User()
+            nuevo = User()
 
             nuevo.username = form.cleaned_data['username']
             nuevo.first_name = form.cleaned_data['first_name']
@@ -99,16 +99,18 @@ def add_user(request):
             return HttpResponseRedirect("/usuarios")
     else:
         form = UsuariosForm()
-    return render_to_response('admin/usuarios/crear_usuario.html',{'form':form,
-                                                                  'user':user,
-                                                                 'crear_usuario': 'Crear usuario' in permisos}, context_instance=RequestContext(request))
+    return render_to_response('admin/usuarios/crear_usuario.html', {'form': form,
+                                                                    'user': user,
+                                                                    'crear_usuario': 'Crear usuario' in permisos},
+                              context_instance=RequestContext(request))
+
 
 @login_required
 def mod_user(request, usuario_id):
     """Modifica los datos de un usuario y los actualiza en el sistema"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos----------------------------------------------
-    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    roles = UsuarioRolSistema.objects.filter(usuario=user).only('rol')
     permisos_obj = []
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
@@ -127,11 +129,14 @@ def mod_user(request, usuario_id):
             usuario.save()
             return HttpResponseRedirect("/usuarios")
     else:
-        form = ModUsuariosForm(initial={'first_name':usuario.first_name, 'last_name': usuario.last_name,'email':usuario.email})
-    return render_to_response('admin/usuarios/mod_usuario.html',{'form':form,
-                                                                 'user':user,
-                                                                 'usuario':usuario,
-                                                                 'mod_usuario': 'Modificar usuario' in permisos},context_instance=RequestContext(request))
+        form = ModUsuariosForm(
+            initial={'first_name': usuario.first_name, 'last_name': usuario.last_name, 'email': usuario.email})
+    return render_to_response('admin/usuarios/mod_usuario.html', {'form': form,
+                                                                  'user': user,
+                                                                  'usuario': usuario,
+                                                                  'mod_usuario': 'Modificar usuario' in permisos},
+                              context_instance=RequestContext(request))
+
 
 @login_required
 def cambiar_password(request):
@@ -145,7 +150,9 @@ def cambiar_password(request):
             return HttpResponseRedirect("/")
     else:
         form = CambiarPasswordForm()
-    return render_to_response('admin/usuarios/cambiar_password.html', {'form': form, 'user': user},context_instance=RequestContext(request))
+    return render_to_response('admin/usuarios/cambiar_password.html', {'form': form, 'user': user},
+                              context_instance=RequestContext(request))
+
 
 @login_required
 def asignar_roles_sistema(request, usuario_id):
@@ -153,13 +160,14 @@ def asignar_roles_sistema(request, usuario_id):
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     usuario = get_object_or_404(User, id=usuario_id)
-    lista_roles = UsuarioRolSistema.objects.filter(usuario = usuario)
+    lista_roles = UsuarioRolSistema.objects.filter(usuario=usuario)
     lista_permisos = RolPermiso.objects.filter()
     lista_rolusuario = RolUsuario.objects.filter(usuario=usuario)
     print lista_permisos
-    tam=len(lista_permisos)
+    tam = len(lista_permisos)
     print tam
     if request.method == 'POST':
+        print "puttooo"
         form = AsignarRolesForm(1, request.POST)
         if form.is_valid():
             lista_nueva = form.cleaned_data['roles']
@@ -176,28 +184,35 @@ def asignar_roles_sistema(request, usuario_id):
                 if i.id == 2:
                     rel.usuario = usuario
                     rel.save()
-
+                if i.id == 3:
+                    relacion = ProductOwner()
+                    relacion.usuario = usuario
+                    relacion.save()
             return HttpResponseRedirect("/usuarios")
     else:
         if usuario.id == 1:
             error = "No se puede editar roles sobre el superusuario."
             return render_to_response("admin/usuarios/asignar_roles.html", {'mensaje': error,
-                                                                            'usuario':usuario,
+                                                                            'usuario': usuario,
                                                                             'user': user,
-                                                                            'asignar_roles': 'Asignar rol' in permisos},context_instance=RequestContext(request))
+                                                                            'asignar_roles': 'Asignar rol' in permisos},
+                                      context_instance=RequestContext(request))
         dict = {}
         for i in lista_roles:
             print i.rol
             dict[i.rol.id] = False
-        form = AsignarRolesForm(1,initial = {'roles': dict})
-    return render_to_response("admin/usuarios/asignar_roles.html", {'form':form, 'usuario':usuario, 'user':user, 'asignar_roles': 'Asignar rol' in permisos},context_instance=RequestContext(request))
+        form = AsignarRolesForm(1, initial={'roles': dict})
+    return render_to_response("admin/usuarios/asignar_roles.html", {'form': form, 'usuario': usuario, 'user': user,
+                                                                    'asignar_roles': 'Asignar rol' in permisos},
+                              context_instance=RequestContext(request))
+
 
 @login_required
 def borrar_usuario(request, usuario_id):
     """Borra un usuario, comprobando las dependencias primero"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos----------------------------------------------
-    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    roles = UsuarioRolSistema.objects.filter(usuario=user).only('rol')
     permisos_obj = []
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
@@ -208,17 +223,25 @@ def borrar_usuario(request, usuario_id):
     #--------------------------------------------------------------------
     usuario = get_object_or_404(User, id=usuario_id)
     if request.method == 'POST':
-        usuario.delete()
+        if usuario.is_active is True:
+            usuario.is_active= False
+            usuario.save()
+        else:
+            usuario.is_active = True
+            usuario.save()
         return HttpResponseRedirect("/usuarios")
     else:
         if usuario.id == 1:
             error = "No se puede borrar al superusuario."
-            return render_to_response("admin/usuarios/user_confirm_delete.html", {'mensaje': error,'usuario':usuario, 'user': user, 'eliminar_usuario': 'Eliminar usuario' in permisos},context_instance=RequestContext(request))
+            return render_to_response("admin/usuarios/user_confirm_delete.html",
+                                      {'mensaje': error, 'usuario': usuario, 'user': user,
+                                       'eliminar_usuario': 'Eliminar usuario' in permisos},
+                                      context_instance=RequestContext(request))
 
-    return render_to_response("admin/usuarios/user_confirm_delete.html", {'usuario':usuario,
-                                                                          'user':user,
-                                                                          'eliminar_usuario': 'Eliminar usuario' in permisos},context_instance=RequestContext(request))
-
+    return render_to_response("admin/usuarios/user_confirm_delete.html", {'usuario': usuario,
+                                                                          'user': user,
+                                                                          'eliminar_usuario': 'Eliminar usuario' in permisos},
+                              context_instance=RequestContext(request))
 
 
 @login_required
@@ -227,12 +250,13 @@ def admin_usuarios(request):
     '''Ya esta la validacion de permisos en este'''
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
-    lista = User.objects.all().order_by("id")
+    lista = User.objects.all().order_by("-is_active")
     if request.method == 'POST':
         form = FilterForm(request.POST)
         if form.is_valid():
             palabra = form.cleaned_data['filtro']
-            lista = User.objects.filter(Q(username__icontains = palabra) | Q(first_name__icontains = palabra) | Q(last_name__icontains = palabra)).order_by('id')
+            lista = User.objects.filter(Q(username__icontains=palabra) | Q(first_name__icontains=palabra) | Q(
+                last_name__icontains=palabra)).order_by('id')
             paginas = form.cleaned_data['paginas']
             request.session['nro_items'] = paginas
             paginator = Paginator(lista, int(paginas))
@@ -244,15 +268,16 @@ def admin_usuarios(request):
                 pag = paginator.page(page)
             except (EmptyPage, InvalidPage):
                 pag = paginator.page(paginator.num_pages)
-            return render_to_response('admin/usuarios/usuarios.html',{'pag': pag,
-                                                               'form': form,
-                                                               'lista':lista,
-                                                               'user':user,
-                                                               'ver_usuarios': 'Ver usuarios' in permisos,
-                                                               'crear_usuario': 'Crear usuario' in permisos,
-                                                               'mod_usuario': 'Modificar usuario' in permisos,
-                                                               'eliminar_usuario': 'Eliminar usuario' in permisos,
-                                                               'asignar_roles': 'Asignar rol' in permisos},context_instance=RequestContext(request))
+            return render_to_response('admin/usuarios/usuarios.html', {'pag': pag,
+                                                                       'form': form,
+                                                                       'lista': lista,
+                                                                       'user': user,
+                                                                       'ver_usuarios': 'Ver usuarios' in permisos,
+                                                                       'crear_usuario': 'Crear usuario' in permisos,
+                                                                       'mod_usuario': 'Modificar usuario' in permisos,
+                                                                       'eliminar_usuario': 'Eliminar usuario' in permisos,
+                                                                       'asignar_roles': 'Asignar rol' in permisos},
+                                      context_instance=RequestContext(request))
     else:
         try:
             page = int(request.GET.get('page', '1'))
@@ -267,15 +292,16 @@ def admin_usuarios(request):
         except (EmptyPage, InvalidPage):
             pag = paginator.page(paginator.num_pages)
         form = FilterForm(initial={'paginas': paginas})
-    return render_to_response('admin/usuarios/usuarios.html',{ 'pag':pag,
+    return render_to_response('admin/usuarios/usuarios.html', {'pag': pag,
                                                                'form': form,
-                                                               'lista':lista,
-                                                               'user':user,
+                                                               'lista': lista,
+                                                               'user': user,
                                                                'ver_usuarios': 'Ver usuarios' in permisos,
                                                                'crear_usuario': 'Crear usuario' in permisos,
                                                                'mod_usuario': 'Modificar usuario' in permisos,
                                                                'eliminar_usuario': 'Eliminar usuario' in permisos,
-                                                               'asignar_roles': 'Asignar rol' in permisos},context_instance=RequestContext(request))
+                                                               'asignar_roles': 'Asignar rol' in permisos},
+                              context_instance=RequestContext(request))
 
 
 @login_required
@@ -283,11 +309,14 @@ def admin_roles(request):
     """Administracion general de roles"""
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
-    return render_to_response('admin/roles/roles.html',{'user':user,
-                                                        'ver_roles':'Ver roles' in permisos,
-                                                        'crear_rol': 'Crear rol' in permisos,
-                                                        'mod_rol': 'Modificar rol' in permisos,
-                                                        'eliminar_rol': 'Eliminar rol' in permisos},context_instance=RequestContext(request))
+    return render_to_response('admin/roles/roles.html', {'user': user,
+                                                         'ver_roles': 'Ver roles' in permisos,
+                                                         'crear_rol': 'Crear rol' in permisos,
+                                                         'mod_rol': 'Modificar rol' in permisos,
+                                                         'eliminar_rol': 'Eliminar rol' in permisos},
+                              context_instance=RequestContext(request))
+
+
 @login_required
 def admin_roles_sist(request):
     """Administracion general de roles"""
@@ -298,7 +327,9 @@ def admin_roles_sist(request):
         form = FilterForm(request.POST)
         if form.is_valid():
             palabra = form.cleaned_data['filtro']
-            lista = Rol.objects.filter(Q(categoria = 1), Q(nombre__icontains = palabra) | Q(descripcion__icontains = palabra) | Q(usuario_creador__username__icontains = palabra)).order_by('id')
+            lista = Rol.objects.filter(Q(categoria=1),
+                                       Q(nombre__icontains=palabra) | Q(descripcion__icontains=palabra) | Q(
+                                           usuario_creador__username__icontains=palabra)).order_by('id')
             paginas = form.cleaned_data['paginas']
             request.session['nro_items'] = paginas
             paginator = Paginator(lista, int(paginas))
@@ -310,12 +341,13 @@ def admin_roles_sist(request):
                 pag = paginator.page(page)
             except (EmptyPage, InvalidPage):
                 pag = paginator.page(paginator.num_pages)
-            return render_to_response('admin/roles/roles_sistema.html',{'lista':lista, 'form': form,
-                                                        'user':user, 'pag': pag,
-                                                        'ver_roles':'Ver roles' in permisos,
-                                                        'crear_rol': 'Crear rol' in permisos,
-                                                        'mod_rol': 'Modificar rol' in permisos,
-                                                        'eliminar_rol': 'Eliminar rol' in permisos},context_instance=RequestContext(request))
+            return render_to_response('admin/roles/roles_sistema.html', {'lista': lista, 'form': form,
+                                                                         'user': user, 'pag': pag,
+                                                                         'ver_roles': 'Ver roles' in permisos,
+                                                                         'crear_rol': 'Crear rol' in permisos,
+                                                                         'mod_rol': 'Modificar rol' in permisos,
+                                                                         'eliminar_rol': 'Eliminar rol' in permisos},
+                                      context_instance=RequestContext(request))
     else:
         try:
             page = int(request.GET.get('page', '1'))
@@ -330,12 +362,14 @@ def admin_roles_sist(request):
         except (EmptyPage, InvalidPage):
             pag = paginator.page(paginator.num_pages)
         form = FilterForm(initial={'paginas': paginas})
-    return render_to_response('admin/roles/roles_sistema.html',{'lista':lista, 'form':form,
-                                                            'user':user, 'pag': pag,
-                                                            'ver_roles':'Ver roles' in permisos,
-                                                            'crear_rol': 'Crear rol' in permisos,
-                                                            'mod_rol': 'Modificar rol' in permisos,
-                                                            'eliminar_rol': 'Eliminar rol' in permisos},context_instance=RequestContext(request))
+    return render_to_response('admin/roles/roles_sistema.html', {'lista': lista, 'form': form,
+                                                                 'user': user, 'pag': pag,
+                                                                 'ver_roles': 'Ver roles' in permisos,
+                                                                 'crear_rol': 'Crear rol' in permisos,
+                                                                 'mod_rol': 'Modificar rol' in permisos,
+                                                                 'eliminar_rol': 'Eliminar rol' in permisos},
+                              context_instance=RequestContext(request))
+
 
 @login_required
 def admin_roles_proy(request):
@@ -347,7 +381,9 @@ def admin_roles_proy(request):
         form = FilterForm(request.POST)
         if form.is_valid():
             palabra = form.cleaned_data['filtro']
-            lista = Rol.objects.filter(Q(categoria = 2), Q(nombre__icontains = palabra) | Q(descripcion__icontains = palabra) | Q(usuario_creador__username__icontains = palabra)).order_by('id')
+            lista = Rol.objects.filter(Q(categoria=2),
+                                       Q(nombre__icontains=palabra) | Q(descripcion__icontains=palabra) | Q(
+                                           usuario_creador__username__icontains=palabra)).order_by('id')
             paginas = form.cleaned_data['paginas']
             request.session['nro_items'] = paginas
             paginator = Paginator(lista, int(paginas))
@@ -359,12 +395,13 @@ def admin_roles_proy(request):
                 pag = paginator.page(page)
             except (EmptyPage, InvalidPage):
                 pag = paginator.page(paginator.num_pages)
-            return render_to_response('admin/roles/roles_proyecto.html',{'lista':lista,'form':form,
-                                                        'user':user, 'pag': pag,
-                                                        'ver_roles':'Ver roles' in permisos,
-                                                        'crear_rol': 'Crear rol' in permisos,
-                                                        'mod_rol': 'Modificar rol' in permisos,
-                                                        'eliminar_rol': 'Eliminar rol' in permisos},context_instance=RequestContext(request))
+            return render_to_response('admin/roles/roles_proyecto.html', {'lista': lista, 'form': form,
+                                                                          'user': user, 'pag': pag,
+                                                                          'ver_roles': 'Ver roles' in permisos,
+                                                                          'crear_rol': 'Crear rol' in permisos,
+                                                                          'mod_rol': 'Modificar rol' in permisos,
+                                                                          'eliminar_rol': 'Eliminar rol' in permisos},
+                                      context_instance=RequestContext(request))
     else:
         try:
             page = int(request.GET.get('page', '1'))
@@ -379,13 +416,13 @@ def admin_roles_proy(request):
         except (EmptyPage, InvalidPage):
             pag = paginator.page(paginator.num_pages)
         form = FilterForm(initial={'paginas': paginas})
-    return render_to_response('admin/roles/roles_proyecto.html',{'lista':lista,'form':form,
-                                                        'user':user,'pag': pag,
-                                                        'ver_roles':'Ver roles' in permisos,
-                                                        'crear_rol': 'Crear rol' in permisos,
-                                                        'eliminar_rol': 'Eliminar rol' in permisos,
-                                                        'mod_rol': 'Modificar rol' in permisos},context_instance=RequestContext(request))
-
+    return render_to_response('admin/roles/roles_proyecto.html', {'lista': lista, 'form': form,
+                                                                  'user': user, 'pag': pag,
+                                                                  'ver_roles': 'Ver roles' in permisos,
+                                                                  'crear_rol': 'Crear rol' in permisos,
+                                                                  'eliminar_rol': 'Eliminar rol' in permisos,
+                                                                  'mod_rol': 'Modificar rol' in permisos},
+                              context_instance=RequestContext(request))
 
 
 @login_required
@@ -393,7 +430,7 @@ def crear_rol(request):
     """Agrega un nuevo rol"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
-    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    roles = UsuarioRolSistema.objects.filter(usuario=user).only('rol')
     permisos_obj = []
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
@@ -413,20 +450,22 @@ def crear_rol(request):
             r.categoria = form.cleaned_data['categoria']
             r.save()
             if r.categoria == "1":
-               return HttpResponseRedirect("/roles/sist")
+                return HttpResponseRedirect("/roles/sist")
             return HttpResponseRedirect("/roles/proy")
     else:
         form = RolesForm()
-    return render_to_response('admin/roles/crear_rol.html',{'form':form,
-                                                            'user':user,
-                                                            'crear_rol': 'Crear rol' in permisos},context_instance=RequestContext(request))
+    return render_to_response('admin/roles/crear_rol.html', {'form': form,
+                                                             'user': user,
+                                                             'crear_rol': 'Crear rol' in permisos},
+                              context_instance=RequestContext(request))
+
 
 @login_required
 def admin_permisos(request, rol_id):
     """Administración de permisos"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
-    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    roles = UsuarioRolSistema.objects.filter(usuario=user).only('rol')
     permisos_obj = []
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
@@ -442,38 +481,38 @@ def admin_permisos(request, rol_id):
         else:
             form = PermisosProyectoForm(request.POST)
         if form.is_valid():
-               actual.permisos.clear()
-               if actual.categoria == 1:
-                  lista = form.cleaned_data['permisos']
-                  for i in lista:
+            actual.permisos.clear()
+            if actual.categoria == 1:
+                lista = form.cleaned_data['permisos']
+                for i in lista:
                     nuevo = RolPermiso()
                     nuevo.rol = actual
                     nuevo.permiso = i
                     nuevo.save()
-               else:
-                    lista_req = form.cleaned_data['permisos']
-                    #lista_dis = form.cleaned_data['permisos2']
-                    #lista_impl = form.cleaned_data['permisos3']
-                    for i in lista_req:
-                      nuevo = RolPermiso()
-                      nuevo.rol = actual
-                      nuevo.permiso = i
+            else:
+                lista_req = form.cleaned_data['permisos']
+                #lista_dis = form.cleaned_data['permisos2']
+                #lista_impl = form.cleaned_data['permisos3']
+                for i in lista_req:
+                    nuevo = RolPermiso()
+                    nuevo.rol = actual
+                    nuevo.permiso = i
                     #  nuevo.fase = Fase.objects.get()
-                      nuevo.save()
+                    nuevo.save()
                     #for i in lista_dis:
-                     # nuevo = RolPermiso()
-                      #nuevo.rol = actual
-                      #nuevo.permiso = i
+                    # nuevo = RolPermiso()
+                    #nuevo.rol = actual
+                    #nuevo.permiso = i
                     #nuevo.fase = Fase.objects.get(pk=2)
-                      #nuevo.save()
+                    #nuevo.save()
                     #for i in lista_impl:
-                     # nuevo = RolPermiso()
-                      #nuevo.rol = actual
-                      #nuevo.permiso = i
+                    # nuevo = RolPermiso()
+                    #nuevo.rol = actual
+                    #nuevo.permiso = i
                     #nuevo.fase = Fase.objects.get(pk=3)
-                      #nuevo.save()
+                    #nuevo.save()
         if actual.categoria == 1:
-           return HttpResponseRedirect("/roles/sist")
+            return HttpResponseRedirect("/roles/sist")
         return HttpResponseRedirect("/roles/proy")
     else:
         #form = PermisosForm(actual.categoria, initial={'permisos': dict})
@@ -491,22 +530,23 @@ def admin_permisos(request, rol_id):
 
             dict2 = {}
             #for i in actual.permisos.filter():
-             #   dict2[i.id] = True
+            #   dict2[i.id] = True
             dict3 = {}
             #for i in actual.permisos.filter():
-             #   dict3[i.id] = True
+            #   dict3[i.id] = True
             form = PermisosProyectoForm(initial={'permisos': dict1})
     return render_to_response("admin/roles/admin_permisos.html", {'form': form,
                                                                   'rol': actual,
-                                                                  'user':user,
-                                                                  'mod_rol':'Modificar rol' in permisos},context_instance=RequestContext(request))
+                                                                  'user': user,
+                                                                  'mod_rol': 'Modificar rol' in permisos},
+                              context_instance=RequestContext(request))
 
 
 def mod_rol(request, rol_id):
     """Modificar roles"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
-    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    roles = UsuarioRolSistema.objects.filter(usuario=user).only('rol')
     permisos_obj = []
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
@@ -522,18 +562,20 @@ def mod_rol(request, rol_id):
             actual.descripcion = form.cleaned_data['descripcion']
             actual.save()
             if actual.categoria == 1:
-               return HttpResponseRedirect("/roles/sist")
+                return HttpResponseRedirect("/roles/sist")
             return HttpResponseRedirect("/roles/proy")
     else:
         if actual.id == 1:
             error = "No se puede modificar el rol de superusuario"
-            return render_to_response("admin/roles/abm_rol.html", {'mensaje': error, 'rol':actual, 'user':user},context_instance=RequestContext(request))
+            return render_to_response("admin/roles/abm_rol.html", {'mensaje': error, 'rol': actual, 'user': user},
+                                      context_instance=RequestContext(request))
         form = ModRolesForm()
         form.fields['descripcion'].initial = actual.descripcion
-    return render_to_response("admin/roles/mod_rol.html", {'user':user,
-                                                           'form':form,
-							   'rol': actual,
-                                                           'mod_rol':'Modificar rol' in permisos},context_instance=RequestContext(request))
+    return render_to_response("admin/roles/mod_rol.html", {'user': user,
+                                                           'form': form,
+                                                           'rol': actual,
+                                                           'mod_rol': 'Modificar rol' in permisos},
+                              context_instance=RequestContext(request))
 
 
 @login_required
@@ -541,7 +583,7 @@ def borrar_rol(request, rol_id):
     """Borra un rol con las comprobaciones de consistencia"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
-    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    roles = UsuarioRolSistema.objects.filter(usuario=user).only('rol')
     permisos_obj = []
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
@@ -553,30 +595,33 @@ def borrar_rol(request, rol_id):
     actual = get_object_or_404(Rol, id=rol_id)
     #Obtener todas las posibles dependencias
     if actual.categoria == 1:
-        relacionados = UsuarioRolSistema.objects.filter(rol = actual).count()
+        relacionados = UsuarioRolSistema.objects.filter(rol=actual).count()
     elif actual.categoria == 2:
-        relacionados = UsuarioRolProyecto.objects.filter(rol = actual).count()
+        relacionados = UsuarioRolProyecto.objects.filter(rol=actual).count()
     if request.method == 'POST':
         actual.delete()
         if actual.categoria == 1:
-           return HttpResponseRedirect("/roles/sist")
+            return HttpResponseRedirect("/roles/sist")
         return HttpResponseRedirect("/roles/proy")
     else:
         if actual.id == 1:
             error = "No se puede borrar el rol de superusuario"
             return render_to_response("admin/roles/rol_confirm_delete.html", {'mensaje': error,
-                                                                              'rol':actual,
-                                                                              'user':user,
-                                                                              'eliminar_rol':'Eliminar rol' in permisos},context_instance=RequestContext(request))
+                                                                              'rol': actual,
+                                                                              'user': user,
+                                                                              'eliminar_rol': 'Eliminar rol' in permisos},
+                                      context_instance=RequestContext(request))
         if relacionados > 0:
             error = "El rol se esta utilizando."
             return render_to_response("admin/roles/rol_confirm_delete.html", {'mensaje': error,
-                                                                              'rol':actual,
-                                                                              'user':user,
-                                                                              'eliminar_rol':'Eliminar rol' in permisos},context_instance=RequestContext(request))
-    return render_to_response("admin/roles/rol_confirm_delete.html", {'rol':actual,
-                                                                      'user':user,
-                                                                      'eliminar_rol':'Eliminar rol' in permisos},context_instance=RequestContext(request))
+                                                                              'rol': actual,
+                                                                              'user': user,
+                                                                              'eliminar_rol': 'Eliminar rol' in permisos},
+                                      context_instance=RequestContext(request))
+    return render_to_response("admin/roles/rol_confirm_delete.html", {'rol': actual,
+                                                                      'user': user,
+                                                                      'eliminar_rol': 'Eliminar rol' in permisos},
+                              context_instance=RequestContext(request))
 
 
 @login_required
@@ -584,9 +629,11 @@ def terminar(peticion):
     """Muestra una pagina de confirmacion de exito"""
     return render_to_response('operacion_exitosa.html');
 
+
 def login_redirect(request):
     """Redirige de /accounts/login a /login."""
     return HttpResponseRedirect('/login')
+
 
 def logout_pagina(request):
     """Pagina de logout"""
@@ -599,6 +646,5 @@ def logout_pagina(request):
     return HttpResponseRedirect('/')
 
 
-
 def index_view(request):
-	return render_to_response('index.html', context_instance=RequestContext(request))
+    return render_to_response('index.html', context_instance=RequestContext(request))
