@@ -4,12 +4,16 @@ import os.path
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+from unipath import Path
+ 
+RUTA_PROYECTO= Path(__file__).ancestor(2)
 
-ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
-)
+PATH=RUTA_PROYECTO
+ 
+ALLOWED_HOSTS = []
 
-MANAGERS = ADMINS
+WSGI_APPLICATION = 'gdt_project.wsgi.application'
+
 
 DATABASES = {
     'default': {
@@ -21,7 +25,7 @@ DATABASES = {
 	    'PORT': '5432',
     }
 }
-
+STATIC_URL = '/static/'
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -41,12 +45,12 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.abspath('site_media')
+MEDIA_ROOT = RUTA_PROYECTO.child('site_media'),
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/site_media/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -55,14 +59,6 @@ ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'n#cb07^_%crknkp&+1=z1(wrn^r_@o329cqe^end+a-)0(h4k='
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-
-)
 
 MIDDLEWARE_CLASSES = (
        'django.contrib.sessions.middleware.SessionMiddleware',
@@ -73,26 +69,15 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 )
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(BASE_DIR,'static'),
-)
-STATICFILES_FINDERS = (
-	'django.contrib.staticfiles.finders.FileSystemFinder',
-	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-	)
+
+
 
 ROOT_URLCONF = 'gdt_project.urls'
 
-TEMPLATE_DIRS = (
-    os.path.abspath('templates'),
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+TEMPLATE_DIRS= (
+    RUTA_PROYECTO.child('templates'),
 )
+
 
 INSTALLED_APPS = (
     'django.contrib.auth',
