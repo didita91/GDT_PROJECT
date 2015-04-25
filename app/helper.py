@@ -14,7 +14,7 @@ def get_permisos_sistema(user):
 def get_permisos_proyecto(user, proyecto):
     roles = UsuarioRolProyecto.objects.filter(usuario = user, proyecto = proyecto)
     permisos_obj = []
-    print roles
+  #  print roles
     #for i in roles:
      #  permisos_obj.extend(i.rol.permisos.all())
     permisos = []

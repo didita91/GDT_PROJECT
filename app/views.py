@@ -26,11 +26,7 @@ from django.contrib.auth.forms import UserCreationForm
 @login_required
 @csrf_protect
 def principal(request):
-    """
-Muestra la pagina principal del sistema
-:param request:
-:return:
-"""
+    """Muestra la pagina principal del sistema"""
     user = User.objects.get(username=request.user.username)
      #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -70,11 +66,7 @@ Muestra la pagina principal del sistema
 
 @login_required
 def add_user(request):
-    """
-Agrega un nuevo usuario en el sistema
-:param request:
-:return:
-"""
+    """Agrega un nuevo usuario en el sistema."""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos----------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -112,12 +104,7 @@ Agrega un nuevo usuario en el sistema
 
 @login_required
 def mod_user(request, usuario_id):
-    """
-Modifica los datos de un usuario y los actualiza en el sistema
-:param request:
-:param usuario_id:
-:return:
-"""
+    """Modifica los datos de un usuario y los actualiza en el sistema"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos----------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -147,11 +134,7 @@ Modifica los datos de un usuario y los actualiza en el sistema
 
 @login_required
 def cambiar_password(request):
-    """
-Cambia la contrasena del usuario logueado y lo direge a la pagina principal
-:param request:
-:return:
-"""
+    """Cambia la contrasena del usuario logueado y lo direge a la pagina principal"""
     user = User.objects.get(username=request.user.username)
     if request.method == 'POST':
         form = CambiarPasswordForm(request.POST)
@@ -165,12 +148,7 @@ Cambia la contrasena del usuario logueado y lo direge a la pagina principal
 
 @login_required
 def asignar_roles_sistema(request, usuario_id):
-    """
-Asigna roles de sistema a un usuario
-:param request:
-:param usuario_id:
-:return:
-"""
+    """Asigna roles de sistema a un usuario"""
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     usuario = get_object_or_404(User, id=usuario_id)
@@ -215,13 +193,7 @@ Asigna roles de sistema a un usuario
 
 @login_required
 def borrar_usuario(request, usuario_id):
-    """
-Borra un usuario, comprobando las dependencias primero
-:param request:
-:param usuario_id:
-:return:
-"""
-
+    """Borra un usuario, comprobando las dependencias primero"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos----------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -250,11 +222,7 @@ Borra un usuario, comprobando las dependencias primero
 
 @login_required
 def admin_usuarios(request):
-    """
-Administracion general de usuarios
-:param request:
-:return:
-"""
+    """Administracion general de usuarios"""
     '''Ya esta la validacion de permisos en este'''
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
@@ -311,11 +279,7 @@ Administracion general de usuarios
 
 @login_required
 def admin_roles(request):
-    """
-Administracion general de roles
-:param request:
-:return:
-"""
+    """Administracion general de roles"""
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     return render_to_response('admin/roles/roles.html',{'user':user,
@@ -325,12 +289,7 @@ Administracion general de roles
                                                         'eliminar_rol': 'Eliminar rol' in permisos},context_instance=RequestContext(request))
 @login_required
 def admin_roles_sist(request):
-    """
-Administracion general de roles
-:param request:
-:return:
-"""
-
+    """Administracion general de roles"""
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     lista = Rol.objects.filter(categoria=1).order_by('id')
@@ -379,11 +338,7 @@ Administracion general de roles
 
 @login_required
 def admin_roles_proy(request):
-    """
-Administracion general de roles
-:param request:
-:return:
-"""
+    """Administracion general de roles"""
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     lista = Rol.objects.filter(categoria=2).order_by('id')
@@ -434,11 +389,7 @@ Administracion general de roles
 
 @login_required
 def crear_rol(request):
-    """
-Agrega un nuevo rol
-:param request:
-:return:
-"""
+    """Agrega un nuevo rol"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -471,12 +422,7 @@ Agrega un nuevo rol
 
 @login_required
 def admin_permisos(request, rol_id):
-    """
-Administración de permisos
-:param request:
-:param rol_id:
-:return:
-"""
+    """Administración de permisos"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -556,12 +502,7 @@ Administración de permisos
 
 
 def mod_rol(request, rol_id):
-    """
-Modificar roles
-:param request:
-:param rol_id:
-:return:
-"""
+    """Modificar roles"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -596,12 +537,7 @@ Modificar roles
 
 @login_required
 def borrar_rol(request, rol_id):
-    """
-Borra un rol con las comprobaciones de consistencia
-:param request:
-:param rol_id:
-:return:
-"""
+    """Borra un rol con las comprobaciones de consistencia"""
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
