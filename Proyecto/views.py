@@ -710,7 +710,7 @@ def admin_us(request, proyecto_id):
                                         'lista': lista, 'mod_user_story': 'Modificar us' in permisos, 'mod_us': 'Modificar US' in perm,
                                         'abm_user_story': 'ABM user story' in permisos,
                                         'ver_user_story': 'Ver user story' in permisos,
-                                         'ver_us': 'Ver US' in perm,
+                                        'ver_us': 'Ver US' in permisos,
                                         'revisar_user_story': 'Revisar user story'})
         return render_to_response('us/user_story.html', variables)
 
@@ -764,7 +764,7 @@ def crear_user_story(request, proyecto_id):
                                         'proyecto':proyecto,
                                         'form': form,
                                         'abm_user_story': 'ABM user story' in permisos,
-                                        'crear_us': 'Crear US' in perm})
+                                        'crear_us': 'Crear US' in permisos})
         return render_to_response('us/crear_user_story.html', variables)
 
 
