@@ -33,6 +33,9 @@ url(r'^proyectos/admin&id=(?P<proyecto_id>\d+)/$', administrar_proyecto),
     url(r'^userstories&id=(?P<proyecto_id>\d+)/mod_us&id=(?P<us_id>\d+)/$', mod_user_story),
 #HISTORIAL
      url(r'^userstories&id=(?P<proyecto_id>\d+)/historial&id=(?P<us_id>\d+)/$',ver_historial),
+ url(r'^configuracion&id=(?P<proyecto_id>\d+)/$',conf_proyecto),
+#CONFIGURACION DE PROYECTO INICIO
+
 
 )
 
