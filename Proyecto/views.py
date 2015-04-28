@@ -483,7 +483,7 @@ Administracion de flujos
     print actividades
     return render_to_response("flujo/admin_flujo.html", {
                                                                  'user':user, 'lista':lista, 'proyecto':proyectos,'actividades':actividades,
-                                                                 'ver_flujos': 'Ver flujos' in permisos, 'crear_flujos': 'Crear flujos' in permisos, 'ver_actividades':'Ver actividades' in permisos,'crear_actividades':'Crear actividades' in permisos,
+'mod_acti': 'Modificar actividad' in permisos,                                                                 'ver_flujos': 'Ver flujos' in permisos, 'crear_flujos': 'Crear flujos' in permisos, 'ver_actividades':'Ver actividades' in permisos,'crear_actividades':'Crear actividades' in permisos,
 
                                                                  },context_instance=RequestContext(request) )
 
@@ -663,6 +663,9 @@ def admin_us(request, proyecto_id):
     perm = get_permisos_proyecto(user,proyecto)
     permisos = get_permisos_sistema(user)
     lista = UserStory.objects.filter( habilitado=True).order_by('id')
+    print permisos
+    print "holaaa"
+    print perm
     if request.method == 'POST':
         form = FilterForm(request.POST)
         if form.is_valid():
@@ -681,7 +684,7 @@ def admin_us(request, proyecto_id):
                 pag = paginator.page(paginator.num_pages)
             #for i in proyecto:
             variables = RequestContext(request, {'proyecto':proyecto,'lista':lista, 'pag': pag, 'form':form,
-                                        'lista': lista,
+                                        'lista': lista, 'mod_user_story': 'Modificar us' in permisos, 'mod_us': 'Modificar US' in perm,
                                         'abm_user_story': 'ABM user story' in permisos,
                                         'ver_user_story': 'Ver user story' in permisos,
                                         'ver_us': 'Ver US' in perm,
@@ -704,7 +707,7 @@ def admin_us(request, proyecto_id):
         form = FilterForm(initial={'paginas': paginas})
         #for i in proyecto:
         variables = RequestContext(request, {'proyecto':proyecto,'lista':lista, 'pag': pag, 'form':form,
-                                        'lista': lista,
+                                        'lista': lista, 'mod_user_story': 'Modificar us' in permisos, 'mod_us': 'Modificar US' in perm,
                                         'abm_user_story': 'ABM user story' in permisos,
                                         'ver_user_story': 'Ver user story' in permisos,
                                          'ver_us': 'Ver US' in perm,
@@ -737,7 +740,7 @@ def crear_user_story(request, proyecto_id):
         if form.is_valid():
             us = UserStory()
             us.nombre=form.cleaned_data['nombre']
-            us.usuario = user#solo en el historial?
+            us.usuario = form.cleaned_data['usuario']#solo en el historial?
             us.estado = 1
             us.version = 1
             us.prioridad = form.cleaned_data['prioridad']
@@ -804,4 +807,76 @@ Ver historial
                                          'ver_historial_us': 'Ver Historial'})
     return render_to_response('us/historial.html', variables)
 
+
+@login_required
+def mod_user_story(request, proyecto_id, us_id):
+    """Modifica los datos de un usuario y los actualiza en el sistema"""
+    user = User.objects.get(username=request.user.username)
+    proyecto = Proyecto.objects.get(pk=proyecto_id)
+    perm = get_permisos_proyecto(user,proyecto)
+    #Validacion de permisos----------------------------------------------
+    roles = UsuarioRolSistema.objects.filter(usuario=user).only('rol')
+    permisos_obj = []
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    #--------------------------------------------------------------------
+    us = get_object_or_404(UserStory, id=us_id)
+    print perm
+    print "holaaaaaaaaaaaaaa"
+    print permisos 
+   #Datos nuevos del user story
+    if request.method == 'POST':
+        form = ModUserStoryForm(request.POST)
+        if form.is_valid():
+            us.nombre = form.cleaned_data['nombre']
+            us.descripcion = form.cleaned_data['descripcion']
+            us.save()
+            return HttpResponseRedirect("/userstories&id="+str(us_id))
+    else:
+        form = ModUserStoryForm(
+            initial={'nombre': us.nombre, 'descripcion': us.descripcion})
+    return render_to_response('us/mod_us.html', {'form': form,
+                                                                  'proyecto': proyecto,
+                                                                  'us': us,
+                                                                  'mod_us': 'Modificar US' in perm, 'mod_user_story': 'Modificar us' in permisos},
+                              context_instance=RequestContext(request))
+
+@login_required
+def mod_actividades(request, proyecto_id, acti_id):
+    """Modifica los datos de una actividad y los actualiza en el sistema"""
+    user = User.objects.get(username=request.user.username)
+    proyecto = Proyecto.objects.get(pk=proyecto_id)
+    #flujo = Flujo.objects.get(pk=flujo_id)
+    perm = get_permisos_proyecto(user,proyecto)
+    #Validacion de permisos----------------------------------------------
+    roles = UsuarioRolSistema.objects.filter(usuario=user).only('rol')
+    permisos_obj = []
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    #--------------------------------------------------------------------
+    acti = get_object_or_404(Actividades, id=acti_id)
+    print perm
+    print "holaaaaaaaaaaaaaa"
+    print permisos
+   #Datos nuevos del user story
+    if request.method == 'POST':
+        form = ModActividadesForm(request.POST)
+        if form.is_valid():
+            acti.nombre = form.cleaned_data['nombre']
+            acti.save()
+            return HttpResponseRedirect("/flujos&id="+str(proyecto_id))
+    else:
+        form = ModActividadesForm(
+            initial={'nombre': acti.nombre})
+    return render_to_response('flujo/mod_actividad.html', {'form': form,
+                                                                  'proyecto': proyecto,
+                                                                   'act': acti,
+                                                                  'mod_ACTI': 'Modificar ACTIVIDAD' in perm, 'mod_acti': 'Modificar actividad' in permisos},
+                              context_instance=RequestContext(request))
 

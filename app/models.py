@@ -19,7 +19,7 @@ status_activity = (
 
 """Estados de los UserStories"""
 STATUS_CHOICES = (
- 	            ('1', 'Pendiente'),
+ 	            ('1', 'En Proceso'),
  	            ('2', 'Modificado'),
                 ('3', 'Aprobado'),
                 ('4', 'Inactivo')
@@ -142,7 +142,7 @@ class ActividadesFlujo(models.Model):
 #***************************************USER STORY**********************************************
 class UserStory(models.Model):
         nombre = models.CharField( max_length=50)
-        usuario = models.ForeignKey(User)
+        usuario = models.ForeignKey(UsuarioRolProyecto)
         estado = models.IntegerField(max_length=1, choices=STATUS_CHOICES, default=1)
         version = models.PositiveIntegerField()
         prioridad = models.IntegerField(max_length=3) #del 1 al 100 donde 1 es mas prioritario
@@ -162,7 +162,7 @@ class UserStory(models.Model):
 #***********************
 class Historial(models.Model):
     """Clase que representa el historial de los user stories"""
-    usuario = models.ForeignKey(User)
+    #usuario = models.ForeignKey(User)
     fecha_creacion = models.DateField(auto_now =False, auto_now_add=True, editable=False)
     #claves foraneas
     user_story = models.OneToOneField(UserStory, parent_link=False)

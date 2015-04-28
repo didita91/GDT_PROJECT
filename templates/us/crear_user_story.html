@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Agregar nuevo user story{% endblock %}
+{% block content %}
+
+</ol>
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+    <li><a class="text-danger" href="/proyectos/admin&id={{proyecto.id}}/"><strong>PROYECTO</strong></a></li>
+ <li><a class="text-danger" href="/userstories&id={{proyecto.id}}"><strong>ADMINISTRACIÓN DE USER STORIES</strong></a></li>
+    <!-- <li><a class="text-danger" href="/proyectos/admin&id={{proyecto.id}}/"><strong>PROYECTO</strong></a></li>-->
+  <!--<li><a class="text-danger" href="/userstories&id={{proyecto.id}}/"><strong>ADMINISTRACIÓN DE USER STORIES</strong></a></li>-->
+  <li class="active"><strong>REGISTRAR UN NUEVO USER STORY</strong></li>
+</ol>
+<center><h2 class="text-danger"><strong> REGISTRAR UN NUEVO USER STORY</strong></h2></center>
+{% if abm_user_story or crear_us%}
+<center>
+        <table class="abm">
+               <form enctype="multipart/form-data" id="form_id" action="." method="POST">
+                          {% csrf_token %}
+		          {{ form.as_table }}
+	                  <tr>
+                              <td class="buttonlist" colspan="2">
+                                  <br><br><br><center>
+                                          <input type="submit" class= "btn btn-default" value="GUARDAR" />&nbsp;&nbsp;&nbsp;&nbsp;
+	                                  <input type="button" class= "btn btn-default" value="CANCELAR" onClick ="location.href='/userstories&id={{proyecto.id}}/' "/>
+                                              </center>
+                              </td>
+	                  </tr>
+	        </form>
+         </table>
+</center>
+{% else %}
+   <center><p><strong>NO POSEE PERMISOS PARA VER ESTA SECCIÓN</strong></p></center>
+{% endif %}
+{% endblock%}

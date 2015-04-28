@@ -63,7 +63,7 @@ class CambiarPasswordForm(forms.Form):
 
 class AsignarRolesForm(forms.Form):
     #Asignar roles
-	roles = forms.ModelMultipleChoiceField(queryset = None, widget = forms.CheckboxSelectMultiple, label = 'ROLES DISPONIBLES', required=False)
+	roles = forms.ModelMultipleChoiceField(queryset = None, label = 'ROLES DISPONIBLES', required=False)
 
 	def __init__(self, cat, *args, **kwargs):
 		super(AsignarRolesForm, self).__init__(*args, **kwargs)
@@ -89,7 +89,7 @@ class RolesForm(forms.Form):
 
 
 class PermisosForm(forms.Form):
-	permisos = forms.ModelMultipleChoiceField(queryset = Permiso.objects.filter(categoria = 1), widget = forms.CheckboxSelectMultiple, required = False)
+	permisos = forms.ModelMultipleChoiceField(queryset = Permiso.objects.filter(categoria = 1),  required = False)
 
 class PermisosProyectoForm(forms.Form):
 
@@ -120,7 +120,7 @@ class ProyectosForm(forms.Form):
     product_owner = forms.ModelChoiceField(queryset=None, label='PRODUCT OWNER')
     descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
     fecha_inicio = forms.DateField(required=False, label='FECHA DE INICIO')
-    sprint = forms.IntegerField(max_length=2)
+    sprint = forms.IntegerField(min_value=1,max_value=100)
     def __init__(self,*args, **kwargs):
                 super(ProyectosForm, self).__init__(*args, **kwargs)
                 self.fields['usuario_scrum'].queryset = RolUsuario.objects.filter()
@@ -205,7 +205,12 @@ class ActividadesForm(forms.Form):
                         if activ.nombre == nuevo:
                                 raise forms.ValidationError('Ya existe ese nombre. Elija otro')
                 return nuevo
+class ModActividadesForm(forms.Form):
+    #Modificar datos del usuario
+        nombre = forms.CharField(max_length=30, label='NOMBRE')
+	
 
+        
 class AddActividadesForm(forms.Form):
     #Asignar roles
     actividades = forms.ModelMultipleChoiceField(queryset = None, label = 'ACTIVIDADES DISPONIBLES', required=False)
@@ -214,12 +219,12 @@ class AddActividadesForm(forms.Form):
 		self.fields['actividades'].queryset = Actividades.objects.filter(proyecto=proyecto)
 #**********************USER STORY
 class UserStoryForm(forms.Form):
-    nombre = forms.CharField(max_length=50)
+    nombre = forms.CharField(max_length=50, label= 'NOMBRE')
     usuario = forms.ModelChoiceField(queryset=None, label='Asignar a ')
-    prioridad = forms.IntegerField()
+    prioridad = forms.IntegerField(min_value=1,max_value=10)
     #valor_negocio=models.IntegerField(max_length=2) #del 1 al 10 donde 10 es de mas valor que 1
     #valor_tecnico=models.IntegerField(max_length=2) #del 1 al 10 donde 10 es de mas valor que 1
-    duracion= forms.IntegerField() #Duracion estimativa en dias de la historia de usuario
+    duracion= forms.IntegerField(min_value=1,max_value=10) #Duracion estimativa en dias de la historia de usuario
     descripcion= forms.CharField(widget=forms.Textarea(), required=False, label='Descripcion')
     #adjuntos = forms
     def __init__(self,proyecto,*args, **kwargs):
@@ -232,3 +237,10 @@ class UserStoryForm(forms.Form):
 #************
 class AdjuntoForm(forms.Form):
 	archivo = forms.FileField(required = False)
+
+class ModUserStoryForm(forms.Form):
+    #Modificar datos del usuario
+       nombre = forms.CharField(max_length=30, label='NOMBRE')
+       descripcion= forms.CharField(widget=forms.Textarea(), required=False, label='Descripcion')
+ 
+
