@@ -20,7 +20,8 @@ urlpatterns = patterns('',
     url(r'^flujos&id=(?P<proyecto_id>\d+)/crear_actividades/$', crear_actividades),
     url(r'^flujos&id=(?P<proyecto_id>\d+)/add_actividades&id=(?P<flujo_id>\d+)$', add_actividades),
     url(r'^flujos&id=(?P<proyecto_id>\d+)/ver_actividades&id=(?P<flujo_id>\d+)$', ver_actividades),
-	url(r'^proyectos/admin&id=(?P<proyecto_id>\d+)/$', administrar_proyecto),
+url(r'^flujos&id=(?P<proyecto_id>\d+)/mod_actividades&id=(?P<acti_id>\d+)$', mod_actividades),	
+url(r'^proyectos/admin&id=(?P<proyecto_id>\d+)/$', administrar_proyecto),
 	url(r'^proyectos/miembros&id=(?P<proyecto_id>\d+)/$', admin_usuarios_proyecto),
     url(r'^proyectos/miembros&id=(?P<proyecto_id>\d+)/nuevo/$', add_usuario_proyecto),
 	url(r'^proyectos/miembros&id=(?P<proyecto_id>\d+)/cambiar&id=(?P<user_id>\d+)/$', cambiar_rol_usuario_proyecto),
@@ -29,7 +30,8 @@ urlpatterns = patterns('',
      url(r'^userstories&id=(?P<proyecto_id>\d+)/$', admin_us),
      url(r'^userstories&id=(?P<proyecto_id>\d+)/crear/$', crear_user_story),
 
-    #HISTORIAL
+    url(r'^userstories&id=(?P<proyecto_id>\d+)/mod_us&id=(?P<us_id>\d+)/$', mod_user_story),
+#HISTORIAL
      url(r'^userstories&id=(?P<proyecto_id>\d+)/historial&id=(?P<us_id>\d+)/$',ver_historial),
 
 )

@@ -1,10 +1,173 @@
 {% extends "base.html" %}
-{% block title %}{{flujo.nombre}}{% endblock %}
-{% block head %}{{proyecto.nombre}}<br>{% endblock %}
+{% block title %}Proyectos{% endblock %}
 {% block content %}
+
+<style type="text/css">
+        .alert-danger {
+            background: rgba(196,196,196,1);
+background: -moz-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -webkit-gradient(left top, right top, color-stop(0%, rgba(196,196,196,1)), color-stop(0%, rgba(191,191,191,1)), color-stop(100%, rgba(181,181,181,1)));
+background: -webkit-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -o-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -ms-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: linear-gradient(to right, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c4c4c4', endColorstr='#b5b5b5', GradientType=1 );
+            border-color: #808080;
+        border-radius: 0px 0px 10px 0px;
+
+        display: block;
+font-size: 15px;
+font-weight: bold;
+color: white;
+text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+margin-left: -5px;
+
+        }
+
+
+        .nav-list-tools>li.nav-header-tools {
+background-color: #8B0000;
+background-position: 8px 5px !important;
+color: #FFF;
+-webkit-border-radius: 10px 0px 0px;
+-moz-border-radius: 10px 0px 0px;
+border-radius: 10px 0px 0px ;
+padding-top: 15px;
+padding-bottom: 15px;
+
+/* padding-left: 40px; */
+    display: block;
+padding: 8px 15px;
+font-size: 18px;
+font-weight: bold;
+line-height: 18px;
+color: white;
+text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+text-transform: uppercase;
+margin-left: -5px;
+
+
+}
+
+.btn-default{
+font-weight: bold;
+
+    }
+
+select{
+    color: black;
+    }
+
+    </style>
+
+
 <ol class="breadcrumb">
   <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
-  <li class="active"><strong>ADMINISTRACION DE FLUJO</strong></li>
+      <li><a class="text-danger" href="/proyectos/admin&id={{proyecto.id}}/"><strong>PROYECTO</strong></a></li>
+
+  <li class="active"><strong>ADMINISTRACIÓN DE FLUJOS</strong></li>
 </ol>
-<center><img src="/site_media/images/construccion.png"/></center>
-{% endblock%}
+<center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE FLUJOS </strong></h2></center><br><br>
+
+{% if ver_flujos %}
+        <div class="row">
+
+
+
+       <div class="col-sm-2">
+           <ul class="nav nav-list-tools">
+                <li class="nav-header-tools">Barra de Herramientas</li>
+                <li class="alert alert-danger">
+                <a class="btn btn-default" href="/principal"><strong> Volver a Inicio</strong> </a>&nbsp;&nbsp;
+                {% if crear_flujos %}
+                    <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/crear/"><strong>Crear Flujos </strong></a>
+                {% endif %}<br>
+                    {% if crear_actividades %}
+               <a class="btn btn-default"  onClick ="location.href='/flujos&id={{proyecto.id}}/crear_actividades'"><strong>Crear Actividades</strong></a>
+                 {% endif %}<br>
+               </li>
+               </ul>
+
+                </div>
+
+   {% else %}
+	<center><p><strong>NO TIENE PERMISO PARA VER ESTA SECCIÓN</strong></p></center>
+   {% endif %}
+
+            <div class="col-sm-8">
+ <ul class="nav nav-list-tools">
+          <li class="nav-header-tools">FLUJOS DEFINIDOS </li>
+          <li class="alert alert-danger">
+   <form action="." method="POST">
+         {% csrf_token %}
+            <table class="table table-bordered">
+              <thead>
+               <tr>
+
+                     {%if ver_flujos%}
+	            <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
+
+
+	            </tr>
+               </thead>
+               <tbody>
+	                {%for i in lista%}<tr>
+                        <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font>
+                                <center><a class="btn btn-default" href="/flujos&id={{proyecto.id}}/add_actividades&id={{i.id}}"><strong>Agregar Actividades </strong></a>
+                                                                <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/ver_actividades&id={{i.id}}"><strong>Ver Actividades </strong></a></center></td>
+
+                        </tr>
+	                {% endfor %}
+               {% endif %}
+              </tbody>
+	        </table>
+     </form>
+     </li>
+     </ul>
+            </div>
+
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <center><div class="col-sm-8">
+ <ul class="nav nav-list-tools">
+          <li class="nav-header-tools">Actividades </li>
+          <li class="alert alert-danger">
+   <form action="." method="POST">
+         {% csrf_token %}
+            <table class="table table-bordered">
+              <thead>
+               <tr>
+
+                     {%if ver_actividades or ver_Actividades %}
+
+	            <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
+ 	            
+</tr>
+               </thead>
+               <tbody>
+	                {%for i in actividades%}<tr>
+
+				{%if mod_ACTI or mod_acti %}
+                        		<td><a href="/flujos&id={{proyecto.id}}/mod_actividades&id={{i.id}}"><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font> </a></td>
+	{%else%}    <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
+{%endif%}
+                        </tr>
+	                {% endfor %}
+               {% endif %}
+              </tbody>
+	        </table>
+     </form>
+     </li>
+     </ul>
+            </div></center>
+            </div>
+
+     <a colspan="3">
+
+                    {% if pag.has_previous %}
+                       <a class="btn btn-mini btn btn-default" href="?page={{ pag.previous_page_number }}"><h5><strong> <span class=" glyphicon glyphicon-backward" aria-hidden="true"></span>&nbsp;&nbsp;ANTERIOR </strong></h5></a>
+                    {% endif %}
+                    {% if pag.has_next %}
+                       <a class="btn btn-mini btn btn-default" href="?page={{ pag.next_page_number }}"><h5><strong > SIGUIENTE &nbsp;&nbsp; <span class="glyphicon glyphicon-forward" aria-hidden="true"></span></strong></h5></a>
+                    {% endif %}
+    </a><br><br>
+
+{% endblock %}

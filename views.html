@@ -9,8 +9,8 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>views</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/didi/Desktop/gdt_project/app/views.py">/home/didi/Desktop/gdt_project/app/views.py</a></font></td></tr></table>
-    <p><tt>#&nbsp;-*-&nbsp;coding:&nbsp;utf-8&nbsp;-*-</tt></p>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/var/www/gdt_project/Proyecto/views.py">/var/www/gdt_project/Proyecto/views.py</a></font></td></tr></table>
+    <p><tt>#-*-&nbsp;coding:&nbsp;utf-8&nbsp;-*-</tt></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#aa55cc">
@@ -23,6 +23,7 @@
 </td><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
 <a href="django.forms.html">django.forms</a><br>
 </td><td width="25%" valign=top><a href="django.db.models.html">django.db.models</a><br>
+<a href="os.html">os</a><br>
 </td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
@@ -30,24 +31,77 @@
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-add_user"><strong>add_user</strong></a>(request, *args, **kwargs)</dt><dd><tt>Agrega&nbsp;un&nbsp;nuevo&nbsp;usuario&nbsp;en&nbsp;el&nbsp;sistema.</tt></dd></dl>
- <dl><dt><a name="-admin_permisos"><strong>admin_permisos</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administracion&nbsp;general&nbsp;de&nbsp;permisos&nbsp;que&nbsp;pueden&nbsp;ser&nbsp;asignados</tt></dd></dl>
- <dl><dt><a name="-admin_roles"><strong>admin_roles</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administracion&nbsp;general&nbsp;de&nbsp;roles</tt></dd></dl>
- <dl><dt><a name="-admin_roles_sist"><strong>admin_roles_sist</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administracion&nbsp;general&nbsp;de&nbsp;roles</tt></dd></dl>
- <dl><dt><a name="-admin_usuarios"><strong>admin_usuarios</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administracion&nbsp;general&nbsp;de&nbsp;usuarios</tt></dd></dl>
- <dl><dt><a name="-asignar_roles_sistema"><strong>asignar_roles_sistema</strong></a>(request, *args, **kwargs)</dt><dd><tt>Asigna&nbsp;roles&nbsp;de&nbsp;sistema&nbsp;a&nbsp;un&nbsp;usuario</tt></dd></dl>
- <dl><dt><a name="-borrar_rol"><strong>borrar_rol</strong></a>(request, *args, **kwargs)</dt><dd><tt>Borra&nbsp;un&nbsp;rol&nbsp;con&nbsp;las&nbsp;comprobaciones&nbsp;de&nbsp;consistencia</tt></dd></dl>
- <dl><dt><a name="-borrar_usuario"><strong>borrar_usuario</strong></a>(request, *args, **kwargs)</dt><dd><tt>Borra&nbsp;un&nbsp;usuario,&nbsp;comprobando&nbsp;las&nbsp;dependencias&nbsp;primero</tt></dd></dl>
- <dl><dt><a name="-cambiar_password"><strong>cambiar_password</strong></a>(request, *args, **kwargs)</dt><dd><tt>Cambia&nbsp;la&nbsp;contrasena&nbsp;del&nbsp;usuario&nbsp;logueado</tt></dd></dl>
- <dl><dt><a name="-crear_rol"><strong>crear_rol</strong></a>(request, *args, **kwargs)</dt><dd><tt>Agrega&nbsp;un&nbsp;nuevo&nbsp;rol</tt></dd></dl>
- <dl><dt><a name="-index_view"><strong>index_view</strong></a>(request)</dt></dl>
- <dl><dt><a name="-lista"><strong>lista</strong></a>(request, tipo)</dt><dd><tt>Metodo&nbsp;de&nbsp;prueba&nbsp;para&nbsp;listar&nbsp;items</tt></dd></dl>
- <dl><dt><a name="-login_redirect"><strong>login_redirect</strong></a>(request)</dt><dd><tt>Redirige&nbsp;de&nbsp;/accounts/login&nbsp;a&nbsp;/login.</tt></dd></dl>
- <dl><dt><a name="-logout_pagina"><strong>logout_pagina</strong></a>(request)</dt><dd><tt>Pagina&nbsp;de&nbsp;logout</tt></dd></dl>
- <dl><dt><a name="-mod_rol"><strong>mod_rol</strong></a>(request, rol_id)</dt></dl>
- <dl><dt><a name="-mod_user"><strong>mod_user</strong></a>(request, *args, **kwargs)</dt><dd><tt>Modifica&nbsp;los&nbsp;datos&nbsp;de&nbsp;un&nbsp;usuario&nbsp;y&nbsp;los&nbsp;actualiza&nbsp;e&nbsp;el&nbsp;sistema</tt></dd></dl>
- <dl><dt><a name="-principal"><strong>principal</strong></a>(request, *args, **kwargs)</dt><dd><tt>Muestra&nbsp;la&nbsp;pagina&nbsp;principal&nbsp;del&nbsp;proyecto</tt></dd></dl>
- <dl><dt><a name="-terminar"><strong>terminar</strong></a>(request, *args, **kwargs)</dt><dd><tt>Muestra&nbsp;una&nbsp;pagina&nbsp;de&nbsp;confirmacion&nbsp;de&nbsp;exito</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-add_actividades"><strong>add_actividades</strong></a>(request, *args, **kwargs)</dt><dd><tt>Adhiere&nbsp;actividades&nbsp;a&nbsp;un&nbsp;flujo&nbsp;dado<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;flujo_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-add_usuario_proyecto"><strong>add_usuario_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Agregar&nbsp;usuarios&nbsp;al&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-admin_flujos"><strong>admin_flujos</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administracion&nbsp;de&nbsp;flujos<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-admin_proyectos"><strong>admin_proyectos</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administracion&nbsp;general&nbsp;de&nbsp;proyectos<br>
+:param&nbsp;request:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-admin_us"><strong>admin_us</strong></a>(request, *args, **kwargs)</dt><dd><tt>Muestra&nbsp;la&nbsp;pagina&nbsp;de&nbsp;administracion&nbsp;de&nbsp;user&nbsp;stories.<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-admin_usuarios_proyecto"><strong>admin_usuarios_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administración&nbsp;de&nbsp;usuarios&nbsp;del&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-administrar_proyecto"><strong>administrar_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administracion&nbsp;de&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-cambiar_rol_usuario_proyecto"><strong>cambiar_rol_usuario_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Cambiar&nbsp;rol&nbsp;a&nbsp;un&nbsp;usuario&nbsp;de&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;user_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-crear_actividades"><strong>crear_actividades</strong></a>(request, *args, **kwargs)</dt><dd><tt>Crear&nbsp;Actividades<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-crear_flujos"><strong>crear_flujos</strong></a>(request, *args, **kwargs)</dt><dd><tt>Creacion&nbsp;de&nbsp;Flujos&nbsp;para&nbsp;proyectos<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-crear_proyecto"><strong>crear_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Crea&nbsp;un&nbsp;nuevo&nbsp;proyecto.<br>
+:param&nbsp;request:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-crear_user_story"><strong>crear_user_story</strong></a>(request, *args, **kwargs)</dt><dd><tt>Crear&nbsp;un&nbsp;User&nbsp;Story"<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-del_proyecto"><strong>del_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Eliminar&nbsp;proyecto&nbsp;del&nbsp;sistema<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-eliminar_miembro_proyecto"><strong>eliminar_miembro_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Eliminar&nbsp;miembros&nbsp;del&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;user_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-mod_proyecto"><strong>mod_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Modificacion&nbsp;de&nbsp;Proyectos<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-ver_actividades"><strong>ver_actividades</strong></a>(request, *args, **kwargs)</dt><dd><tt>Visualizar&nbsp;las&nbsp;actividades<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;flujo_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-ver_historial"><strong>ver_historial</strong></a>(request, *args, **kwargs)</dt><dd><tt>Ver&nbsp;historial<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;us_id:<br>
+:return:</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">
@@ -55,8 +109,8 @@
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>CATEGORY_CHOICES</strong> = (('1', 'Rol de Sistema'),)<br>
-<strong>COMPLEXITY_CHOICES</strong> = (('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10'))<br>
-<strong>__warningregistry__</strong> = {("Not importing directory '/usr/lib/python2.7/django': missing __init__.py", &lt;type 'exceptions.ImportWarning'&gt;, 3): True}<br>
+<td width="100%"><strong>CATEGORY_CHOICES</strong> = (('1', 'Rol de Sistema'), ('2', 'Rol de Proyecto'))<br>
+<strong>STATUS_CHOICES</strong> = (('1', 'Pendiente'), ('2', 'Modificado'), ('3', 'Aprobado'), ('4', 'Inactivo'))<br>
+<strong>status_activity</strong> = (('1', 'To Do'), ('2', 'Doing'), ('', 'Done'))<br>
 <strong>validate_email</strong> = &lt;django.core.validators.EmailValidator object&gt;</td></tr></table>
 </body></html>
