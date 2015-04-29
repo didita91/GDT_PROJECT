@@ -1049,7 +1049,7 @@ Dirigue a la interfaz, para la creacion de equipos de trabajo  para el sprint da
                                                                          'user': user,
                                                                          'proyecto': Proyecto.objects.get(
                                                                              id=proyecto_id),
-                                                                         'miembros': lista,
+                                                                         'miembros': miembros,
 
                                                                          'ver_miembros': 'Ver miembros' in permisos,
                                                                          'abm_miembros': 'ABM miembros' in permisos},
@@ -1071,7 +1071,7 @@ Dirigue a la interfaz, para la creacion de equipos de trabajo  para el sprint da
         return render_to_response('conf/admin_equipo.html', {'lista': lista, 'pag': pag, 'form': form,
                                                                      'user': user,
                                                                      'proyecto': Proyecto.objects.get(id=proyecto_id),
-                                                                     'miembros': lista,
+                                                                     'miembros': miembros, #este fue cambiado de lista a miembros
                                                                      'ver_miembros': 'Ver miembros' in permisos,
                                                                      'abm_miembros': 'ABM miembros' in permisos},
                                   context_instance=RequestContext(request))

@@ -173,7 +173,7 @@ class RegistroHistorial(models.Model):
 #---------------------------CONFIGURACION DE SPRINT
 class Equipo(models.Model):
 
-    usuario = models.ForeignKey(UsuarioRolProyecto)
+    usuario = models.ForeignKey(User)
     horas = models.PositiveIntegerField()#horas de trabajo de ese miembro
     sprint = models.PositiveIntegerField()#sprint en el que se encuentra
     proyecto = models.ForeignKey(Proyecto)
