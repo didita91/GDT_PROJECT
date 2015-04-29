@@ -141,7 +141,7 @@ class ActividadesFlujo(models.Model):
 
 #***************************************USER STORY**********************************************
 class UserStory(models.Model):
-        nombre = models.CharField( max_length=50)
+        nombre = models.CharField(unique=True, max_length=50)
         estado = models.IntegerField(max_length=1, choices=STATUS_CHOICES, default=1)
         version = models.PositiveIntegerField()
         prioridad = models.IntegerField(max_length=3) #del 1 al 100 donde 1 es mas prioritario
@@ -150,13 +150,7 @@ class UserStory(models.Model):
         valor_tecnico=models.IntegerField(max_length=2) #del 1 al 10 donde 10 es de mas valor que 1
         duracion=models.IntegerField(max_length=2) #Duracion estimativa en dias de la historia de usuario
         descripcion = models.TextField(null=True, blank= True)
-        #adjuntos = models.TextField(null=True,blank=True)
-        #acumulador_horas= models.IntegerField(max_length=50)
-        #claves foraneas
         proyecto = models.ForeignKey(Proyecto) #Proyecto al cual pertenece
-        #usuario = models.ForeignKey(UsuarioRolProyecto)
-        #flujo = models.ForeignKey(Flujo)#flujo asigando
-        #Sprint = models.ForeignKey(Sprint)#nro de sprint en el que se encuentra la historia
         def __unicode__(self):
                 return self.nombre
 class Historial(models.Model):

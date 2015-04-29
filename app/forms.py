@@ -215,20 +215,21 @@ class AddActividadesForm(forms.Form):
         self.fields['actividades'].queryset = Actividades.objects.filter(proyecto=proyecto)
 #************************************************USER STORY*************************************************
 class UserStoryForm(forms.Form):
-    nombre = forms.CharField(max_length=50, label= 'NOMBRE')
-    #usuario = forms.ModelChoiceField(queryset=None, label='Asignar a ')
+    nombre = forms.CharField(required=True,max_length=50, label= 'NOMBRE')
     prioridad = forms.IntegerField(min_value=1,max_value=10)
-    valor_negocio=forms.IntegerField() #del 1 al 10 donde 10 es de mas valor que 1
-    valor_tecnico=forms.IntegerField() #del 1 al 10 donde 10 es de mas valor que 1
-    duracion= forms.IntegerField(min_value=1,max_value=10) #Duracion estimativa en dias de la historia de usuario
+    valor_negocio=forms.IntegerField(min_value=1,max_value=10) #del 1 al 10 donde 10 es de mas valor que 1
+    valor_tecnico=forms.IntegerField(min_value=1,max_value=10) #del 1 al 10 donde 10 es de mas valor que 1
+    duracion= forms.IntegerField(min_value=1,max_value=100) #Duracion estimativa en dias de la historia de usuario
     descripcion= forms.CharField(widget=forms.Textarea(), required=False, label='Descripcion')
-    #adjuntos = forms
-    def __init__(self,proyecto,*args, **kwargs):
-        super(UserStoryForm, self).__init__(*args, **kwargs)
-        #self.fields['usuario'].queryset = UsuarioRolProyecto.objects.filter(Q(proyecto=proyecto))
 
-        #self.fields['usuario'].queryset =  UsuarioRolProyecto.objects.filter(Q(proyecto=proyecto))
-
+    def clean_nombre(self):
+		if 'nombre' in self.cleaned_data:
+			roles = UserStory.objects.all()
+			nombre = self.cleaned_data['nombre']
+			for i in roles:
+				if nombre == i.nombre:
+					raise forms.ValidationError('Ya existe ese nombre de rol. Elija otro')
+			return nombre
 
 #************
 class AdjuntoForm(forms.Form):
