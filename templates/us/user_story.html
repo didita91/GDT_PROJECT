@@ -62,7 +62,8 @@ select{
 
 
 <ol class="breadcrumb">
-  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+  <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>PROYECTO</strong></a></li>
+
   <li class="active"><strong>ADMINISTRACIÓN DE USER STORIES</strong></li>
 </ol>
 <!--
@@ -104,15 +105,15 @@ select{
               </tr>
 	        <tr>
                      <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th> 
-<th class="titulo"><b class="text-danger"><strong>ASIGNADO A</strong></b></th>
-
+                    <!-- <th class="titulo"><b class="text-danger"><strong>ASIGNADO A</strong></b></th>-->
                      <th class="titulo"><b class="text-danger"><strong>VERSION</strong></b></th>
-	            
-                <th class="titulo"><b class="text-danger"><strong>ESTADO</strong></b></th>
-	             <th class="titulo"><b class="text-danger"><strong>PRIORIDAD</strong></b></th>
-	             <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
-                      <th class="'titulo"><b class="text-danger"><strong>DURACION ESTIMADA (Horas)</strong></b></th>
-                  </tr>
+                     <th class="titulo"><b class="text-danger"><strong>ESTADO</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>VALOR TECNICO</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>VALOR NEGOCIO</strong></b></th>
+	                 <th class="titulo"><b class="text-danger"><strong>PRIORIDAD</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
+                     <th class="'titulo"><b class="text-danger"><strong>DURACION ESTIMADA (Horas)</strong></b></th>
+            </tr>
                 </thead>
                 <tbody>
 	{% for i in lista %}
@@ -121,19 +122,19 @@ select{
                           <td><a href="/userstories&id={{proyecto.id}}/mod_us&id={{i.id}}/"><font color="black"><strong><em><u>{{i.nombre}}</u></em></strong></font></a></td>
                        {% else %}
                           <td><font color="black"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
-                       {% endif %}
+         {% endif %}
 
-	<td><strong>{{i.usuario}}</strong></td>
+	                     <!--<td><strong>{{i.usuario}}</strong></td>-->
 
                          <td><strong>{{i.version}}</strong></td>
-			 {% ifequal i.estado 1 %} <td><strong>En Espera</strong></td>{% endifequal %} {% ifequal i.estado 2 %}<td><strong>En Proceso</strong></td>{% endifequal %}{% ifequal i.estado 3 %}<td><strong>Aprobado</strong></td>{% endifequal %}
-{% ifequal i.estado 4 %}<td><strong>Inactivo</strong></td>{% endifequal %}
+         {% ifequal i.estado 1 %} <td><strong>En Espera</strong></td>{% endifequal %} {% ifequal i.estado 2 %}<td><strong>En Proceso</strong></td>{% endifequal %}{% ifequal i.estado 3 %}<td><strong>Aprobado</strong></td>{% endifequal %}
+         {% ifequal i.estado 4 %}<td><strong>Inactivo</strong></td>{% endifequal %}
 
- 
+                         <td><strong>{{i.valor_tecnico}}</strong></td>
+                         <td><strong>{{i.valor_negocio}}</strong></td>
                          <td><strong>{{i.prioridad}}</strong></td>
                          <td><strong>{{i.descripcion}}</strong></td>
                          <td><strong>{{i.duracion}}</strong></td>
-
                          <td>
                             {% if ver_historial_user_story  or ver_historial_us%}
                                   <a class="btn btn-default" href="/userstories&id={{proyecto.id}}/historial&id={{i.id}}/"><strong>HISTORIAL</strong></a>&nbsp;

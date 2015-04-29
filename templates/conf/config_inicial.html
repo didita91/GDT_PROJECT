@@ -75,13 +75,14 @@ select{
                 <li class="nav-header-tools">Barra de Herramientas</li>
                 <li class="alert alert-danger">
                 <a class="btn btn-default" href="/principal"><strong> VOLVER A LA PÁGINA PRINCIPAL</strong> </a>&nbsp;&nbsp;
-               </li>
+                    <a class="btn btn-default" href="/configuracion/equipo&id={{proyecto.id}}/"><strong> GENERAR EQUIPO</strong> </a>&nbsp;&nbsp;
+                </li>
                </ul>
            </div>
 
             <div class="col-sm-8">
  <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">Usuarios </li>
+          <li class="nav-header-tools">Configuracion Sprint </li>
           <li class="alert alert-danger">
    <form action="." method="POST">
          {% csrf_token %}
