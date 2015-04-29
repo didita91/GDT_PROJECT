@@ -516,19 +516,17 @@ Administracion de flujos
 
 
 @login_required
-def crear_flujos(request, proyecto_id):
+def crear_flujos(request,proyecto_id):
     """
-Creacion de Flujos para proyectos
-:param request:
-:param proyecto_id:
-:return:
-"""
+    Agrega un nuevo flujo
+    :param request:
+    :return:
+    """
+    proyecto=Proyecto.objects.get(id=proyecto_id)
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
-    roles = UsuarioRolProyecto.objects.filter(usuario=user).only('rol')
-    proyecto = Proyecto.objects.get(id=proyecto_id)
+    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
     permisos_obj = []
-    proyecto = Proyecto.objects.get(id=proyecto_id)
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
     permisos = []
@@ -537,21 +535,18 @@ Creacion de Flujos para proyectos
     print permisos
     #-------------------------------------------------------------------
     if request.method == 'POST':
-        form = FlujosForm(request.POST, request.FILES)
+        form = FlujosForm(request.POST)
         if form.is_valid():
-            flujo = Flujo()
-            flujo.nombre = form.cleaned_data['nombre']
-            flujo.proyecto = proyecto
-            flujo.save()
-
-            return HttpResponseRedirect("/flujos&id=" + str(proyecto_id))
+            p = Flujo()
+            p.nombre = form.cleaned_data['nombre']
+            p.proyecto=proyecto
+            p.save()
+            return HttpResponseRedirect("/flujos&id="+str(proyecto_id))
     else:
-
         form = FlujosForm()
-        return render_to_response('flujo/crear_flujo.html', {'form': form, 'proyecto': proyecto, 'user': user,
-                                                             'crear_flujos': 'Crear flujos' in permisos},
-                                  context_instance=RequestContext(request))
-
+    return render_to_response('flujo/crear_flujo.html',{'form':form,
+                                                            'user':user,'proyecto':proyecto,
+                                                            'crear_flujos': 'Crear flujos' in permisos},context_instance=RequestContext(request))
 
 @login_required
 def crear_actividades(request, proyecto_id):

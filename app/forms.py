@@ -175,21 +175,18 @@ class ModProyectosForm(forms.Form):
                     if proyecto.nombre == nuevo:
                         raise forms.ValidationError('Ya existe ese nombre. Elija otro')
             return nuevo
-
 class FlujosForm(forms.Form):
-    """Formulario para la creacion de proyectos."""
-    nombre = forms.CharField(max_length=50, label='NOMBRE')
-
+    #Formulario de flujos
+    nombre = forms.CharField(required=True, max_length=50, label='NOMBRE')
 
     def clean_nombre(self):
-        if 'nombre' in self.cleaned_data:
-                nuevo = self.cleaned_data['nombre']
-                flujos = Flujo.objects.all()
-                nuevo = self.cleaned_data['nombre']
-                for flujo in flujos:
-                        if flujo.nombre == nuevo:
-                                raise forms.ValidationError('Ya existe ese nombre. Elija otro')
-                return nuevo
+		if 'nombre' in self.cleaned_data:
+			flujo = Flujo.objects.all()
+			nombre = self.cleaned_data['nombre']
+			for i in flujo:
+				if nombre == i.nombre:
+					raise forms.ValidationError('Ya existe ese nombre de rol. Elija otro')
+			return nombre
 
 class ActividadesForm(forms.Form):
     """Formulario para la creacion de proyectos."""
