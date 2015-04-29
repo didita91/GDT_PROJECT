@@ -739,9 +739,63 @@ def admin_us(request, proyecto_id):
                                              'revisar_user_story': 'Revisar user story'})
         return render_to_response('us/user_story.html', variables)
 
+@login_required
+def crear_user_story(request,proyecto_id):
+    """
+Agrega un nuevo us
+:param request:
+:return:
+"""
+    user = User.objects.get(username=request.user.username)
+    #Validacion de permisos---------------------------------------------
+    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    proyecto =Proyecto.objects.get(id=proyecto_id)
+    permisos_obj = []
+    perm = get_permisos_proyecto(user,proyecto)
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    print permisos
+    #-------------------------------------------------------------------
+    if request.method == 'POST':
+        form = UserStoryForm(request.POST)
+
+        if form.is_valid():
+            us = UserStory()
+            us.nombre = form.cleaned_data['nombre']
+            #us.usuario = form.cleaned_data['usuario']  #solo en el historial?
+
+            us.estado = 1
+            us.version = 1
+            us.valor_negocio=form.cleaned_data['valor_negocio']
+            us.valor_tecnico=form.cleaned_data['valor_tecnico']
+            us.prioridad = form.cleaned_data['prioridad']
+            us.descripcion = form.cleaned_data['descripcion']
+            us.habilitado = True
+            us.proyecto = proyecto
+            us.duracion = form.cleaned_data['duracion']
+            us.save()
+
+            #Generacion del historial
+            hist = Historial()
+            hist.usuario = user
+            hist.fecha_creacion = datetime.date.today()
+            hist.user_story = us
+            hist.save()
+            return HttpResponseRedirect("/userstories&id=" + str(proyecto_id) + "/")
+    else:
+        form = UserStoryForm()
+    return render_to_response('us/crear_user_story.html',{'proyecto': proyecto,
+            'form': form,
+            'abm_user_story': 'ABM user story' in permisos,
+            'crear_us': 'Crear US' in perm},context_instance=RequestContext(request))
+
+
 
 @login_required
-def crear_user_story(request, proyecto_id):
+def eecrear_user_story(request, proyecto_id):
     """
     Crear un User Story"
     :param request:
@@ -749,7 +803,6 @@ def crear_user_story(request, proyecto_id):
     :return:
     """
     user = User.objects.get(username=request.user.username)
-
     proyecto = Proyecto.objects.get(pk=proyecto_id)
 
     #Validacion de permisos---------------------------------------------
@@ -796,6 +849,7 @@ def crear_user_story(request, proyecto_id):
             'abm_user_story': 'ABM user story' in permisos,
             'crear_us': 'Crear US' in perm})
         return render_to_response('us/crear_user_story.html', variables)
+
 
 
 @login_required
