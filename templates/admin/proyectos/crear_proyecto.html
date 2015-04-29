@@ -8,10 +8,10 @@
 </ol>
 <center><h2 class="text-danger"><strong> CREACIÓN DE NUEVOS PROYECTOS </strong></h2></center>
 <center><h2><span class="glyphicon glyphicon-book" aria-hidden="true"></span></h2></center><br>
-{% if crear_proyecto %}
+{% if crear_actividades %}
    <center>
-          <table class="abm">
-	     <form enctype="multipart/form-data" id="form_id" action="" method="post">
+         <table class="abm">
+	<form id="form_id" action="." method="POST">
                 {% csrf_token %}
 		{{ form.as_table }}
 		<tr>

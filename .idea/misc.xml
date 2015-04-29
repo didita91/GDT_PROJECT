@@ -20,7 +20,7 @@
   <component name="ProjectModuleManager">
     <modules />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.6 virtualenv at /var/www/gdt_project/entornoIS2" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.6 virtualenv at /home/dferreira/entornoIS2" project-jdk-type="Python SDK" />
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$USER_HOME$/ENTORNO/bin/python2.7" />
   </component>

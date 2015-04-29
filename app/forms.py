@@ -7,6 +7,8 @@ from app.helper import *
 import datetime
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.contrib.admin.widgets import AdminDateWidget
+from django.forms.extras.widgets import SelectDateWidget
 
 class UsuariosForm(forms.Form):
 #	def custom_validate_email(value):
@@ -87,6 +89,27 @@ class RolesForm(forms.Form):
 					raise forms.ValidationError('Ya existe ese nombre de rol. Elija otro')
 			return nombre
 
+class ProyectosForm(forms.Form):
+    #Formulario de roles
+    	nombre = forms.CharField( max_length=50, label='NOMBRE',required=True)
+    	usuario_scrum = forms.ModelChoiceField(queryset=None, label='SCRUM MASTER')
+    	product_owner = forms.ModelChoiceField(queryset=None, label='PRODUCT OWNER')
+    	descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
+    	fecha_inicio = forms.DateField(required=False, input_formats=['%Y-%m-%d'],  widget = SelectDateWidget(), label='FECHA DE INICIO')
+    	sprint = forms.IntegerField(min_value=1,max_value=100, label= 'SPRINT(horas)')
+	def __init__(self, *args, **kwargs):
+        	super(ProyectosForm, self).__init__(*args, **kwargs)
+        	self.fields['usuario_scrum'].queryset = RolUsuario.objects.filter()
+        	self.fields['product_owner'].queryset = ProductOwner.objects.filter()
+                
+	def clean_nombre(self):
+		if 'nombre' in self.cleaned_data:
+                        roles = Proyecto.objects.all()
+                        nombre = self.cleaned_data['nombre']
+                        for i in roles:
+                                if nombre == i.nombre:
+                                        raise forms.ValidationError('Ya existe ese nombre de proyecto. Elija otro')
+                        return nombre
 
 class PermisosForm(forms.Form):
 	permisos = forms.ModelMultipleChoiceField(queryset = Permiso.objects.filter(categoria = 1),  required = False)
@@ -112,28 +135,33 @@ class FilterForm2(forms.Form):
 
 
 
+class ProyectoForm(forms.Form):
 
-class ProyectosForm(forms.Form):
     """Formulario para la creacion de proyectos."""
-    nombre = forms.CharField(max_length=50, label='NOMBRE')
+    nombre = forms.CharField( max_length=50, label='NOMBRE',required=True)
     usuario_scrum = forms.ModelChoiceField(queryset=None, label='SCRUM MASTER')
     product_owner = forms.ModelChoiceField(queryset=None, label='PRODUCT OWNER')
     descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
-    fecha_inicio = forms.DateField(required=False, label='FECHA DE INICIO')
-    sprint = forms.IntegerField(min_value=1,max_value=100)
-    def __init__(self,*args, **kwargs):
-                super(ProyectosForm, self).__init__(*args, **kwargs)
-                self.fields['usuario_scrum'].queryset = RolUsuario.objects.filter()
-                self.fields['product_owner'].queryset = ProductOwner.objects.filter()
+    fecha_inicio = forms.DateField(required=False, input_formats=['%Y-%m-%d'],  widget = SelectDateWidget(), label='FECHA DE INICIO')
+    sprint = forms.IntegerField(min_value=1,max_value=100, label= 'SPRINT(horas)')
+    def __init__(self, *args, **kwargs):
+        super(ProyectosForm, self).__init__(*args, **kwargs)
+        self.fields['usuario_scrum'].queryset = RolUsuario.objects.filter()
+        self.fields['product_owner'].queryset = ProductOwner.objects.filter()
     def clean_nombre(self):
-        if 'nombre' in self.cleaned_data:
-                nuevo = self.cleaned_data['nombre']
-                proyectos = Proyecto.objects.all()
-                nuevo = self.cleaned_data['nombre']
-                for proyecto in proyectos:
-                        if proyecto.nombre == nuevo:
-                                raise forms.ValidationError('Ya existe ese nombre. Elija otro')
-                return nuevo
+        name = self.cleaned_data['nombre']
+        try:
+            project = Proyecto.objects.get(nombre=name)
+            if project.nombre == name:
+                return name
+        except Proyecto.DoesNotExist:
+            return name
+        raise forms.ValidationError('El nombre de proyecto ya existe.')
+
+
+
+
+
 
 class UsuarioProyectoForm(forms.Form):
     usuario = forms.ModelChoiceField(queryset = User.objects.all())
@@ -145,14 +173,16 @@ class UsuarioProyectoForm(forms.Form):
         super(UsuarioProyectoForm, self).__init__(*args, **kwargs)
         self.fields['usuario'].queryset = User.objects.filter(~Q(id = proyecto.usuario_scrum.usuario.id))
 
-
-    def clean_usuario(self):
-        if 'usuario' in self.cleaned_data:
-            usuarios_existentes = UsuarioRolProyecto.objects.filter(id = self.proyecto.id)
-            for i in usuarios_existentes:
-                if(usuarios_existentes.usuario == forms.clean_data['usuario']):
-                    raise forms.ValidationError('Ya existe este usuario')
-            return self.cleaned_data['usuario']
+    def clean_nombre(self):
+        if 'nombre' in self.cleaned_data:
+            nuevo = self.cleaned_data['nombre']
+            if nuevo != self.proyecto.nombre:
+                proyectos = Proyecto.objects.all()
+                nuevo = self.cleaned_data['nombre']
+                for proyecto in proyectos:
+                    if proyecto.nombre == nuevo:
+                        raise forms.ValidationError('Ya existe ese nombre. Elija otro')
+            return nuevo
 
 class ModProyectosForm(forms.Form):
     """Formulario para la creacion de proyectos."""
@@ -173,17 +203,41 @@ class ModProyectosForm(forms.Form):
                 nuevo = self.cleaned_data['nombre']
                 for proyecto in proyectos:
                     if proyecto.nombre == nuevo:
-                        raise forms.ValidationError('Ya existe ese nombre. Elija otro')
+                        raise forms.ValidationError('Ya existe ese nombre')
             return nuevo
 
+
+
 class FlujosForm(forms.Form):
+    #Formulario de roles
+        nombre = forms.CharField(required=True, max_length=50, label='NOMBRE')
+        #usuario_scrum = forms.ModelChoiceField(queryset=None, label='SCRUM MASTER')
+        #product_owner = forms.ModelChoiceField(queryset=None, label='PRODUCT OWNER')
+        #descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
+        #fecha_inicio = forms.DateField(required=False, input_formats=['%Y-%m-%d'],  widget = SelectDateWidget(), label='FECHA DE INICIO')
+        #sprint = forms.IntegerField(min_value=1,max_value=100, label= 'SPRINT(horas)')
+        #def __init__(self, *args, **kwargs):
+         #       super(ProyectosForm, self).__init__(*args, **kwargs)
+          #      self.fields['usuario_scrum'].queryset = RolUsuario.objects.filter()
+                #self.fields['product_owner'].queryset = ProductOwner.objects.filter()
+                
+        def clean_nombre(self):
+                if 'nombre' in self.cleaned_data:
+                        roles = Flujo.objects.all()
+                        nombre = self.cleaned_data['nombre']
+                        for i in roles:
+                                if nombre == i.nombre:
+                                        raise forms.ValidationError('Ya existe ese nombre de Flujo. Elija otro')
+                        return nombre
+
+class iFlujosForm(forms.Form):
     """Formulario para la creacion de proyectos."""
     nombre = forms.CharField(max_length=50, label='NOMBRE')
 
 
     def clean_nombre(self):
         if 'nombre' in self.cleaned_data:
-                nuevo = self.cleaned_data['nombre']
+                #nuevo = self.cleaned_data['nombre']
                 flujos = Flujo.objects.all()
                 nuevo = self.cleaned_data['nombre']
                 for flujo in flujos:
@@ -191,7 +245,39 @@ class FlujosForm(forms.Form):
                                 raise forms.ValidationError('Ya existe ese nombre. Elija otro')
                 return nuevo
 
+
 class ActividadesForm(forms.Form):
+
+    """Formulario para la creacion de proyectos."""
+    nombre = forms.CharField( max_length=50, label='NOMBRE',required=True)
+    #usuario_scrum = forms.ModelChoiceField(queryset=None, label='SCRUM MASTER')
+    #product_owner = forms.ModelChoiceField(queryset=None, label='PRODUCT OWNER')
+    #descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
+    #fecha_inicio = forms.DateField(required=False, input_formats=['%Y-%m-%d'],  widget = SelectDateWidget(), label='FECHA DE INICIO')
+    #sprint = forms.IntegerField(min_value=1,max_value=100, label= 'SPRINT(horas)')
+    #def __init__(self, *args, **kwargs):
+     #   super(ProyectosForm, self).__init__(*args, **kwargs)
+      #  self.fields['usuario_scrum'].queryset = RolUsuario.objects.filter()
+       # self.fields['product_owner'].queryset = ProductOwner.objects.filter()
+    def clean_nombre(self):
+        if 'nombre' in self.cleaned_data:
+                #nuevo = self.cleaned_data['nombre']
+                flujos = Actividades.objects.all()
+                nuevo = self.cleaned_data['nombre']
+                for flujo in flujos:
+                        if flujo.nombre == nuevo:
+                                raise forms.ValidationError('Ya existe ese nombre. Elija otro')
+                return nuevo
+
+
+
+
+
+
+
+
+
+class iActividadesForm(forms.Form):
     """Formulario para la creacion de proyectos."""
     nombre = forms.CharField(max_length=50, label='NOMBRE')
 
@@ -234,7 +320,16 @@ class UserStoryForm(forms.Form):
        # self.fields['usuario'].queryset =  UsuarioRolProyecto.objects.filter(Q(proyecto=proyecto))
 
 
-#************
+    def clean_nombre(self):
+        if 'nombre' in self.cleaned_data:
+                #nuevo = self.cleaned_data['nombre']
+                flujos = UserStory.objects.all()
+                nuevo = self.cleaned_data['nombre']
+                for flujo in flujos:
+                        if flujo.nombre == nuevo:
+                                raise forms.ValidationError('Ya existe ese nombre. Elija otro')
+                return nuevo
+
 class AdjuntoForm(forms.Form):
 	archivo = forms.FileField(required = False)
 

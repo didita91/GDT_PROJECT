@@ -81,8 +81,51 @@ Administracion general de proyectos
                                   context_instance=RequestContext(request))
 
 
+
+
 @login_required
 def crear_proyecto(request):
+    """
+Agrega un nuevo rol
+:param request:
+:return:
+"""
+    user = User.objects.get(username=request.user.username)
+    #Validacion de permisos---------------------------------------------
+    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    permisos_obj = []
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    print permisos
+    #-------------------------------------------------------------------
+    if request.method == 'POST':
+        form = ProyectosForm(request.POST)
+        if form.is_valid():
+            p = Proyecto()
+            p.nombre = form.cleaned_data['nombre']
+            p.usuario_scrum = form.cleaned_data['usuario_scrum']
+            p.product_owner = form.cleaned_data['product_owner']
+            p.descripcion = form.cleaned_data['descripcion']
+            p.fecha_inicio = form.cleaned_data['fecha_inicio']
+            p.sprint = form.cleaned_data['sprint']
+            p.save()
+	    relacion = UsuarioRolProyecto()
+            relacion.usuario = p.usuario_scrum.usuario
+            relacion.rol = Rol.objects.get(id=2)
+            relacion.proyecto = p
+            relacion.save()
+	    return HttpResponseRedirect("/proyectos")
+    else:
+        form = ProyectosForm()
+    return render_to_response('admin/proyectos/crear_proyecto.html',{'form':form,
+                                                            'user':user,
+                                                            'crear_proyecto': 'Crear proyecto' in permisos},context_instance=RequestContext(request))
+
+@login_required
+def icrear_proyecto(request):
     """
 Crea un nuevo proyecto.
 :param request:
@@ -101,7 +144,7 @@ Crea un nuevo proyecto.
     print permisos
     #-------------------------------------------------------------------
     if request.method == 'POST':
-        form = ProyectosForm(request.POST, request.FILES)
+        form = ProyectosForm(request.POST)
         if form.is_valid():
             p = Proyecto()
             p.nombre = form.cleaned_data['nombre']
@@ -118,14 +161,6 @@ Crea un nuevo proyecto.
             print "chauuu"
             relacion.proyecto = p
             relacion.save()
-
-            return HttpResponseRedirect('/proyectos')
-    else:
-        form = ProyectosForm()
-        return render_to_response('admin/proyectos/crear_proyecto.html',
-                                  {'form': form, 'user': user, 'crear_proyecto': 'Crear proyecto' in permisos},
-                                  context_instance=RequestContext(request))
-
 
 @login_required
 def del_proyecto(request, proyecto_id):
@@ -515,8 +550,57 @@ Administracion de flujos
     }, context_instance=RequestContext(request))
 
 
+
+
+
+
 @login_required
-def crear_flujos(request, proyecto_id):
+def crear_flujos(request,proyecto_id):
+    """
+Agrega un nuevo rol
+:param request:
+:return:
+"""
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    user = User.objects.get(username=request.user.username)
+    #Validacion de permisos---------------------------------------------
+    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    permisos_obj = []
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    print permisos
+    #-------------------------------------------------------------------
+    if request.method == 'POST':
+        form = FlujosForm(request.POST)
+        if form.is_valid():
+            p = Flujo()
+            p.nombre = form.cleaned_data['nombre']
+            p.proyecto=proyecto
+	    #p.usuario_scrum = form.cleaned_data['usuario_scrum']
+            #p.product_owner = form.cleaned_data['product_owner']
+            #p.descripcion = form.cleaned_data['descripcion']
+            #p.fecha_inicio = form.cleaned_data['fecha_inicio']
+            #p.sprint = form.cleaned_data['sprint']
+            p.save()
+            #relacion = UsuarioRolProyecto()
+            #relacion.usuario = p.usuario_scrum.usuario
+            #relacion.rol = Rol.objects.get(id=2)
+            #print relacion.rol
+            #print "chauuu"
+            #relacion.proyecto = p
+            #relacion.save()
+            return HttpResponseRedirect("/flujos&id="+str(proyecto_id))
+    else:
+        form = FlujosForm()
+    return render_to_response('flujo/crear_flujo.html',{'form':form,
+                                                            'user':user,'proyecto':proyecto,
+                                                            'crear_flujos': 'Crear flujos' in permisos},context_instance=RequestContext(request))
+
+@login_required
+def icrear_flujos(request, proyecto_id):
     """
 Creacion de Flujos para proyectos
 :param request:
@@ -537,7 +621,7 @@ Creacion de Flujos para proyectos
     print permisos
     #-------------------------------------------------------------------
     if request.method == 'POST':
-        form = FlujosForm(request.POST, request.FILES)
+        form = FlujosForm(request.POST)
         if form.is_valid():
             flujo = Flujo()
             flujo.nombre = form.cleaned_data['nombre']
@@ -554,7 +638,55 @@ Creacion de Flujos para proyectos
 
 
 @login_required
-def crear_actividades(request, proyecto_id):
+def crear_actividades(request,proyecto_id):
+    """
+Agrega un nuevo rol
+:param request:
+:return:
+"""
+    user = User.objects.get(username=request.user.username)
+    #Validacion de permisos---------------------------------------------
+    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    proyecto= Proyecto.objects.get(id=proyecto_id)
+    perm = get_permisos_proyecto(user,proyecto)
+    permisos_obj = []
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    print permisos
+    print proyecto.id
+    #-------------------------------------------------------------------
+    if request.method == 'POST':
+        form = ActividadesForm(request.POST)
+        if form.is_valid():
+            p = Actividades()
+            
+	    p.nombre = form.cleaned_data['nombre']
+            p.proyecto = proyecto
+            #p.usuario_scrum = form.cleaned_data['usuario_scrum']
+            #p.product_owner = form.cleaned_data['product_owner']
+            #p.descripcion = form.cleaned_data['descripcion']
+            #p.fecha_inicio = form.cleaned_data['fecha_inicio']
+            #p.sprint = form.cleaned_data['sprint']
+            p.save()
+            #relacion = UsuarioRolProyecto()
+            #relacion.usuario = p.usuario_scrum.usuario
+            #relacion.rol = Rol.objects.get(id=2)
+            #print relacion.rol
+            #print "chauuu"
+            #relacion.proyecto = p
+            #relacion.save()
+            return HttpResponseRedirect("/flujos&id="+str(proyecto_id))
+    else:
+        form =ActividadesForm()
+    return render_to_response('flujo/crear_actividades.html',{'form':form,'proyecto':proyecto,
+                                                            'user':user,
+                                                            'crear_actividades': 'Crear actividades' in permisos},context_instance=RequestContext(request))
+
+@login_required
+def icrear_actividades(request, proyecto_id):
     """
 Crear Actividades
 :param request:

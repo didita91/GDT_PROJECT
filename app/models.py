@@ -1,5 +1,6 @@
 # -*- coding: iso-8859-15 -*-
 from django.db import models
+
 from django.contrib.auth.models import User
 #from Proyecto.models import Proyecto
 # Create your models here.
@@ -96,7 +97,7 @@ class Proyecto(models.Model):
     """
     Contiene los datos de cada proyecto
     """
-    nombre = models.CharField(unique=True, max_length=50)
+    nombre = models.CharField(unique=True,max_length=50)
     usuario_scrum = models.ForeignKey(RolUsuario)
     product_owner = models.ForeignKey(ProductOwner)
     descripcion = models.TextField(null=True, blank= True)
@@ -126,7 +127,7 @@ class Flujo(models.Model):
 
 class Actividades(models.Model):
 
-    nombre = models.CharField(unique=True, max_length=50)
+    nombre = models.CharField( max_length=50)
     estado = models.IntegerField(max_length=1, default=1)
     proyecto = models.ForeignKey(Proyecto)
     def __unicode__(self):
