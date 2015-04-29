@@ -756,6 +756,7 @@ def crear_user_story(request, proyecto_id):
     :return:
     """
     user = User.objects.get(username=request.user.username)
+
     proyecto = Proyecto.objects.get(pk=proyecto_id)
 
     #Validacion de permisos---------------------------------------------
@@ -773,9 +774,12 @@ def crear_user_story(request, proyecto_id):
         if form.is_valid():
             us = UserStory()
             us.nombre = form.cleaned_data['nombre']
-            us.usuario = form.cleaned_data['usuario']  #solo en el historial?
+            #us.usuario = form.cleaned_data['usuario']  #solo en el historial?
+
             us.estado = 1
             us.version = 1
+            us.valor_negocio=form.cleaned_data['valor_negocio']
+            us.valor_tecnico=form.cleaned_data['valor_tecnico']
             us.prioridad = form.cleaned_data['prioridad']
             us.descripcion = form.cleaned_data['descripcion']
             us.habilitado = True
@@ -915,7 +919,7 @@ def mod_actividades(request, proyecto_id, acti_id):
                                                            'mod_acti': 'Modificar actividad' in permisos},
                               context_instance=RequestContext(request))
 
-
+#----------------------------------CONFIGURACION PREVIA AL INICIO DE CADA SPRINT---------------------------
 @login_required
 def conf_proyecto(request, proyecto_id):
     """
@@ -935,6 +939,7 @@ def conf_proyecto(request, proyecto_id):
             act=1
     if act is not 0:
         return render_to_response('conf/config_inicial.html', {'lista': proyecto,
+                                                                   'proyecto':proyecto,
                                                                    'user': user,
                                                                    'ver_proyectos': 'Ver proyectos' in permisos,
                                                                    'crear_proyecto': 'Crear proyecto' in permisos,
@@ -945,3 +950,124 @@ def conf_proyecto(request, proyecto_id):
 
     else:
         return HttpResponse("Debe agregar por lo menos un flujo con una actividad para  iniciar el proyecto")
+
+
+#----------->Generar Equipo
+@login_required
+def admin_equipo(request,proyecto_id):
+    """
+Dirigue a la interfaz, para la creacion de equipos de trabajo  para el sprint dado
+:param request:
+:param proyecto_id:
+:return:
+"""
+    user = User.objects.get(username=request.user.username)
+    p = Proyecto.objects.get(pk=proyecto_id)
+    #Validacion de permisos---------------------------------------------
+    roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p).only('rol')
+    permisos_obj = []
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    print permisos
+    #-------------------------------------------------------------------
+    miembros = Equipo.objects.filter(sprint=1).order_by('id')
+    lista = []
+    listah=[]
+
+    for i in miembros:
+        if not i.usuario in lista:
+             lista.append(i.usuario)
+
+    if request.method == 'POST':
+        form = FilterForm(request.POST)
+        if form.is_valid():
+            palabra = form.cleaned_data['filtro']
+            lista = Equipo.objects.filter(Q(username__icontains=palabra) | Q(first_name__icontains=palabra) | Q(
+                last_name__icontains=palabra)).order_by('id')
+            paginas = form.cleaned_data['paginas']
+            request.session['nro_items'] = paginas
+            paginator = Paginator(lista, int(paginas))
+            try:
+                page = int(request.GET.get('page', '1'))
+            except ValueError:
+                page = 1
+            try:
+                pag = paginator.page(page)
+            except (EmptyPage, InvalidPage):
+                pag = paginator.page(paginator.num_pages)
+            return render_to_response('conf/admin_equipo.html', {'lista': lista, 'pag': pag, 'form': form,
+                                                                         'user': user,
+                                                                         'proyecto': Proyecto.objects.get(
+                                                                             id=proyecto_id),
+                                                                         'miembros': lista,
+
+                                                                         'ver_miembros': 'Ver miembros' in permisos,
+                                                                         'abm_miembros': 'ABM miembros' in permisos},
+                                      context_instance=RequestContext(request))
+    else:
+        try:
+            page = int(request.GET.get('page', '1'))
+        except ValueError:
+            page = 1
+        if not 'nro_items' in request.session:
+            request.session['nro_items'] = 5
+        paginas = request.session['nro_items']
+        paginator = Paginator(lista, int(paginas))
+        try:
+            pag = paginator.page(page)
+        except (EmptyPage, InvalidPage):
+            pag = paginator.page(paginator.num_pages)
+        form = FilterForm(initial={'paginas': paginas})
+        return render_to_response('conf/admin_equipo.html', {'lista': lista, 'pag': pag, 'form': form,
+                                                                     'user': user,
+                                                                     'proyecto': Proyecto.objects.get(id=proyecto_id),
+                                                                     'miembros': lista,
+                                                                     'ver_miembros': 'Ver miembros' in permisos,
+                                                                     'abm_miembros': 'ABM miembros' in permisos},
+                                  context_instance=RequestContext(request))
+
+@login_required
+def add_miembro_equipo(request, proyecto_id):
+    """
+Agregar usuarios al equipo
+:param request:
+:param proyecto_id:
+:return:
+"""
+    user = User.objects.get(username=request.user.username)
+    p = get_object_or_404(Proyecto, id=proyecto_id)
+    #Validacion de permisos---------------------------------------------
+    roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p).only('rol')
+    usuario = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p)
+    permisos_obj = []
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    print permisos
+
+    #-------------------------------------------------------------------
+    if request.method == 'POST':
+        form = MiembroEquipoForm(p, request.POST)
+        if form.is_valid():
+            relacion = Equipo()
+            relacion.usuario = form.cleaned_data['usuario']
+            relacion.proyecto = Proyecto.objects.get(pk=proyecto_id)
+            relacion.sprint=1
+            relacion.horas=form.cleaned_data['horas']
+            relacion.save()
+
+            return HttpResponseRedirect("/configuracion/equipo&id=" + str(proyecto_id))
+    else:
+        form = MiembroEquipoForm(p)
+    return render_to_response('conf/add_miembroE.html', {'form': form,
+                                                              'user': user,
+                                                              'proyecto': p,
+                                                              'abm_miembros': 'ABM miembros' in permisos,
+                                                              'asignar_roles': 'Asignar roles'},
+                              context_instance=RequestContext(request))
+

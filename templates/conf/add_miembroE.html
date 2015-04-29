@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Equipo{% endblock %}}
+{% block content %}
+        <ol class="breadcrumb">
+       <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/"><strong>Configuracion</strong></a></li>
+            <li><a class="text-danger" href="/configuracion/equipo&id={{ proyecto.id }}/"><strong>Equipo</strong></a></li>
+       <li  class="active"><strong>Agregar miembro a Equipo</strong></li>
+</ol>
+<center><h2 class="text-danger"><strong> AGREGAR NUEVO MIEMBRO AL EQUIPO</strong></h2></center>
+<form id="form_id" action="" method="post">
+   <table>
+          {{form.as_p}}
+   </table>
+   <input type="submit" class= "btn btn-default" value="GUARDAR" />
+   <input type="button" class= "btn btn-default" value="CANCELAR" onClick = "location.href='/configuracion/equipo&id={{proyecto.id}}' "/>
+</form>
+{% endblock%}
