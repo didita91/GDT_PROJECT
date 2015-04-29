@@ -195,7 +195,6 @@ class ActividadesForm(forms.Form):
 
     def clean_nombre(self):
         if 'nombre' in self.cleaned_data:
-                nuevo = self.cleaned_data['nombre']
                 acti = Actividades.objects.all()
                 nuevo = self.cleaned_data['nombre']
                 for activ in acti:

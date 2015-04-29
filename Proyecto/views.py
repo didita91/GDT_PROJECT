@@ -549,19 +549,17 @@ def crear_flujos(request,proyecto_id):
                                                             'crear_flujos': 'Crear flujos' in permisos},context_instance=RequestContext(request))
 
 @login_required
-def crear_actividades(request, proyecto_id):
+def crear_actividades(request,proyecto_id):
     """
-Crear Actividades
+Agrega una nueva actividad een el proyecto
 :param request:
-:param proyecto_id:
 :return:
 """
-
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
-    roles = UsuarioRolProyecto.objects.filter(usuario=user).only('rol')
-    proyecto = Proyecto.objects.get(id=proyecto_id)
-    perm = get_permisos_proyecto(user, proyecto)
+    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    proyecto= Proyecto.objects.get(id=proyecto_id)
+    perm = get_permisos_proyecto(user,proyecto)
     permisos_obj = []
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
@@ -569,24 +567,24 @@ Crear Actividades
     for i in permisos_obj:
         permisos.append(i.nombre)
     print permisos
+    print proyecto.id
     #-------------------------------------------------------------------
     if request.method == 'POST':
-        form = ActividadesForm(request.POST, request.FILES)
+        form = ActividadesForm(request.POST)
         if form.is_valid():
-            actividades = Actividades()
-            actividades.nombre = form.cleaned_data['nombre']
-            actividades.proyecto = proyecto
-            actividades.save()
+            p = Actividades()
 
-            return HttpResponseRedirect("/flujos&id=" + str(proyecto_id))
+	    p.nombre = form.cleaned_data['nombre']
+            p.proyecto = proyecto
+
+            p.save()
+
+            return HttpResponseRedirect("/flujos&id="+str(proyecto_id))
     else:
-
-        form = ActividadesForm()
-        return render_to_response('flujo/crear_actividades.html', {'form': form, 'user': user, 'proyecto': proyecto_id,
-                                                                   'crear_actividades': 'Crear actividades' in permisos},
-                                  context_instance=RequestContext(request))
-
-
+        form =ActividadesForm()
+    return render_to_response('flujo/crear_actividades.html',{'form':form,'proyecto':proyecto,
+                                                            'user':user,
+                                                            'crear_actividades': 'Crear actividades' in permisos},context_instance=RequestContext(request))
 @login_required
 def add_actividades(request, proyecto_id, flujo_id):
     """
