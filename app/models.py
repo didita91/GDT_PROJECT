@@ -115,7 +115,7 @@ class UsuarioRolProyecto(models.Model):
     class Meta:
         unique_together = [("usuario", "rol", "proyecto")]
     def __unicode__(self):
-        return self.usuario
+        return unicode(self.usuario)
 
 class Flujo(models.Model):
 
@@ -172,7 +172,6 @@ class RegistroHistorial(models.Model):
 
 #---------------------------CONFIGURACION DE SPRINT
 class Equipo(models.Model):
-
     usuario = models.ForeignKey(User)
     horas = models.PositiveIntegerField()#horas de trabajo de ese miembro
     sprint = models.PositiveIntegerField()#sprint en el que se encuentra
@@ -181,4 +180,9 @@ class Equipo(models.Model):
     class Meta:
         unique_together = [("usuario", "horas","sprint" ,"proyecto")]
     def __unicode__(self):
-        return self.usuario
+        return unicode(self.usuario)
+class ResponsableUS(models.Model):
+    usuario = models.ForeignKey(User)
+    us = models.ForeignKey(UserStory)
+    def __unicode__(self):
+        return unicode(self.usuario)

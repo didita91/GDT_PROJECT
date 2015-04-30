@@ -85,9 +85,22 @@ select{
           <li class="nav-header-tools">Configuracion Sprint </li>
           <li class="alert alert-danger">
    <form action="." method="POST">
-         {% csrf_token %}
+
+                <table class="table table-bordered">
+                <thead>
+                    <th class="titulo"><b class="text-danger"><strong>USER STORY</strong></b></th>
+                </thead>
+
+            <tbody>
+              {% for i in us %}
+<tr>
 
 
+                           <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
+                            <td><a class="btn btn-default btn-xs" href="/configuracion/equipo&id={{proyecto.id}}/responsable&id={{i.id }}/"><strong>RESPONSABLE</strong></a></td>
+</tr>
+{% endfor %}
+   </tbody>
 	    </table>
      </form>
      </li>
