@@ -135,22 +135,27 @@ class ProyectosForm(forms.Form):
                                 raise forms.ValidationError('Ya existe ese nombre. Elija otro')
                 return nuevo
 
+
+
 class UsuarioProyectoForm(forms.Form):
-    usuario = forms.ModelChoiceField(queryset = User.objects.all())
+    usuario = forms.ModelChoiceField(queryset = None)
     #roles = forms.ModelMultipleChoiceField(queryset = Rol.objects.filter(categoria=2).exclude(id=2), widget = forms.CheckboxSelectMultiple, required=False)
 
     proyecto = Proyecto()
 
-    def __init__(self, proyecto, *args, **kwargs):
+    def __init__(self, proyecto,*args, **kwargs):
         super(UsuarioProyectoForm, self).__init__(*args, **kwargs)
         self.fields['usuario'].queryset = User.objects.filter(~Q(id = proyecto.usuario_scrum.usuario.id))
 
-
+    #El problema se encontraba en el if no estaba igualando correctamente
     def clean_usuario(self):
         if 'usuario' in self.cleaned_data:
-            usuarios_existentes = UsuarioRolProyecto.objects.filter(proyecto= self.proyecto.id)
+            usuarios_existentes = UsuarioRolProyecto.objects.filter()
+            print "probandoooo"
             for i in usuarios_existentes:
-                if(usuarios_existentes.usuario == forms.clean_data['usuario']):
+                print i.usuario
+                if(i.usuario == self.cleaned_data['usuario']):
+                    print "teeeeeeeest"
                     raise forms.ValidationError('Ya existe este usuario')
             return self.cleaned_data['usuario']
 
