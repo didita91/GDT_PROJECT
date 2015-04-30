@@ -325,7 +325,7 @@ Agregar usuarios al proyecto
 
     #-------------------------------------------------------------------
     if request.method == 'POST':
-        form = UsuarioProyectoForm(p, request.POST)
+        form = UsuarioProyectoForm(p,request.POST)
         if form.is_valid():
             relacion = UsuarioRolProyecto()
             relacion.usuario = form.cleaned_data['usuario']
