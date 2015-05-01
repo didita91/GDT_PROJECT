@@ -159,3 +159,18 @@ class TestAdminActividades(TestCase):
         self.assertEquals(f.__unicode__(),f.nombre)
 	print('Test agregar us, exitoso')
 
+#----------------------------CONFIGURACION
+class TestConfiguracion(TestCase):
+    def add_equipo(self, nombre='test',descripcion='test'):
+	u = User.objects.create(username='u1')
+	scrum = RolUsuario(1)
+        product_owner = ProductOwner(1)
+        fecha = datetime.date(day=01,month=03,year=2015)
+        P = Proyecto.objects.create(nombre=nombre,usuario_scrum=scrum,product_owner=product_owner,descripcion=descripcion,fecha_inicio=fecha,sprint=1)
+	E = Equipo.objects.create(usuario=u,horas=1,sprint=1,proyecto=	P)
+	return E
+    def test_add_equipo(self):
+        e = self.add_equipo(nombre='test')
+        self.assertTrue(isinstance(e,Equipo))
+        #self.assertEquals(e.__unicode__(),e.usuario)
+    
