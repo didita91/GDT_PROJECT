@@ -247,20 +247,23 @@ class ModUserStoryForm(forms.Form):
  
 #**********************EQUIPO DE TRABAJO EN SPRINT
 class MiembroEquipoForm(forms.Form):
-    usuario = forms.ModelMultipleChoiceField(queryset = None, label = 'Usuarios', required=True)
+    usuario = forms.ModelChoiceField(queryset = None, label = 'Usuarios', required=True)
     proyecto = Proyecto()
     sprint = 1
     horas=forms.IntegerField(min_value=1, max_value=1000)
 
     def __init__(self, proyecto, *args, **kwargs):
         super(MiembroEquipoForm, self).__init__(*args, **kwargs)
-        self.fields['usuario'].queryset = UsuarioRolProyecto.objects.filter(~Q(id = proyecto.usuario_scrum.usuario.id) | Q(proyecto=proyecto.id))
+        self.fields['usuario'].queryset = UsuarioRolProyecto.objects.filter(proyecto=proyecto.id)
         #self.fields['horas'].queryset = Equipo.objects.all()
     def clean_usuario(self):
         if 'usuario' in self.cleaned_data:
-            usuarios_existentes = Equipo.objects.filter(id = self.proyecto.id)
+            usuarios_existentes = Equipo.objects.filter()
+            print "jajajajaja"
             for i in usuarios_existentes:
-                if(i.usuario == self.clean_data['usuario']):
+                print i.usuario
+                if(i.usuario == self.cleaned_data['usuario']):
+                    print "jajajajaaj"
                     raise forms.ValidationError('Ya existe este usuario')
             return self.cleaned_data['usuario']
 
@@ -268,4 +271,15 @@ class RespUserStoryForm(forms.Form):
     usuario = forms.ModelChoiceField(required=True,queryset=None)
     def __init__(self,us,*args, **kwargs):
         super(RespUserStoryForm,self).__init__(*args,**kwargs)
-        self.fields['usuario'].queryset= Equipo.objects.filter(sprint=us)
+        self.fields['usuario'].queryset= UsuarioRolProyecto.objects.filter(eq=1).only('usuario')
+    def clean_usuario(self):
+        if 'usuario' in self.cleaned_data:
+            usuarios_existentes = ResponsableUS.objects.filter()
+            print "jajajajaja"
+            print self.cleaned_data['usuario']
+            for i in usuarios_existentes:
+                print "tttttt"
+                if(i.usuario == self.cleaned_data['usuario']):
+                    print "jajajajaaj"
+                    raise forms.ValidationError('Ya existe este usuario')
+            return self.cleaned_data['usuario']

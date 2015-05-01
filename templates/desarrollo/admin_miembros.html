@@ -31,10 +31,13 @@
 	        </tr>
 	      </thead>
               <tbody>
+                <td><strong>{{proyecto.product_owner}} Product Owner </strong></td>
 	       {% for i in miembros %}
 
                    <tr>
                      <td><strong>{{i.username}}</strong></td>
+
+
                      {% if abm_miembros %}
                               {% ifnotequal proyecto.usuario_scrum.usuario.id i.id%}
  		        <td><a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/cambiar&id={{i.id}}"><strong>ADMINISTRAR ROLES</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
