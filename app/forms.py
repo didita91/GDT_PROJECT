@@ -283,3 +283,14 @@ class RespUserStoryForm(forms.Form):
                     print "jajajajaaj"
                     raise forms.ValidationError('Ya existe este usuario')
             return self.cleaned_data['usuario']
+
+class UserStoryFlujoForm(forms.Form):
+    flujo = forms.ModelChoiceField(queryset = Flujo.objects.all())
+    proyecto = Proyecto()
+
+    def __init__(self, proyecto, *args, **kwargs):
+        super(UserStoryFlujoForm, self).__init__(*args, **kwargs)
+    def clean_flujo(self):
+        if 'flujo' in self.cleaned_data:
+            flujos_existentes = Flujo.objects.filter(id =self.proyecto.id)
+            return self.cleaned_data['flujo']

@@ -1171,3 +1171,44 @@ def responsable_us(request, proyecto_id, us_id):
             dict[i.usuario.id] = False
     form = RespUserStoryForm(1,initial = {'usuario': dict})
     return render_to_response("conf/asignar_us.html", {'form':form,'proyecto':us.proyecto}, context_instance=RequestContext(request))
+
+@login_required
+def asignar_flujoUS(request, proyecto_id, us_id):
+    """
+Asigna flujos a user story
+:param request:
+:param proyecto_id:
+:return:us_id
+"""
+    user = User.objects.get(username=request.user.username)
+    p = get_object_or_404(Proyecto, id=proyecto_id)
+    permisos = get_permisos_sistema(user)
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    perm = get_permisos_proyecto(user,proyecto)
+    lista_flujos = Flujo.objects.filter(proyecto=proyecto_id)
+    us= UserStory.objects.get(id=us_id)
+    if request.method == 'POST':
+        form = UserStoryFlujoForm(1,request.POST)
+        if form.is_valid():
+
+            nuevo = flujoUS()
+            nuevo.flujo = form.cleaned_data['flujo']
+            nuevo.us= us
+            nuevo.save()
+            return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id))
+
+            #flujoID= flujoUS();
+            #flujoID.flujo= lista_flujos.id
+            #flujoID.us=us
+            #flujoID.save()
+        else:
+            return render_to_response("conf/asignar_flujoaUS.html", {'form':form}, context_instance=RequestContext(request))
+    dict = {}
+    for i in lista_flujos:
+            print i.nombre
+            dict[i.proyecto] = False
+    form = UserStoryFlujoForm(1,initial = {'flujo': dict})
+    return render_to_response("conf/asignar_flujoaUS.html", {'form':form}, context_instance=RequestContext(request))
+
+def iniciarsprint(request, proyecto_id):
+    return render_to_response("conf/sprint.html", context_instance=RequestContext(request))
