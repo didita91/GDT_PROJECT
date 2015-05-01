@@ -113,6 +113,7 @@ select{
 	                 <th class="titulo"><b class="text-danger"><strong>PRIORIDAD</strong></b></th>
                      <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
                      <th class="'titulo"><b class="text-danger"><strong>DURACION ESTIMADA (Horas)</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>ACCIONES</strong></b></th>
             </tr>
                 </thead>
                 <tbody>
@@ -135,16 +136,16 @@ select{
                          <td><strong>{{i.prioridad}}</strong></td>
                          <td><strong>{{i.descripcion}}</strong></td>
                          <td><strong>{{i.duracion}}</strong></td>
-                         <td>
-                            {% if ver_historial_user_story  or ver_historial_us%}
+                         <td> <a class="btn btn-default" href="/userstories&id={{proyecto.id}}/historial&id={{i.id}}/"><strong>HISTORIAL DE TAREAS</strong></a>&nbsp;</td>
+                           <!-- {% if ver_historial_user_story  or ver_historial_us%}--
                                   <a class="btn btn-default" href="/userstories&id={{proyecto.id}}/historial&id={{i.id}}/"><strong>HISTORIAL</strong></a>&nbsp;
 
-                            {% endif %}
+                          <!---  {% endif %}
                                {% if revisar_user_story %}
-                                  <!--<a class="btn btn-default" href="/userstories&id={{proyecto.id}}/revisar&id={{i.id}}/ "><strong>REVISAR</strong></a>&nbsp;-->
+                                  <!--<a class="btn btn-default" href="/userstories&id={{proyecto.id}}/revisar&id={{i.id}}/ "><strong>REVISAR</strong></a>&nbsp;
                                {% endif %}
 
-                         </td>
+                         </td>-->
 	</tr>
 	{% endfor %}
 
