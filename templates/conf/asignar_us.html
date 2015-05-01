@@ -3,7 +3,7 @@
 {% block content %}
 
 <center><h2><b> Asginar Responsable de User Story </b></h2></center><br>
-
+holaa{{ proyecto.id }}
 
    {% if mensaje %}
       <center><p>SE HA PRODUCIDO EL SIGUIENTE INCONVENIENTE:</p>
@@ -16,7 +16,7 @@
 		   <tr>
 			<td colspan="2" class="buttonlist">
                         <br><center><input type="submit" class= "btn btn-default" value="GUARDAR" />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class= "btn btn-default" value="CANCELAR" onClick = "location.href='/usuarios' "/></center>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class= "btn btn-default" value="CANCELAR" onClick = "location.href='/configuracion/equipo&id={{proyecto.id}}' "/></center>
                         </td>
 		   </tr>
 	     </form>

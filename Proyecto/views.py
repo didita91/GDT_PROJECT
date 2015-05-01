@@ -114,10 +114,12 @@ Crea un nuevo proyecto.
             relacion = UsuarioRolProyecto()
             relacion.usuario = p.usuario_scrum.usuario
             relacion.rol = Rol.objects.get(id=2)
+
             print relacion.rol
             print "chauuu"
             relacion.proyecto = p
             relacion.save()
+            p
 
             return HttpResponseRedirect('/proyectos')
     else:
@@ -1017,6 +1019,7 @@ Dirigue a la interfaz, para la creacion de equipos de trabajo  para el sprint da
     roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p).only('rol')
     permisos_obj = []
     for i in roles:
+        print "mundooo"
         permisos_obj.extend(i.rol.permisos.all())
     permisos = []
     for i in permisos_obj:
@@ -1028,7 +1031,7 @@ Dirigue a la interfaz, para la creacion de equipos de trabajo  para el sprint da
     listah=[]
 
     for i in miembros:
-        if not i.usuario in lista:
+        if not i.usuario.usuario in lista:
              lista.append(i.usuario)
 
     if request.method == 'POST':
@@ -1107,11 +1110,19 @@ Agregar usuarios al equipo
         form = MiembroEquipoForm(p, request.POST)
         if form.is_valid():
             relacion = Equipo()
+
             relacion.usuario = form.cleaned_data['usuario']
             relacion.proyecto = Proyecto.objects.get(pk=proyecto_id)
             relacion.sprint=1
             relacion.horas=form.cleaned_data['horas']
             relacion.save()
+            for i in usuario:
+
+                if relacion.usuario.id == i.id:
+                    print "lafdjklajdfñlakfjd"
+                    i.eq= relacion.id
+                    i.save()
+
 
             return HttpResponseRedirect("/configuracion/equipo&id=" + str(proyecto_id))
     else:
@@ -1125,17 +1136,21 @@ Agregar usuarios al equipo
 @login_required
 def responsable_us(request, proyecto_id, us_id):
     """
-Asigna roles de sistema a un usuario
-:param request:
-:param usuario_id:
-:return:
-"""
+    Asigna roles de sistema a un usuario
+    :param request:
+    :param usuario_id:
+    :return:
+    """
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     proyecto = Proyecto.objects.get(id=proyecto_id)
+    print proyecto
     perm = get_permisos_proyecto(user,proyecto)
-    lista_miembros = Equipo.objects.filter(sprint=1)
+    lista_miembros = UsuarioRolProyecto.objects.filter(proyecto=proyecto)
+
     us= UserStory.objects.get(id=us_id)
+    print "holaaaaa"
+    print us.proyecto
     if request.method == 'POST':
         form = RespUserStoryForm(1,request.POST)
         if form.is_valid():
@@ -1143,16 +1158,16 @@ Asigna roles de sistema a un usuario
             nuevo = ResponsableUS()
 
             nuevo.usuario = form.cleaned_data['usuario']
-            nuevo.us= us_id
+            nuevo.us= us
             nuevo.save()
 
 
-            return HttpResponseRedirect("/usuarios")
+            return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id))
         else:
-            return render_to_response("conf/asignar_us.html", {'form':form}, context_instance=RequestContext(request))
+            return render_to_response("conf/asignar_us.html", {'form':form,'proyecto':us.proyecto}, context_instance=RequestContext(request))
     dict = {}
     for i in lista_miembros:
             print i.usuario
             dict[i.usuario.id] = False
     form = RespUserStoryForm(1,initial = {'usuario': dict})
-    return render_to_response("conf/asignar_us.html", {'form':form}, context_instance=RequestContext(request))
+    return render_to_response("conf/asignar_us.html", {'form':form,'proyecto':us.proyecto}, context_instance=RequestContext(request))
