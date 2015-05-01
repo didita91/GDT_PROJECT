@@ -36,6 +36,7 @@ urlpatterns = patterns('',
      url(r'^configuracion&id=(?P<proyecto_id>\d+)/$',conf_proyecto),
      url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/$', admin_equipo),
      url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/nuevo/$',add_miembro_equipo),
+     url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/responsable&id=(?P<us_id>\d+)/$',responsable_us),
 
 
 

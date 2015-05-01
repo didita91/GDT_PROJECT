@@ -978,15 +978,18 @@ def conf_proyecto(request, proyecto_id):
     permisos = get_permisos_sistema(user)
     proyecto = Proyecto.objects.get(id=proyecto_id)
     flujos= Flujo.objects.filter(proyecto=proyecto_id)
+    us = UserStory.objects.filter(proyecto=proyecto_id,estado=1)
+    for i in us:
+        print i.nombre
     act =0
     for i in flujos:
         actividad= ActividadesFlujo.objects.filter(flujo=i)
         if actividad:
-            print actividad
+           # print actividad
             act=1
     if act is not 0:
         return render_to_response('conf/config_inicial.html', {'lista': proyecto,
-                                                                   'proyecto':proyecto,
+                                                                   'proyecto':proyecto, 'us':us,
                                                                    'user': user,
                                                                    'ver_proyectos': 'Ver proyectos' in permisos,
                                                                    'crear_proyecto': 'Crear proyecto' in permisos,
@@ -1089,6 +1092,8 @@ Agregar usuarios al equipo
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p).only('rol')
     usuario = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p)
+
+
     permisos_obj = []
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
@@ -1117,4 +1122,37 @@ Agregar usuarios al equipo
                                                               'abm_miembros': 'ABM miembros' in permisos,
                                                               'asignar_roles': 'Asignar roles'},
                               context_instance=RequestContext(request))
+@login_required
+def responsable_us(request, proyecto_id, us_id):
+    """
+Asigna roles de sistema a un usuario
+:param request:
+:param usuario_id:
+:return:
+"""
+    user = User.objects.get(username=request.user.username)
+    permisos = get_permisos_sistema(user)
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    perm = get_permisos_proyecto(user,proyecto)
+    lista_miembros = Equipo.objects.filter(sprint=1)
+    us= UserStory.objects.get(id=us_id)
+    if request.method == 'POST':
+        form = RespUserStoryForm(1,request.POST)
+        if form.is_valid():
 
+            nuevo = ResponsableUS()
+
+            nuevo.usuario = form.cleaned_data['usuario']
+            nuevo.us= us_id
+            nuevo.save()
+
+
+            return HttpResponseRedirect("/usuarios")
+        else:
+            return render_to_response("conf/asignar_us.html", {'form':form}, context_instance=RequestContext(request))
+    dict = {}
+    for i in lista_miembros:
+            print i.usuario
+            dict[i.usuario.id] = False
+    form = RespUserStoryForm(1,initial = {'usuario': dict})
+    return render_to_response("conf/asignar_us.html", {'form':form}, context_instance=RequestContext(request))

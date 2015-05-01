@@ -247,19 +247,25 @@ class ModUserStoryForm(forms.Form):
  
 #**********************EQUIPO DE TRABAJO EN SPRINT
 class MiembroEquipoForm(forms.Form):
-    usuario = forms.ModelChoiceField(required=True, queryset = None)
+    usuario = forms.ModelMultipleChoiceField(queryset = None, label = 'Usuarios', required=True)
     proyecto = Proyecto()
     sprint = 1
     horas=forms.IntegerField(min_value=1, max_value=1000)
 
     def __init__(self, proyecto, *args, **kwargs):
         super(MiembroEquipoForm, self).__init__(*args, **kwargs)
-        self.fields['usuario'].queryset = UsuarioRolProyecto.objects.filter(proyecto=proyecto.id)
+        self.fields['usuario'].queryset = UsuarioRolProyecto.objects.filter(~Q(id = proyecto.usuario_scrum.usuario.id) | Q(proyecto=proyecto.id))
+        #self.fields['horas'].queryset = Equipo.objects.all()
     def clean_usuario(self):
-		if 'usuario' in self.cleaned_data:
-			roles = UsuarioRolProyecto.objects.all(usuario=self)
-			nombre = self.cleaned_data['usuario']
-			for i in roles:
-				if nombre == i.usuario:
-					raise forms.ValidationError('Ya existe ese nombre de rol. Elija otro')
-			return nombre
+        if 'usuario' in self.cleaned_data:
+            usuarios_existentes = Equipo.objects.filter(id = self.proyecto.id)
+            for i in usuarios_existentes:
+                if(i.usuario == self.clean_data['usuario']):
+                    raise forms.ValidationError('Ya existe este usuario')
+            return self.cleaned_data['usuario']
+
+class RespUserStoryForm(forms.Form):
+    usuario = forms.ModelChoiceField(required=True,queryset=None)
+    def __init__(self,us,*args, **kwargs):
+        super(RespUserStoryForm,self).__init__(*args,**kwargs)
+        self.fields['usuario'].queryset= Equipo.objects.filter(sprint=us)
