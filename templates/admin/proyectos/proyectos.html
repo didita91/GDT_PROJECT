@@ -35,7 +35,7 @@ border-radius: 10px 0px 0px ;
 padding-top: 15px;
 padding-bottom: 15px;
 /* padding-left: 40px; */
-        display: block;
+    display: block;
 padding: 8px 15px;
 font-size: 18px;
 font-weight: bold;
@@ -104,7 +104,8 @@ select{
 	        <tr>
                     <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
 	            <th class="titulo"><b class="text-danger"><strong>SCRUM MASTER</strong></b></th>
-                    <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
+                    <th class="titulo"><b class="text-danger"><strong>PRODUCT OWNER</strong></b></th>
+		    <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
 	            <th class="titulo"><b class="text-danger"><strong>FECHA DE INICIO</strong></b></th>
 	        </tr>
                </thead>
@@ -117,12 +118,14 @@ select{
                            <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
                         {% endif %}
                          <td><strong>{{i.usuario_scrum}}</strong></td>
+			  <td><strong>{{i.product_owner}}</strong></td>
 		         <td><strong>{{i.descripcion}}</strong></td>
 		         <td><strong>{{i.fecha_inicio}}</strong></td>
 
                  <td>
 		      {% if eliminar_proyecto %}
-                                <a class="btn btn-default btn-xs" href="/proyectos/del&id={{i.id}}/"><strong>ELIMINAR</strong></a>
+                                <a class="btn btn-default btn-xs" href="/proyectos/
+del&id={{i.id}}/"><strong>ELIMINAR</strong></a>
                       {% endif %}
 		 </td>
 		     </tr>

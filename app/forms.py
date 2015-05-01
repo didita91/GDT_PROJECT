@@ -63,7 +63,7 @@ class CambiarPasswordForm(forms.Form):
 
 class AsignarRolesForm(forms.Form):
     #Asignar roles
-	roles = forms.ModelMultipleChoiceField(queryset = None, widget = forms.CheckboxSelectMultiple, label = 'ROLES DISPONIBLES', required=False)
+	roles = forms.ModelMultipleChoiceField(queryset = None, label = 'ROLES DISPONIBLES', required=False)
 
 	def __init__(self, cat, *args, **kwargs):
 		super(AsignarRolesForm, self).__init__(*args, **kwargs)
@@ -89,7 +89,7 @@ class RolesForm(forms.Form):
 
 
 class PermisosForm(forms.Form):
-	permisos = forms.ModelMultipleChoiceField(queryset = Permiso.objects.filter(categoria = 1), widget = forms.CheckboxSelectMultiple, required = False)
+	permisos = forms.ModelMultipleChoiceField(queryset = Permiso.objects.filter(categoria = 1),  required = False)
 
 class PermisosProyectoForm(forms.Form):
 
@@ -116,17 +116,15 @@ class FilterForm2(forms.Form):
 class ProyectosForm(forms.Form):
     """Formulario para la creacion de proyectos."""
     nombre = forms.CharField(max_length=50, label='NOMBRE')
-    usuario_scrum = forms.ModelChoiceField(queryset=None, label='SCRUM')
+    usuario_scrum = forms.ModelChoiceField(queryset=None, label='SCRUM MASTER')
+    product_owner = forms.ModelChoiceField(queryset=None, label='PRODUCT OWNER')
     descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
     fecha_inicio = forms.DateField(required=False, label='FECHA DE INICIO')
-    #fecha_fin = forms.DateField(required=False, label='FECHA DE FINAIZACIÓN')
-    #cronograma = forms.FileField(required=False, label='CRONOGRAMA')
-    #cantidad = forms.IntegerField(required=False, label='CANTIDAD')
-    #cant_actual = forms.IntegerField(required=False, label='Actual')
-    def __init__(self, *args, **kwargs):
+    sprint = forms.IntegerField(min_value=1,max_value=100)
+    def __init__(self,*args, **kwargs):
                 super(ProyectosForm, self).__init__(*args, **kwargs)
                 self.fields['usuario_scrum'].queryset = RolUsuario.objects.filter()
-
+                self.fields['product_owner'].queryset = ProductOwner.objects.filter()
     def clean_nombre(self):
         if 'nombre' in self.cleaned_data:
                 nuevo = self.cleaned_data['nombre']
@@ -137,22 +135,27 @@ class ProyectosForm(forms.Form):
                                 raise forms.ValidationError('Ya existe ese nombre. Elija otro')
                 return nuevo
 
+
+
 class UsuarioProyectoForm(forms.Form):
-    usuario = forms.ModelChoiceField(queryset = User.objects.all())
+    usuario = forms.ModelChoiceField(queryset = None)
     #roles = forms.ModelMultipleChoiceField(queryset = Rol.objects.filter(categoria=2).exclude(id=2), widget = forms.CheckboxSelectMultiple, required=False)
 
     proyecto = Proyecto()
 
-    def __init__(self, proyecto, *args, **kwargs):
+    def __init__(self, proyecto,*args, **kwargs):
         super(UsuarioProyectoForm, self).__init__(*args, **kwargs)
-        self.fields['usuario'].queryset = User.objects.filter(~Q(id = proyecto.usuario_scrum.id))
+        self.fields['usuario'].queryset = User.objects.filter(~Q(id = proyecto.usuario_scrum.usuario.id))
 
-
+    #El problema se encontraba en el if no estaba igualando correctamente
     def clean_usuario(self):
         if 'usuario' in self.cleaned_data:
-            usuarios_existentes = UsuarioRolProyecto.objects.filter(id = self.proyecto.id)
+            usuarios_existentes = UsuarioRolProyecto.objects.filter()
+            print "probandoooo"
             for i in usuarios_existentes:
-                if(usuarios_existentes.usuario == forms.clean_data['usuario']):
+                print i.usuario
+                if(i.usuario == self.cleaned_data['usuario']):
+                    print "teeeeeeeest"
                     raise forms.ValidationError('Ya existe este usuario')
             return self.cleaned_data['usuario']
 
@@ -177,3 +180,106 @@ class ModProyectosForm(forms.Form):
                     if proyecto.nombre == nuevo:
                         raise forms.ValidationError('Ya existe ese nombre. Elija otro')
             return nuevo
+class FlujosForm(forms.Form):
+    #Formulario de flujos
+    nombre = forms.CharField(required=True, max_length=50, label='NOMBRE')
+
+    def clean_nombre(self):
+		if 'nombre' in self.cleaned_data:
+			flujo = Flujo.objects.all()
+			nombre = self.cleaned_data['nombre']
+			for i in flujo:
+				if nombre == i.nombre:
+					raise forms.ValidationError('Ya existe ese nombre de rol. Elija otro')
+			return nombre
+
+class ActividadesForm(forms.Form):
+    """Formulario para la creacion de proyectos."""
+    nombre = forms.CharField(max_length=50, label='NOMBRE')
+
+
+    def clean_nombre(self):
+        if 'nombre' in self.cleaned_data:
+                acti = Actividades.objects.all()
+                nuevo = self.cleaned_data['nombre']
+                for activ in acti:
+                        if activ.nombre == nuevo:
+                                raise forms.ValidationError('Ya existe ese nombre. Elija otro')
+                return nuevo
+class ModActividadesForm(forms.Form):
+    #Modificar datos del usuario
+        nombre = forms.CharField(max_length=30, label='NOMBRE')
+	
+
+        
+class AddActividadesForm(forms.Form):
+    #Asignar roles
+    actividades = forms.ModelMultipleChoiceField(queryset = None, label = 'ACTIVIDADES DISPONIBLES', required=False)
+    def __init__(self, proyecto, *args, **kwargs):
+        super(AddActividadesForm, self).__init__(*args, **kwargs)
+        self.fields['actividades'].queryset = Actividades.objects.filter(proyecto=proyecto)
+#************************************************USER STORY*************************************************
+class UserStoryForm(forms.Form):
+    nombre = forms.CharField(required=True,max_length=50, label= 'NOMBRE')
+    prioridad = forms.IntegerField(min_value=1,max_value=10)
+    valor_negocio=forms.IntegerField(min_value=1,max_value=10) #del 1 al 10 donde 10 es de mas valor que 1
+    valor_tecnico=forms.IntegerField(min_value=1,max_value=10) #del 1 al 10 donde 10 es de mas valor que 1
+    duracion= forms.IntegerField(min_value=1,max_value=100) #Duracion estimativa en dias de la historia de usuario
+    descripcion= forms.CharField(widget=forms.Textarea(), required=False, label='Descripcion')
+
+    def clean_nombre(self):
+		if 'nombre' in self.cleaned_data:
+			roles = UserStory.objects.all()
+			nombre = self.cleaned_data['nombre']
+			for i in roles:
+				if nombre == i.nombre:
+					raise forms.ValidationError('Ya existe ese nombre de rol. Elija otro')
+			return nombre
+
+#************
+class AdjuntoForm(forms.Form):
+    archivo = forms.FileField(required = False)
+
+class ModUserStoryForm(forms.Form):
+    #Modificar datos del usuario
+       nombre = forms.CharField(max_length=30, label='NOMBRE')
+       descripcion= forms.CharField(widget=forms.Textarea(), required=False, label='Descripcion')
+ 
+#**********************EQUIPO DE TRABAJO EN SPRINT
+class MiembroEquipoForm(forms.Form):
+    usuario = forms.ModelChoiceField(queryset = None, label = 'Usuarios', required=True)
+    proyecto = Proyecto()
+    sprint = 1
+    horas=forms.IntegerField(min_value=1, max_value=1000)
+
+    def __init__(self, proyecto, *args, **kwargs):
+        super(MiembroEquipoForm, self).__init__(*args, **kwargs)
+        self.fields['usuario'].queryset = UsuarioRolProyecto.objects.filter(proyecto=proyecto.id)
+        #self.fields['horas'].queryset = Equipo.objects.all()
+    def clean_usuario(self):
+        if 'usuario' in self.cleaned_data:
+            usuarios_existentes = Equipo.objects.filter()
+            print "jajajajaja"
+            for i in usuarios_existentes:
+                print i.usuario
+                if(i.usuario == self.cleaned_data['usuario']):
+                    print "jajajajaaj"
+                    raise forms.ValidationError('Ya existe este usuario')
+            return self.cleaned_data['usuario']
+
+class RespUserStoryForm(forms.Form):
+    usuario = forms.ModelChoiceField(required=True,queryset=None)
+    def __init__(self,us,*args, **kwargs):
+        super(RespUserStoryForm,self).__init__(*args,**kwargs)
+        self.fields['usuario'].queryset= UsuarioRolProyecto.objects.filter(eq=1).only('usuario')
+    def clean_usuario(self):
+        if 'usuario' in self.cleaned_data:
+            usuarios_existentes = ResponsableUS.objects.filter()
+            print "jajajajaja"
+            print self.cleaned_data['usuario']
+            for i in usuarios_existentes:
+                print "tttttt"
+                if(i.usuario == self.cleaned_data['usuario']):
+                    print "jajajajaaj"
+                    raise forms.ValidationError('Ya existe este usuario')
+            return self.cleaned_data['usuario']

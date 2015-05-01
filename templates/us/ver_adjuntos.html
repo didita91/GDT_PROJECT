@@ -1,0 +1,21 @@
+{%extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Adjuntos de &lt;{{user_story.nombre}}&gt;<br>{% endblock %}
+{% block content %}
+{% if abm_user_story %}
+<ul>
+{% if lista %}
+    {% for i in lista %}
+    <li> {{ i.nombre }} </li>
+    {% endfor %}
+{% else %}
+     <li>Este user story no tiene adjuntos</li>
+{% endif %}
+</ul>
+
+<input type="button" value="Volver" onClick = "location.href='/userstories&id={{ proyecto.id }}&fasesAnt={{ user_story.proyecto.id }}/' "/>
+
+{% else %}
+	<p>¡No tiene los permisos para ver esta pagina!</p>
+{% endif %}
+{% endblock %}

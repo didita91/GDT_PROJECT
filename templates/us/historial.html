@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}USER STORY : &lt;{{ user_story.nombre }}&gt;<br>{% endblock %}
+{% block content %}
+<center><h2 class="text-danger"><strong> HISTORIAL DE TAREAS REALIZADAS SOBRE EL USER STORY "{{ user_story.nombre }}" </strong></h2></center>
+
+<center><td class="text-danger"><strong> FECHA DE CREACIÓN:  {{ historial.fecha_creacion }}</strong></td></center>
+<!--condiciones-->
+{% if lista %}
+<table>
+	<tr>
+		<td class="titulo">Version</td>
+       	<td class="titulo">Prioridad</td>
+		<td class="titulo">Descripcion</td>
+        <td class="titulo">Fecha/Modificacion</td>
+
+	</tr>
+	{% for i in lista %}
+	<tr>
+		<td>{{i.version}}</td>
+		<td>{{i.prioridad}}</td>
+		<td>{{i.descripcion}}</td>
+        <td>{{i.fecha_modificacion}}</td>
+
+	</tr>
+	{% endfor %}
+</table>
+{% else %}
+<ul>
+    <li>No se ha registrado ningun cambio</li>
+</ul>
+{% endif %}
+
+
+{% endblock%}

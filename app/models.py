@@ -10,7 +10,20 @@ CATEGORY_CHOICES = (
 		         ('2', 'Rol de Proyecto'),
 
              )
+""" Estados de Actividades """
+status_activity = (
+                 ('1', 'To Do'),
+		         ('2', 'Doing'),
+                 ('', 'Done'),
+             )
 
+"""Estados de los UserStories"""
+STATUS_CHOICES = (
+ 	            ('1', 'En Proceso'),
+ 	            ('2', 'Modificado'),
+                ('3', 'Aprobado'),
+                ('4', 'Inactivo')
+                )
 
 class Permiso(models.Model):
 
@@ -73,7 +86,10 @@ class RolUsuario(models.Model):
 	usuario =models.ForeignKey(User)
 	def __unicode__(self):
 		return self.usuario.username
-
+class ProductOwner(models.Model):
+        usuario =models.ForeignKey(User)
+        def __unicode__(self):
+                return self.usuario.username
 
 
 class Proyecto(models.Model):
@@ -82,8 +98,10 @@ class Proyecto(models.Model):
     """
     nombre = models.CharField(unique=True, max_length=50)
     usuario_scrum = models.ForeignKey(RolUsuario)
+    product_owner = models.ForeignKey(ProductOwner)
     descripcion = models.TextField(null=True, blank= True)
     fecha_inicio = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    sprint = models.IntegerField(max_length=2)
     def __unicode__(self):
         return self.nombre
 class UsuarioRolProyecto(models.Model):
@@ -93,6 +111,77 @@ class UsuarioRolProyecto(models.Model):
     usuario = models.ForeignKey(User)
     rol = models.ForeignKey(Rol, null=True)
     proyecto = models.ForeignKey(Proyecto)
-
+    eq= models.IntegerField(max_length=15,null=True)
     class Meta:
-        unique_together = [("usuario", "rol", "proyecto")]
+        unique_together = [("usuario", "rol", "proyecto","eq")]
+    def __unicode__(self):
+        return unicode(self.usuario)
+
+class Flujo(models.Model):
+
+    nombre = models.CharField(unique=True, max_length=50)
+    proyecto = models.ForeignKey(Proyecto)
+    def __unicode__(self):
+        return self.nombre
+
+class Actividades(models.Model):
+
+    nombre = models.CharField(unique=True, max_length=50)
+    estado = models.IntegerField(max_length=1, default=1)
+    proyecto = models.ForeignKey(Proyecto)
+    def __unicode__(self):
+        return self.nombre
+
+class ActividadesFlujo(models.Model):
+    actividades = models.ForeignKey(Actividades, null=True)
+    flujo = models.ForeignKey(Flujo)
+    proyecto = models.ForeignKey(Proyecto)
+    class Meta:
+        unique_together = [("actividades", "flujo","proyecto")]
+
+#***************************************USER STORY**********************************************
+class UserStory(models.Model):
+        nombre = models.CharField(unique=True, max_length=50)
+        estado = models.IntegerField(max_length=1, choices=STATUS_CHOICES, default=1)
+        version = models.PositiveIntegerField()
+        prioridad = models.IntegerField(max_length=3) #del 1 al 100 donde 1 es mas prioritario
+        habilitado = models.BooleanField(default=True)
+        valor_negocio=models.IntegerField(max_length=2) #del 1 al 10 donde 10 es de mas valor que 1
+        valor_tecnico=models.IntegerField(max_length=2) #del 1 al 10 donde 10 es de mas valor que 1
+        duracion=models.IntegerField(max_length=2) #Duracion estimativa en dias de la historia de usuario
+        descripcion = models.TextField(null=True, blank= True)
+        proyecto = models.ForeignKey(Proyecto) #Proyecto al cual pertenece
+        def __unicode__(self):
+                return self.nombre
+class Historial(models.Model):
+    """Clase que representa el historial de los user stories"""
+    #usuario = models.ForeignKey(User)
+    fecha_creacion = models.DateField(auto_now =False, auto_now_add=True, editable=False)
+    #claves foraneas
+    user_story = models.OneToOneField(UserStory, parent_link=False)
+
+class RegistroHistorial(models.Model):
+    """Clase que representa el Registro de versiones de los user stories"""
+    version = models.PositiveIntegerField()
+    prioridad = models.IntegerField()
+    descripcion = models.TextField(null=True, blank=True)
+    habilitado = models.BooleanField()
+    fecha_modificacion = models.DateTimeField(auto_now=True, auto_now_add=False, editable=False)
+    #claves foraneas
+    historial = models.ForeignKey(Historial)
+
+#---------------------------CONFIGURACION DE SPRINT
+class Equipo(models.Model):
+    usuario = models.ForeignKey(UsuarioRolProyecto)
+    horas = models.PositiveIntegerField()#horas de trabajo de ese miembro
+    sprint = models.PositiveIntegerField()#sprint en el que se encuentra
+    proyecto = models.ForeignKey(Proyecto)
+
+    def __unicode__(self):
+        return unicode(self.usuario)
+class ResponsableUS(models.Model):
+    usuario = models.ForeignKey(UsuarioRolProyecto)
+    us = models.ForeignKey(UserStory)
+    def __unicode__(self):
+        return unicode(self.usuario)
+
