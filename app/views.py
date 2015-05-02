@@ -179,6 +179,7 @@ Asigna roles de sistema a un usuario
     lista_rolusuario = RolUsuario.objects.filter(usuario=usuario)
     print lista_permisos
     tam=len(lista_permisos)
+    relac=ProductOwner()
     print tam
     if request.method == 'POST':
         form = AsignarRolesForm(1, request.POST)
@@ -197,7 +198,9 @@ Asigna roles de sistema a un usuario
                 if i.id == 2:
                     rel.usuario = usuario
                     rel.save()
-
+                if i.id == 3:
+                    relac.usuario = usuario
+                    relac.save()
             return HttpResponseRedirect("/usuarios")
     else:
         if usuario.id == 1:

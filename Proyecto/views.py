@@ -333,7 +333,7 @@ Agregar usuarios al proyecto
             relacion.usuario = form.cleaned_data['usuario']
             relacion.proyecto = Proyecto.objects.get(pk=proyecto_id)
             relacion.save()
-
+            relacion.eq=1
             return HttpResponseRedirect("/proyectos/miembros&id=" + str(proyecto_id))
     else:
         form = UsuarioProyectoForm(p)
@@ -631,7 +631,7 @@ Adhiere actividades a un flujo dado
         print "chauuuuuuuuuuu"
         dict = {}
         for i in lista_actividades:
-            dict[i.actividades.id] = True
+            dict[i.actividades.id] = False
         form = AddActividadesForm(proyecto, initial={'actividades': dict})
     return render_to_response("flujo/add_actividades.html",
                               {'form': form, 'user': user, 'flujo': flujo, 'proyecto': proyecto,
@@ -681,9 +681,12 @@ def admin_us(request, proyecto_id):
     :param proyecto_id:
     :return:
     """
+    print "proyectooooo"
+    print proyecto_id
     user = User.objects.get(username=request.user.username)
-    #proyecto= get_object_or_404(Proyecto, id = proyecto_id)
-    proyecto = Proyecto.objects.get(pk=proyecto_id)
+    proyecto= get_object_or_404(Proyecto, id = proyecto_id)
+    print proyecto
+    #proyecto = Proyecto.objects.get(pk=proyecto_id)
     #linea = LineaBase.objects.filter(proyectos=proyect, fase=proyect.fase)
     perm = get_permisos_proyecto(user, proyecto)
     permisos = get_permisos_sistema(user)
@@ -796,63 +799,6 @@ Agrega un nuevo us
 
 
 
-@login_required
-def eecrear_user_story(request, proyecto_id):
-    """
-    Crear un User Story"
-    :param request:
-    :param proyecto_id:
-    :return:
-    """
-    user = User.objects.get(username=request.user.username)
-    proyecto = Proyecto.objects.get(pk=proyecto_id)
-
-    #Validacion de permisos---------------------------------------------
-    roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=proyecto).only('rol')
-    perm = get_permisos_proyecto(user, proyecto)
-    permisos_obj = []
-    for i in roles:
-        permisos_obj.extend(i.rol.permisos.all())
-    permisos = []
-    for i in permisos_obj:
-        permisos.append(i.nombre)
-    #-------------------------------------------------------------------
-    if request.method == 'POST':
-        form = UserStoryForm(proyecto_id, request.POST, request.FILES)
-        if form.is_valid():
-            us = UserStory()
-            us.nombre = form.cleaned_data['nombre']
-            #us.usuario = form.cleaned_data['usuario']  #solo en el historial?
-
-            us.estado = 1
-            us.version = 1
-            us.valor_negocio=form.cleaned_data['valor_negocio']
-            us.valor_tecnico=form.cleaned_data['valor_tecnico']
-            us.prioridad = form.cleaned_data['prioridad']
-            us.descripcion = form.cleaned_data['descripcion']
-            us.habilitado = True
-            us.proyecto = proyecto
-            us.duracion = form.cleaned_data['duracion']
-            us.save()
-
-            #Generacion del historial
-            hist = Historial()
-            hist.usuario = user
-            hist.fecha_creacion = datetime.date.today()
-            hist.user_story = us
-            hist.save()
-            return HttpResponseRedirect("/userstories&id=" + str(proyecto_id) + "/")
-    else:
-        form = UserStoryForm(proyecto)
-
-        variables = RequestContext(request, {
-            'proyecto': proyecto,
-            'form': form,
-            'abm_user_story': 'ABM user story' in permisos,
-            'crear_us': 'Crear US' in perm})
-        return render_to_response('us/crear_user_story.html', variables)
-
-
 
 @login_required
 def ver_historial(request, proyecto_id, us_id):
@@ -919,7 +865,7 @@ def mod_user_story(request, proyecto_id, us_id):
             us.nombre = form.cleaned_data['nombre']
             us.descripcion = form.cleaned_data['descripcion']
             us.save()
-            return HttpResponseRedirect("/userstories&id=" + str(us_id))
+            return HttpResponseRedirect("/userstories&id=" + str(proyecto_id))
     else:
         form = ModUserStoryForm(
             initial={'nombre': us.nombre, 'descripcion': us.descripcion})
@@ -933,7 +879,13 @@ def mod_user_story(request, proyecto_id, us_id):
 
 @login_required
 def mod_actividades(request, proyecto_id, acti_id):
-    """Modifica los datos de una actividad y los actualiza en el sistema"""
+    """
+    Modifica los datos de una actividad y los actualiza en el sistema
+    :param request:
+    :param proyecto_id:
+    :param acti_id:
+    :return:
+    """
     user = User.objects.get(username=request.user.username)
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     #flujo = Flujo.objects.get(pk=flujo_id)
@@ -971,7 +923,7 @@ def mod_actividades(request, proyecto_id, acti_id):
 #----------------------------------CONFIGURACION PREVIA AL INICIO DE CADA SPRINT---------------------------
 @login_required
 def conf_proyecto(request, proyecto_id):
-    """
+    """ Permite la configuracion para el inicio de un proyecto
  :param request:
  :param proyecto_id:
  :return:
@@ -1085,7 +1037,7 @@ Dirigue a la interfaz, para la creacion de equipos de trabajo  para el sprint da
 @login_required
 def add_miembro_equipo(request, proyecto_id):
     """
-Agregar usuarios al equipo
+Agregar usuarios al equipo correspondiente en un sprint
 :param request:
 :param proyecto_id:
 :return:
@@ -1094,7 +1046,7 @@ Agregar usuarios al equipo
     p = get_object_or_404(Proyecto, id=proyecto_id)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p).only('rol')
-    usuario = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p)
+
 
 
     permisos_obj = []
@@ -1116,12 +1068,9 @@ Agregar usuarios al equipo
             relacion.sprint=1
             relacion.horas=form.cleaned_data['horas']
             relacion.save()
-            for i in usuario:
 
-                if relacion.usuario.id == i.id:
-                    print "lafdjklajdfñlakfjd"
-                    i.eq= relacion.id
-                    i.save()
+
+
 
 
             return HttpResponseRedirect("/configuracion/equipo&id=" + str(proyecto_id))
@@ -1136,7 +1085,7 @@ Agregar usuarios al equipo
 @login_required
 def responsable_us(request, proyecto_id, us_id):
     """
-    Asigna roles de sistema a un usuario
+    Se asigna un usuario a un user story dado un equipo
     :param request:
     :param usuario_id:
     :return:
