@@ -5,11 +5,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 from unipath import Path
- 
+
 RUTA_PROYECTO= Path(__file__).ancestor(2)
 
 PATH=RUTA_PROYECTO
- 
+
 ALLOWED_HOSTS = []
 
 WSGI_APPLICATION = 'gdt_project.wsgi.application'
@@ -122,4 +122,3 @@ LOGGING = {
 
 
 LOGIN_URL = '/login/'
-

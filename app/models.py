@@ -185,3 +185,9 @@ class ResponsableUS(models.Model):
     def __unicode__(self):
         return unicode(self.usuario)
 
+class flujoUS(models.Model):
+    flujo=models.ForeignKey(Flujo)
+    us = models.ForeignKey(UserStory)
+    def __unicode__(self):
+        return unicode(self.flujo)
+

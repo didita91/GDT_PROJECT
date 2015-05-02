@@ -72,20 +72,29 @@ margin-left: -5px;
                 <li class="nav-header-tools">Administración</li>
                 <li class="alert alert-danger">
                             {% if user.id == 1 %}
-               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/usuarios/'"><strong>U S U A R I O S</strong></a>
+               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/usuarios/'">
+                   <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                   <strong>U S U A R I O S</strong></a>
                             {% endif %}
 
                 {% if roles %}
-               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/roles/'"><strong>R O L E S</strong></a>
+               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/roles/'">
+                   <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                   <strong>R O L E S</strong></a>
             {% endif %}
 
 
                 {% if proyectos %}
-               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/proyectos/'"><strong>P R O Y E C T O S</strong></a>
+               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/proyectos/'">
+                   <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                   <strong>P R O Y E C T O S</strong></a>
             {% endif %}
 
                      {% if flujos %}
-               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/flujos/'"><strong>F L U J O S</strong></a>
+               <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/flujos/'">
+                   <span class="glyphicon glyphicon-indent-left" aria-hidden="true"></span>
+
+                   <strong>F L U J O S</strong></a>
             {% endif %}
                 </li>
             </ul>
