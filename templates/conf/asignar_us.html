@@ -3,14 +3,16 @@
 {% block content %}
 
 <center><h2><b> Asignar Responsable de User Story </b></h2></center><br>
-holaa{{ proyecto.id }}
+
 
    {% if mensaje %}
       <center><p>SE HA PRODUCIDO EL SIGUIENTE INCONVENIENTE:</p>
       <p>{{mensaje}}</p></center>
    {% else %}
       <center><table class="abm">
+
              <form id="form_id" action="." method="POST">
+
                    {% csrf_token %}
 		   {{ form.as_table }}
 		   <tr>
