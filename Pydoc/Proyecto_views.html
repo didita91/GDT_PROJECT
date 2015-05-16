@@ -1,0 +1,200 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module views</title>
+<meta charset="utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>views</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/var/www/gdt_project/Proyecto/views.py">/var/www/gdt_project/Proyecto/views.py</a></font></td></tr></table>
+    <p><tt>#&nbsp;-*-&nbsp;coding:&nbsp;utf-8&nbsp;-*-</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="django.contrib.auth.html">django.contrib.auth</a><br>
+<a href="base64.html">base64</a><br>
+</td><td width="25%" valign=top><a href="datetime.html">datetime</a><br>
+<a href="django.forms.html">django.forms</a><br>
+</td><td width="25%" valign=top><a href="django.db.models.html">django.db.models</a><br>
+<a href="os.html">os</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-actividad_flujo"><strong>actividad_flujo</strong></a>(request, *args, **kwargs)</dt><dd><tt>Se&nbsp;encarga&nbsp;de&nbsp;relacionar&nbsp;una&nbsp;actividad&nbsp;con&nbsp;un&nbsp;flujo&nbsp;dado&nbsp;en&nbsp;un&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;flujo_id:<br>
+:param&nbsp;us_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-add_actividades"><strong>add_actividades</strong></a>(request, *args, **kwargs)</dt><dd><tt>Adhiere&nbsp;actividades&nbsp;a&nbsp;un&nbsp;flujo&nbsp;dado<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;flujo_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-add_adjunto"><strong>add_adjunto</strong></a>(request, proyecto_id, us_id)</dt><dd><tt>Agrega&nbsp;adjuntos&nbsp;a&nbsp;un&nbsp;user&nbsp;stories,<br>
+el&nbsp;tamaño&nbsp;maximo&nbsp;del&nbsp;acrhivo&nbsp;es&nbsp;de&nbsp;42&nbsp;MB,<br>
+lo&nbsp;guarda&nbsp;en&nbsp;un&nbsp;Directorio&nbsp;Documento&nbsp;que&nbsp;se&nbsp;genera&nbsp;en&nbsp;el&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;us_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-add_miembro_equipo"><strong>add_miembro_equipo</strong></a>(request, *args, **kwargs)</dt><dd><tt>Agregar&nbsp;usuarios&nbsp;al&nbsp;equipo&nbsp;correspondiente&nbsp;en&nbsp;un&nbsp;sprint<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-add_tarea"><strong>add_tarea</strong></a>(request, *args, **kwargs)</dt><dd><tt>Agrega&nbsp;una&nbsp;tarea&nbsp;con&nbsp;la&nbsp;descripcion,&nbsp;nombre&nbsp;y&nbsp;tiempo&nbsp;que&nbsp;le&nbsp;tomo&nbsp;hacer<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;us_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-add_usuario_proyecto"><strong>add_usuario_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Agregar&nbsp;usuarios&nbsp;al&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-admin_equipo"><strong>admin_equipo</strong></a>(request, *args, **kwargs)</dt><dd><tt>Dirigue&nbsp;a&nbsp;la&nbsp;interfaz,&nbsp;para&nbsp;la&nbsp;creacion&nbsp;de&nbsp;equipos&nbsp;de&nbsp;trabajo&nbsp;&nbsp;para&nbsp;el&nbsp;sprint&nbsp;dado<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-admin_flujos"><strong>admin_flujos</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administracion&nbsp;de&nbsp;flujos<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-admin_proyectos"><strong>admin_proyectos</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administracion&nbsp;general&nbsp;de&nbsp;proyectos<br>
+:param&nbsp;request:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-admin_us"><strong>admin_us</strong></a>(request, *args, **kwargs)</dt><dd><tt>Muestra&nbsp;la&nbsp;pagina&nbsp;de&nbsp;administracion&nbsp;de&nbsp;user&nbsp;stories.<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-admin_usuarios_proyecto"><strong>admin_usuarios_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administración&nbsp;de&nbsp;usuarios&nbsp;del&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-administrar_proyecto"><strong>administrar_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Administracion&nbsp;de&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-asignar_flujoUS"><strong>asignar_flujoUS</strong></a>(request, *args, **kwargs)</dt><dd><tt>&nbsp;&nbsp;&nbsp;&nbsp;Asigna&nbsp;flujos&nbsp;a&nbsp;user&nbsp;story&nbsp;en&nbsp;la&nbsp;pagina&nbsp;de&nbsp;configuracion&nbsp;inicial<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:us_id</tt></dd></dl>
+ <dl><dt><a name="-cambiar_actividad"><strong>cambiar_actividad</strong></a>(request, proyecto_id, act_id, us_id, flujo_id)</dt><dd><tt>Cambia&nbsp;de&nbsp;actividad&nbsp;un&nbsp;user&nbsp;stories,lo&nbsp;puede&nbsp;hacer&nbsp;un&nbsp;scrum&nbsp;master&nbsp;o&nbsp;un&nbsp;desarrollador<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;act_id:<br>
+:param&nbsp;us_id:<br>
+:param&nbsp;flujo_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-cambiar_estado"><strong>cambiar_estado</strong></a>(request, proyecto_id, act_id, us_id, flujo_id)</dt><dd><tt>Cambiar&nbsp;de&nbsp;estado&nbsp;de&nbsp;una&nbsp;actividad&nbsp;de&nbsp;un&nbsp;user&nbsp;story<br>
+de&nbsp;Todo&nbsp;a&nbsp;Doing&nbsp;o&nbsp;de&nbsp;Doing&nbsp;a&nbsp;Done<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;act_id:<br>
+:param&nbsp;us_id:<br>
+:param&nbsp;flujo_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-cambiar_rol_usuario_proyecto"><strong>cambiar_rol_usuario_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Cambiar&nbsp;rol&nbsp;a&nbsp;un&nbsp;usuario&nbsp;de&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;user_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-conf_proyecto"><strong>conf_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Permite&nbsp;la&nbsp;configuracion&nbsp;para&nbsp;el&nbsp;inicio&nbsp;de&nbsp;un&nbsp;proyecto,<br>
+agrega&nbsp;user&nbsp;stories&nbsp;al&nbsp;sprint,&nbsp;flujos,&nbsp;duracion&nbsp;de&nbsp;los&nbsp;sprints<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-crear_actividades"><strong>crear_actividades</strong></a>(request, *args, **kwargs)</dt><dd><tt>Agrega&nbsp;una&nbsp;nueva&nbsp;actividad&nbsp;een&nbsp;el&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-crear_flujos"><strong>crear_flujos</strong></a>(request, *args, **kwargs)</dt><dd><tt>Agrega&nbsp;un&nbsp;nuevo&nbsp;flujo<br>
+:param&nbsp;request:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-crear_proyecto"><strong>crear_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Crea&nbsp;un&nbsp;nuevo&nbsp;proyecto.<br>
+:param&nbsp;request:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-crear_user_story"><strong>crear_user_story</strong></a>(request, *args, **kwargs)</dt><dd><tt>Agrega&nbsp;un&nbsp;nuevo&nbsp;us<br>
+:param&nbsp;request:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-del_proyecto"><strong>del_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Eliminar&nbsp;proyecto&nbsp;del&nbsp;sistema<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-eliminar_miembro_proyecto"><strong>eliminar_miembro_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Eliminar&nbsp;miembros&nbsp;del&nbsp;proyecto<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;user_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-enviar_correo"><strong>enviar_correo</strong></a>(request, User_nombre, titulo, us_nombre, tarea)</dt><dd><tt>Funcion&nbsp;de&nbsp;envio&nbsp;de&nbsp;correo,&nbsp;ante&nbsp;modificaciones&nbsp;en&nbsp;el&nbsp;HIstorial&nbsp;de&nbsp;tareas&nbsp;del&nbsp;User&nbsp;Story.<br>
+:param&nbsp;request:<br>
+:param&nbsp;User_nombre:&nbsp;nombre&nbsp;del&nbsp;usuario&nbsp;que&nbsp;hizo&nbsp;el&nbsp;cambio<br>
+:param&nbsp;titulo:&nbsp;tituo&nbsp;de&nbsp;la&nbsp;tarea&nbsp;realizada<br>
+:param&nbsp;us_nombre:&nbsp;nombre&nbsp;del&nbsp;user&nbsp;story&nbsp;detallado<br>
+:param&nbsp;tarea:&nbsp;tarea&nbsp;realizada<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-flujo_user_sprint"><strong>flujo_user_sprint</strong></a>(request, proyecto_id)</dt><dd><tt>Relaciona&nbsp;un&nbsp;user&nbsp;story&nbsp;con&nbsp;el&nbsp;sprint<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-iniciarsprint"><strong>iniciarsprint</strong></a>(request, proyecto_id)</dt><dd><tt>Inicia&nbsp;un&nbsp;sprint&nbsp;si&nbsp;cumple&nbsp;con&nbsp;los&nbsp;requerimientos<br>
+es&nbsp;decir&nbsp;si&nbsp;todos&nbsp;los&nbsp;user&nbsp;stories&nbsp;agregados&nbsp;ya&nbsp;tienen<br>
+un&nbsp;flujo&nbsp;asignado&nbsp;y&nbsp;un&nbsp;responsable<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-list"><strong>list</strong></a>(request, proyecto_id, us_id)</dt></dl>
+ <dl><dt><a name="-mod_actividades"><strong>mod_actividades</strong></a>(request, *args, **kwargs)</dt><dd><tt>Modifica&nbsp;los&nbsp;datos&nbsp;de&nbsp;una&nbsp;actividad&nbsp;y&nbsp;los&nbsp;actualiza&nbsp;en&nbsp;el&nbsp;sistema<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;acti_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-mod_proyecto"><strong>mod_proyecto</strong></a>(request, *args, **kwargs)</dt><dd><tt>Modificacion&nbsp;de&nbsp;Proyectos<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-mod_user_story"><strong>mod_user_story</strong></a>(request, *args, **kwargs)</dt><dd><tt>Modifica&nbsp;los&nbsp;datos&nbsp;de&nbsp;un&nbsp;usuario&nbsp;y&nbsp;los&nbsp;actualiza&nbsp;en&nbsp;el&nbsp;sistema</tt></dd></dl>
+ <dl><dt><a name="-responsable_us"><strong>responsable_us</strong></a>(request, *args, **kwargs)</dt><dd><tt>Se&nbsp;asigna&nbsp;un&nbsp;usuario&nbsp;a&nbsp;un&nbsp;user&nbsp;story&nbsp;dado&nbsp;un&nbsp;equipo<br>
+que&nbsp;se&nbsp;ha&nbsp;generado&nbsp;en&nbsp;el&nbsp;sprint<br>
+:param&nbsp;request:<br>
+:param&nbsp;usuario_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-sprint_admin"><strong>sprint_admin</strong></a>(request, proyecto_id)</dt></dl>
+ <dl><dt><a name="-us_backlog"><strong>us_backlog</strong></a>(request, proyecto_id)</dt><dd><tt>Busca&nbsp;los&nbsp;user&nbsp;stories&nbsp;que&nbsp;tienen&nbsp;estado&nbsp;en&nbsp;espera&nbsp;de&nbsp;un&nbsp;proyecto<br>
+Para&nbsp;poder&nbsp;trabajar&nbsp;con&nbsp;ellos&nbsp;en&nbsp;el&nbsp;siguiente&nbsp;sprint<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-ver_actividades"><strong>ver_actividades</strong></a>(request, *args, **kwargs)</dt><dd><tt>Visualizar&nbsp;las&nbsp;actividades<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;flujo_id:<br>
+:return:</tt></dd></dl>
+ <dl><dt><a name="-ver_historial"><strong>ver_historial</strong></a>(request, *args, **kwargs)</dt><dd><tt>Despliega&nbsp;el&nbsp;historial&nbsp;de&nbsp;un&nbsp;user&nbsp;story&nbsp;mostrando&nbsp;la&nbsp;descripcion&nbsp;de&nbsp;las&nbsp;tareas<br>
+agregadas&nbsp;y&nbsp;el&nbsp;nombre&nbsp;de&nbsp;adjuntos&nbsp;cargados<br>
+:param&nbsp;request:<br>
+:param&nbsp;proyecto_id:<br>
+:param&nbsp;us_id:<br>
+:return:</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>CATEGORY_CHOICES</strong> = (('1', 'Rol de Sistema'), ('2', 'Rol de Proyecto'))<br>
+<strong>SPRINT_STATUS</strong> = (('Iniciado', 'Iniciado'), ('Terminado', 'Terminado'))<br>
+<strong>STATUS_CHOICES</strong> = (('En Espera', 'En Espera'), ('En Proceso', 'En Proceso'), ('Aprobado', 'Aprobado'), ('Inactivo', 'Inactivo'))<br>
+<strong>status_activity</strong> = (('1', 'To Do'), ('2', 'Doing'), ('3', 'Done'))<br>
+<strong>validate_email</strong> = &lt;django.core.validators.EmailValidator object&gt;</td></tr></table>
+</body></html>
