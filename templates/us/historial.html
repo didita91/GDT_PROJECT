@@ -2,29 +2,46 @@
 {% block title %}{{ proyecto.nombre }}{% endblock %}
 {% block head %}USER STORY : &lt;{{ user_story.nombre }}&gt;<br>{% endblock %}
 {% block content %}
-<center><h2 class="text-danger"><strong> HISTORIAL DE TAREAS REALIZADAS SOBRE EL USER STORY "{{ user_story.nombre }}" </strong></h2></center>
 
-<center><td class="text-danger"><strong> FECHA DE CREACIÓN:  {{ historial.fecha_creacion }}</strong></td></center>
+    <ol class="breadcrumb">
+    <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+    <li><a class="text-danger" href="/configuracion&id={{proyecto.id}}/sprint"><strong>TABLA</strong></a></li>
+    <li class="active"><strong>VER HISTORIAL DE TAREAS</strong></li>
+    </ol>
+<center><h2 class="text-danger"><strong> HISTORIAL DE TAREAS REALIZADAS SOBRE EL USER STORY "{{ user_story.nombre }}" </strong></h2></center>
 <!--condiciones-->
 {% if lista %}
-<table>
-	<tr>
-		<td class="titulo">Version</td>
-       	<td class="titulo">Prioridad</td>
-		<td class="titulo">Descripcion</td>
-        <td class="titulo">Fecha/Modificacion</td>
 
-	</tr>
+    <table class="table table-bordered">
+	      <thead>
+	        <tr>
+
+                     <th class="titulo"><b class="text-danger"><strong>FECHA</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
+                                     <th class="titulo"><b class="text-danger"><strong>ADJUNTO</strong></b></th>
+
+
+            </tr>
+                </thead>
+ <tbody>
 	{% for i in lista %}
 	<tr>
-		<td>{{i.version}}</td>
-		<td>{{i.prioridad}}</td>
-		<td>{{i.descripcion}}</td>
-        <td>{{i.fecha_modificacion}}</td>
 
+        <td>{{i.fecha_modificacion}}</td>
+		<td>{{i.descripcion}}</td>
+
+        {% for j in hist %}
+        {% if i.user_story.id == j.us.id %}
+             <td>{{j.documento.docfile}}</td>
+            {% endif %}
+
+{% endfor %}
 	</tr>
 	{% endfor %}
-</table>
+
+               </tbody>
+    </table>
+
 {% else %}
 <ul>
     <li>No se ha registrado ningun cambio</li>

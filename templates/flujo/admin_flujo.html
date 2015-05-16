@@ -69,7 +69,7 @@ select{
 </ol>
 <center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE FLUJOS </strong></h2></center><br><br>
 
-{% if ver_flujos %}
+
         <div class="row">
 
 
@@ -80,6 +80,7 @@ select{
                 <li class="alert alert-danger">
                 <a class="btn btn-default" href="/principal"><strong> Volver a Inicio</strong> </a>&nbsp;&nbsp;
                 {% if crear_flujos %}
+
                     <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/crear/"><strong>Crear Flujos </strong></a>
                 {% endif %}<br>
                     {% if crear_actividades %}
@@ -90,9 +91,7 @@ select{
 
                 </div>
 
-   {% else %}
-	<center><p><strong>NO TIENE PERMISO PARA VER ESTA SECCIÓN</strong></p></center>
-   {% endif %}
+
 
             <div class="col-sm-8">
  <ul class="nav nav-list-tools">
@@ -104,7 +103,7 @@ select{
               <thead>
                <tr>
 
-                     {%if ver_flujos%}
+                     {%if ver_flujos or Ver_Flujos%}
 	            <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
 
 
@@ -113,9 +112,9 @@ select{
                <tbody>
 	                {%for i in lista%}<tr>
                         <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font>
-                                <center><a class="btn btn-default" href="/flujos&id={{proyecto.id}}/add_actividades&id={{i.id}}"><strong>Agregar Actividades </strong></a>
+                              {% if Crear_Actividades or crear_actividades %}  <center><a class="btn btn-default" href="/flujos&id={{proyecto.id}}/add_actividades&id={{i.id}}"><strong>Agregar Actividades </strong></a>
                                                                 <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/ver_actividades&id={{i.id}}"><strong>Ver Actividades </strong></a></center></td>
-
+{% endif %}
                         </tr>
 	                {% endfor %}
                {% endif %}
@@ -136,7 +135,7 @@ select{
               <thead>
                <tr>
 
-                     {%if ver_actividades or ver_Actividades %}
+                     {%if ver_actividades or Ver_Actividades %}
 
 	            <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
  	            
@@ -145,9 +144,7 @@ select{
                <tbody>
 	                {%for i in actividades%}<tr>
 
-				{%if mod_ACTI or mod_acti %}
-                        		<td><a href="/flujos&id={{proyecto.id}}/mod_actividades&id={{i.id}}"><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font> </a></td>
-	{%else%}    <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
+			    {%if Ver_Actividades or ver_actividades%}<td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
 {%endif%}
                         </tr>
 	                {% endfor %}

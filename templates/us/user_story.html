@@ -73,13 +73,13 @@ select{
 
        <div class="row">
 
-            {% if abm_user_story or abm_us%}
+            {% if abm_user_story or abm_us or ver_us%}
        <div class="col-sm-3">
            <ul class="nav nav-list-tools">
                 <li class="nav-header-tools">Barra de Herramientas</li>
                 <li class="alert alert-danger">
                 <a class="btn btn-default" href="/principal"><strong> VOLVER A LA PÁGINA PRINCIPAL</strong> </a>&nbsp;&nbsp;
-              {% if abm_user_story  or crear_us%}
+              {% if abm_user_story  or crear_us or Crear_US%}
   <a class="btn btn-default" href="/userstories&id={{proyecto.id}}/crear/"><strong>CREAR NUEVO USER STORY </strong></a>{% endif %}
                 </li>
                </ul>
@@ -113,7 +113,6 @@ select{
 	                 <th class="titulo"><b class="text-danger"><strong>PRIORIDAD</strong></b></th>
                      <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
                      <th class="'titulo"><b class="text-danger"><strong>DURACION ESTIMADA (Horas)</strong></b></th>
-                     <th class="titulo"><b class="text-danger"><strong>ACCIONES</strong></b></th>
             </tr>
                 </thead>
                 <tbody>
@@ -128,24 +127,16 @@ select{
 	                     <!--<td><strong></strong></td>-->
 
                          <td><strong>{{i.version}}</strong></td>
-         {% ifequal i.estado 1 %} <td><strong>En Espera</strong></td>{% endifequal %} {% ifequal i.estado 2 %}<td><strong>En Proceso</strong></td>{% endifequal %}{% ifequal i.estado 3 %}<td><strong>Aprobado</strong></td>{% endifequal %}
-         {% ifequal i.estado 4 %}<td><strong>Inactivo</strong></td>{% endifequal %}
+                        <td><strong>{{ i.estado }}</strong></td>
 
                          <td><strong>{{i.valor_tecnico}}</strong></td>
                          <td><strong>{{i.valor_negocio}}</strong></td>
                          <td><strong>{{i.prioridad}}</strong></td>
                          <td><strong>{{i.descripcion}}</strong></td>
                          <td><strong>{{i.duracion}}</strong></td>
-                         <td> <a class="btn btn-default" href="/userstories&id={{proyecto.id}}/historial&id={{i.id}}/"><strong>HISTORIAL DE TAREAS</strong></a>&nbsp;</td>
-                           <!-- {% if ver_historial_user_story  or ver_historial_us%}--
-                                  <a class="btn btn-default" href="/userstories&id={{proyecto.id}}/historial&id={{i.id}}/"><strong>HISTORIAL</strong></a>&nbsp;
 
-                          <!---  {% endif %}
-                               {% if revisar_user_story %}
-                                  <!--<a class="btn btn-default" href="/userstories&id={{proyecto.id}}/revisar&id={{i.id}}/ "><strong>REVISAR</strong></a>&nbsp;
-                               {% endif %}
 
-                         </td>-->
+                         </td>
 	</tr>
 	{% endfor %}
 

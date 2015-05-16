@@ -105,10 +105,11 @@ margin-left: -5px;
           <li class="alert alert-danger">
           {% for proyecto in lista %}
              {% for i in permisos_proyecto %}
-                {% ifequal proyecto.id i %}
+                {% if proyecto.id == i %}
+
                    <h4><br><a href="/proyectos/admin&id={{proyecto.id}}/"><font color="gray"><strong><em><u>{{proyecto.nombre}}</u></em></strong></font>
                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                             {% endifequal %}
+                             {% endif %}
              {% endfor %}
              {% empty %}
                   <h4><strong>No hay proyectos</strong></h4>
