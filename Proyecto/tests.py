@@ -173,4 +173,4 @@ class TestConfiguracion(TestCase):
         e = self.add_equipo(nombre='test')
         self.assertTrue(isinstance(e,Equipo))
         #self.assertEquals(e.__unicode__(),e.usuario)
-    
+#-------------------------SPRINT PRUEBAS----------------#
