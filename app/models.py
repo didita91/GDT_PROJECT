@@ -198,6 +198,7 @@ class UsSprint(models.Model):
 
 #ARCHIVO ADJUNTO
 class Documento(models.Model):
+    """Clase que representa el tipo de archivo a adjuntar a un user story"""
     docfile = models.FileField(upload_to='documentos/%Y/%m/%d')
      #claves foraneas
     us = models.ForeignKey(UserStory)
@@ -225,6 +226,7 @@ class RegistroHistorial(models.Model):
     us= models.ForeignKey(UserStory)
 
 class Sprint(models.Model):
+    """ Clase de Sprint, tiene los campos: Estado, proyecto y nro. de sprint"""
     estado = models.CharField(max_length=10, choices=SPRINT_STATUS)
     proyecto = models.ForeignKey(Proyecto)
     nro_sprint=models.PositiveIntegerField()
