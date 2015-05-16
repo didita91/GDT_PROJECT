@@ -162,7 +162,7 @@ class TestAdminActividades(TestCase):
 #----------------------------CONFIGURACION
 class TestConfiguracion(TestCase):
     def add_equipo(self, nombre='test',descripcion='test'):
-	u = User.objects.create(username='u1')
+	u = UsuarioRolProyecto.objects.create(username='u1')
 	scrum = RolUsuario(1)
         product_owner = ProductOwner(1)
         fecha = datetime.date(day=01,month=03,year=2015)
