@@ -18,7 +18,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c4c4c4', end
         display: block;
 font-size: 15px;
 font-weight: bold;
-color: white;
+color: black;
 text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 margin-left: -5px;
 
@@ -69,26 +69,65 @@ select{
 
         <div class="row">
 
-
+{% if Agregar_US  %}
        <div class="col-sm-3">
            <ul class="nav nav-list-tools">
-                <li class="nav-header-tools">Barra de Herramientas</li>
+                <li class="nav-header-tools">BARRA DE HERRAMIENTAS</li>
                 <li class="alert alert-danger">
                 <a class="btn btn-default" href="/principal"><strong> VOLVER A LA PÁGINA PRINCIPAL</strong> </a>&nbsp;&nbsp;
                     <a class="btn btn-default" href="/configuracion/equipo&id={{proyecto.id}}/"><strong> GENERAR EQUIPO</strong> </a>&nbsp;&nbsp;
+                 {%  if proyecto.duracion_sprint == None %}     <form id="duracion_id" action="." method="POST">
+                             {% csrf_token %}
+                <center>  {{ duracion.as_table }} </center>
+
+   <tr>
+                      <td class="buttonlist" colspan="2">
+                          <br><center>
+                                  <input type="submit" class= "btn btn-default" value="GUARDAR" />&nbsp;&nbsp;&nbsp;&nbsp;
+
+	                   </center>
+                      </td>
+	          </tr>
+	     </form>
+{% else %} La duracion del Sprint en Semanas es {{ proyecto.duracion_sprint }}{% endif %}
+               <li class="nav-header-tools">BackLog</li>
+                         <li class="alert alert-danger">
+  <form id="form_id" action="." method="POST">
+                  {% csrf_token %}
+                <center>  {{ form.as_table }} </center>
+	          <tr>
+                      <td class="buttonlist" colspan="2">
+                          <br><center>
+                                  <input type="submit" class= "btn btn-default" value="AGREGAR" />&nbsp;&nbsp;&nbsp;&nbsp;
+
+	                   </center>
+                      </td>
+	          </tr>
+	     </form>
+
                 </li>
                </ul>
            </div>
-
-            <div class="col-sm-8">
+{% endif %}
+          <div class="col-sm-8">
  <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">Configuracion Sprint </li>
+          <li class="nav-header-tools">Configuracion Sprint - {{ proyecto.sprint }} {{ suma }} Horas Disponible</li>
           <li class="alert alert-danger">
-   <form action="." method="POST">
+
+
 
                 <table class="table table-bordered">
                 <thead>
                     <th class="titulo"><b class="text-danger"><strong>USER STORY</strong></b></th>
+                <th class="titulo"><b class="text-danger"><strong>Prioridad</strong></b></th>
+                    <th class="titulo"><b class="text-danger"><strong>Estado del US</strong></b></th>
+
+                 <th class="titulo"><b class="text-danger"><strong>Flujo</strong></b></th>
+                    <th class="titulo"><b class="text-danger"><strong> Responsable</strong></b></th>
+
+                 <th class="titulo"><b class="text-danger"><strong>HR/Dia</strong></b></th>
+                 <th class="titulo"><b class="text-danger"><strong>Horas del US</strong></b></th>
+
                 </thead>
 
             <tbody>
@@ -96,15 +135,26 @@ select{
 <tr>
 
 
-                           <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
-                            <td><a class="btn btn-default btn-xs" href="/configuracion/equipo&id={{proyecto.id}}/responsable&id={{i.id }}/"><strong>RESPONSABLE</strong></a></td>
-                                                        <td><a class="btn btn-default btn-xs" href="/configuracion&id={{proyecto.id}}/flujo&id={{i.id }}/"><strong>ASIGNAR FLUJO</strong></a></td>
-</tr>
+                    <td><font color="gray"><strong><em><u>{{i.us.nombre}}</u></em></strong></font></td>
+                    <td><font color="gray"><strong>{{i.us.prioridad}}</strong></font></td>
+                    <td><font color="gray"><strong>En espera</strong></font></td>
+
+                    <td><font color="gray"><strong>{{i.us.flujo.nombre}}</strong></font></td>
+                    <td><font color="gray"><strong>{{i.us.responsable}}</strong></font></td>
+                    <td><font color="gray"><strong>{{i.us.horas}}</strong></font></td>
+                    <td><font color="gray"><strong>{{i.us.duracion}}</strong></font></td>
+{% if Asignar_Flujo %}
+
+    <td><a class="btn btn-default btn-xs" href="/configuracion&id={{proyecto.id}}/flujo&id={{i.us.id }}/"><strong>Asignar Flujo</strong></a></td>
+   {% endif%} {% if Asignar_Responsable %} <td><a class="btn btn-default btn-xs" href="/configuracion/equipo&id={{proyecto.id}}/responsable&id={{i.us.id }}/"><strong>Responsable</strong></a></td>
+{% endif %}
+                         </tr>
 {% endfor %}
    </tbody>
-	    </table>
+	    </table>{% if Iniciar_Proyecto  %}
+              {% if band == 1 %}
                             <center><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/sprint/"><strong>INICIAR SPRINT</strong></a></td></center>
-     </form>
+   {% endif %}   {% endif %} </form>
      </li>
      </ul>
             </div>
