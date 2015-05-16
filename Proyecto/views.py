@@ -1670,7 +1670,7 @@ def us_backlog(request,proyecto_id):
     """
     Busca los user stories que tienen estado en espera de un proyecto
     Para poder trabajar con ellos en el siguiente sprint
-    :param request:
+    :param request: peticion
     :param proyecto_id:
     :return:
     """
