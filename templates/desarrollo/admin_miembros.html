@@ -8,7 +8,7 @@
 </ol>
 <center><h2 class="text-danger"><strong> MIEMBROS DEL PROYECTO: "{{proyecto}}" </strong></h2></center><br><br>
 
-{% if ver_miembros or abm_miembros %}
+{% if ver_miembros or abm_miembros or Ver_Miembros %}
    <form action="." method="POST">
          {% csrf_token %}
             <table class="table table-bordered">
@@ -31,7 +31,6 @@
 	        </tr>
 	      </thead>
               <tbody>
-                <td><strong>{{proyecto.product_owner}} Product Owner </strong></td>
 	       {% for i in miembros %}
 
                    <tr>
