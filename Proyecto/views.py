@@ -908,7 +908,14 @@ def ver_historial(request, proyecto_id, us_id):
 """
 @login_required
 def mod_user_story(request, proyecto_id, us_id):
-    """Modifica los datos de un usuario y los actualiza en el sistema"""
+    """
+    Modifica los datos de un usuario y los actualiza en el sistema
+    :param request:
+    :param proyecto_id:
+    :param us_id:
+    :return:
+
+    """
     user = User.objects.get(username=request.user.username)
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     perm = get_permisos_proyecto(user, proyecto)
@@ -1658,12 +1665,12 @@ def add_adjunto(request, proyecto_id, us_id):
         context_instance=RequestContext(request)
     )
 def sprint_admin(request,proyecto_id):
-    '''
+    """
     Muestra los sprint del proyecto dado. Aquellos en ejecucion y los terminados.
     :param request:
     :param proyecto_id: identificador del proyecto
     :return:la vista de los sprint en ejecucion y los terminados.
-    '''
+    """
     proyecto=Proyecto.objects.get(id=proyecto_id)
     return HttpResponse("El proyecto  --"+str(proyecto) +"-- no cuenta con sprints finalizados")
 def us_backlog(request,proyecto_id):
