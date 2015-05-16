@@ -87,13 +87,20 @@ class UsuarioRolSistema(models.Model):
         unique_together = [("usuario", "rol")]
 
 class RolUsuario(models.Model):
+	"""
+	Relación existente entre un usuario y su rol
+	"""
 	usuario =models.ForeignKey(User)
 	def __unicode__(self):
 		return self.usuario.username
+
 class ProductOwner(models.Model):
-        usuario =models.ForeignKey(User)
-        def __unicode__(self):
-                return self.usuario.username
+    """
+    Tabla que contiene el nombre del usuario Product Owner
+    """
+    usuario =models.ForeignKey(User)
+    def __unicode__(self):
+         return self.usuario.username
 
 
 class Proyecto(models.Model):
@@ -121,6 +128,9 @@ class UsuarioRolProyecto(models.Model):
         return self.usuario
 
 class Flujo(models.Model):
+    """
+    Contiene datos del flujo
+    """
 
     nombre = models.CharField( max_length=50)
     proyecto = models.ForeignKey(Proyecto)
@@ -129,7 +139,9 @@ class Flujo(models.Model):
 
 
 class Actividades(models.Model):
-
+    """
+    Contiene datos de las actividades
+    """
     nombre = models.CharField( max_length=50)
     estado = models.IntegerField(max_length=1, default=1)
     proyecto = models.ForeignKey(Proyecto)
@@ -137,6 +149,9 @@ class Actividades(models.Model):
         return self.nombre
 
 class ActividadesFlujo(models.Model):
+    """
+    Contiene la relación entre flujo y actividades
+    """
     actividades = models.ForeignKey(Actividades, null=True)
     flujo = models.ForeignKey(Flujo)
     proyecto = models.ForeignKey(Proyecto)
@@ -147,6 +162,9 @@ class ActividadesFlujo(models.Model):
 
 #---------------------------CONFIGURACION DE SPRINT
 class Equipo(models.Model):
+    """
+    Contiene datos de los equipos participantes del sprint
+    """
     usuario = models.ForeignKey(UsuarioRolProyecto)
     horas = models.PositiveIntegerField()#horas de trabajo de ese miembro
     sprint = models.PositiveIntegerField()#sprint en el que se encuentra
@@ -156,6 +174,9 @@ class Equipo(models.Model):
         return self.usuario
 #***************************************USER STORY**********************************************
 class UserStory(models.Model):
+        """
+        Contiene datos del user story
+        """
         nombre = models.CharField( max_length=50)
         estado = models.CharField(max_length=10, choices=STATUS_CHOICES)
         version = models.PositiveIntegerField()
