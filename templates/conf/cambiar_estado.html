@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Flujos{% endblock %}
+{% block content %}
+
+<center><h2><b> Cambiar estado </b></h2></center><br>
+
+
+   {% if mensaje %}
+      <center><p>SE HA PRODUCIDO EL SIGUIENTE INCONVENIENTE:</p>
+      <p>{{mensaje}}</p></center>
+   {% else %}
+      <center><table class="abm">
+             <form id="form_id" action="." method="POST">
+
+                   {% csrf_token %}
+		   {{ form.as_p }}
+		   <tr>
+			<td colspan="2" class="buttonlist">
+
+                        <br><center><input type="submit" class= "btn btn-default" value="GUARDAR" />
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class= "btn btn-default" value="CANCELAR" onClick = "location.href='/principal' "/></center>
+                        {% if us.estado_actividad == 3 %}                <p><p><li><a href="/configuracion&id={{proyecto.id}}/act_cambiar&id={{act.id}}/us&id={{us.id}}/flujo&id={{flujo.id}}/"><strong>PASAR A LA SIGUIENTE ACTIVIDAD</strong></a></li>   {% endif %}
+
+                        </td>
+		   </tr>
+	     </form>
+
+      </table></center>
+
+   {% endif %}
+
+{% endblock%}
