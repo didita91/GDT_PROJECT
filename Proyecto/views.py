@@ -990,11 +990,12 @@ def mod_actividades(request, proyecto_id, acti_id):
 #----------------------------------CONFIGURACION PREVIA AL INICIO DE CADA SPRINT---------------------------
 @login_required
 def conf_proyecto(request, proyecto_id):
-    """ Permite la configuracion para el inicio de un proyecto
- :param request:
- :param proyecto_id:
- :return:
- """
+    """ Permite la configuracion para el inicio de un proyecto,
+        agrega user stories al sprint, flujos, duracion de los sprints
+        :param request:
+        :param proyecto_id:
+        :return:
+    """
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     proyecto = Proyecto.objects.get(id=proyecto_id)
@@ -1171,11 +1172,11 @@ Dirigue a la interfaz, para la creacion de equipos de trabajo  para el sprint da
 @login_required
 def add_miembro_equipo(request, proyecto_id):
     """
-Agregar usuarios al equipo correspondiente en un sprint
-:param request:
-:param proyecto_id:
-:return:
-"""
+    Agregar usuarios al equipo correspondiente en un sprint
+    :param request:
+    :param proyecto_id:
+    :return:
+    """
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id=proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -1221,6 +1222,7 @@ Agregar usuarios al equipo correspondiente en un sprint
 def responsable_us(request, proyecto_id, us_id):
     """
     Se asigna un usuario a un user story dado un equipo
+    que se ha generado en el sprint
     :param request:
     :param usuario_id:
     :return:
@@ -1277,11 +1279,11 @@ def responsable_us(request, proyecto_id, us_id):
 @login_required
 def asignar_flujoUS(request, proyecto_id, us_id):
     """
-Asigna flujos a user story
-:param request:
-:param proyecto_id:
-:return:us_id
-"""
+        Asigna flujos a user story en la pagina de configuracion inicial
+    :param request:
+    :param proyecto_id:
+    :return:us_id
+    """
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id=proyecto_id)
     permisos = get_permisos_sistema(user)
@@ -1315,7 +1317,14 @@ Asigna flujos a user story
     form = UserStoryFlujoForm(proyecto,initial = {'flujo': dict})
     return render_to_response("conf/asignar_flujoaUS.html", {'form':form}, context_instance=RequestContext(request))
 def iniciarsprint(request, proyecto_id):
-
+    """
+    Inicia un sprint si cumple con los requerimientos
+    es decir si todos los user stories agregados ya tienen
+    un flujo asignado y un responsable
+    :param request:
+    :param proyecto_id:
+    :return:
+    """
     flujo=Flujo.objects.filter(proyecto=proyecto_id)
     user=User.objects.get(id=request.user.id)
     proyecto=Proyecto.objects.get(id=proyecto_id)
@@ -1331,6 +1340,16 @@ def iniciarsprint(request, proyecto_id):
     return render_to_response("conf/sprint_iniciado.html",{'suma':suma,'user':user,'flujo':flujo,'proyecto':proyecto,'actividades':actividades,'usflujo':usflujo}, context_instance=RequestContext(request))
 
 def cambiar_estado(request, proyecto_id, act_id, us_id,flujo_id):
+    """
+    Cambiar de estado de una actividad de un user story
+    de Todo a Doing o de Doing a Done
+    :param request:
+    :param proyecto_id:
+    :param act_id:
+    :param us_id:
+    :param flujo_id:
+    :return:
+    """
     flujo=Flujo.objects.filter(proyecto=proyecto_id)
     proyecto=Proyecto.objects.get(id=proyecto_id)
     actividades=ActividadesFlujo.objects.filter(proyecto=proyecto_id)
@@ -1358,6 +1377,12 @@ def cambiar_estado(request, proyecto_id, act_id, us_id,flujo_id):
     return render_to_response("conf/cambiar_estado.html",{'form':form,'act':act,'us':us,'flujo':fluj,'proyecto':proyecto,'actividades':actividades,'usflujo':usflujo}, context_instance=RequestContext(request))
 
 def flujo_user_sprint(request, proyecto_id):
+    """
+    Relaciona un user story con el sprint
+    :param request:
+    :param proyecto_id:
+    :return:
+    """
     us=UsSprint.objects.filter(sprint=1)
     proyecto=Proyecto.objects.get(id=proyecto_id)
     usflujo=flujoUS.objects.filter()
@@ -1369,14 +1394,14 @@ def flujo_user_sprint(request, proyecto_id):
 #enviar_correo(request,user,'Fueron Agregados los siguientes cambios al User Story : ',us.nombre,us.descripcion)
 def enviar_correo(request,User_nombre,titulo,us_nombre,tarea):
     """
-Funcion de envio de correo, ante modificaciones en el HIstorial de tareas del User Story.
-:param request:
-:param User_nombre: nombre del usuario que hizo el cambio
-:param titulo: tituo de la tarea realizada
-:param us_nombre: nombre del user story detallado
-:param tarea: tarea realizada
-:return:
-"""
+        Funcion de envio de correo, ante modificaciones en el HIstorial de tareas del User Story.
+        :param request:
+        :param User_nombre: nombre del usuario que hizo el cambio
+        :param titulo: tituo de la tarea realizada
+        :param us_nombre: nombre del user story detallado
+        :param tarea: tarea realizada
+        :return:
+    """
     email_context = {
         'titulo':titulo+us_nombre,
         'usuario':request.user.get_full_name(),#cambiar
@@ -1397,12 +1422,15 @@ Funcion de envio de correo, ante modificaciones en el HIstorial de tareas del Us
     correo.send()
     return HttpResponseRedirect('/')
 
-#---ADJUNTOS
 
 @login_required
 def add_tarea(request, proyecto_id, us_id):
     """
-    Agrega tarea a un user story
+    Agrega una tarea con la descripcion, nombre y tiempo que le tomo hacer
+    :param request:
+    :param proyecto_id:
+    :param us_id:
+    :return:
     """
     #####
     user = User.objects.get(username=request.user.username)
@@ -1456,12 +1484,13 @@ def add_tarea(request, proyecto_id, us_id):
 @login_required
 def ver_historial(request, proyecto_id, us_id):
     """
-Ver historial
-:param request:
-:param proyecto_id:
-:param us_id:
-:return:
-"""
+    Despliega el historial de un user story mostrando la descripcion de las tareas
+    agregadas y el nombre de adjuntos cargados
+    :param request:
+    :param proyecto_id:
+    :param us_id:
+    :return:
+    """
     us = UserStory.objects.get(pk=us_id)
     user = User.objects.get(username=request.user.username)
     proyecto = Proyecto.objects.get(pk=proyecto_id)
@@ -1519,7 +1548,14 @@ def list(request, proyecto_id, us_id):
 
 @login_required
 def actividad_flujo(request, proyecto_id, flujo_id,us_id):
-    print"llllllllllllllll"
+    """
+    Se encarga de relacionar una actividad con un flujo dado en un proyecto
+    :param request:
+    :param proyecto_id:
+    :param flujo_id:
+    :param us_id:
+    :return:
+    """
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id=proyecto_id)
     permisos = get_permisos_sistema(user)
@@ -1551,6 +1587,15 @@ def actividad_flujo(request, proyecto_id, flujo_id,us_id):
     form =ActividadesFlujoForm(flujo,initial = {'act_flujo': dict})
     return render_to_response("conf/act_flujo.html", {'form':form}, context_instance=RequestContext(request))
 def cambiar_actividad(request, proyecto_id, act_id, us_id,flujo_id):
+    """
+    Cambia de actividad un user stories,lo puede hacer un scrum master o un desarrollador
+    :param request:
+    :param proyecto_id:
+    :param act_id:
+    :param us_id:
+    :param flujo_id:
+    :return:
+    """
     act=Actividades.objects.get(id=act_id)
     flujo=Flujo.objects.filter(proyecto=proyecto_id)
     proyecto=Proyecto.objects.get(id=proyecto_id)
@@ -1568,15 +1613,21 @@ def cambiar_actividad(request, proyecto_id, act_id, us_id,flujo_id):
             nueva= int(x=i.id)+1
             nuevaActi=ActividadesFlujo.objects.get(id=nueva)
 
-
-
-
             us.actividad= nuevaActi
             us.estado_actividad=1
     us.save()
     return render_to_response("conf/sprint_iniciado.html",{'user':user,'flujo':flujo,'proyecto':proyecto,'actividades':actividades,'usflujo':usflujo}, context_instance=RequestContext(request))
 
 def add_adjunto(request, proyecto_id, us_id):
+    """
+    Agrega adjuntos a un user stories,
+    el tamaño maximo del acrhivo es de 42 MB,
+    lo guarda en un Directorio Documento que se genera en el proyecto
+    :param request:
+    :param proyecto_id:
+    :param us_id:
+    :return:
+    """
     proyect = get_object_or_404(Proyecto, id=proyecto_id)
     us = get_object_or_404(UserStory, id=us_id)
         # Handle file upload
@@ -1610,6 +1661,13 @@ def sprint_admin(request,proyecto_id):
     proyecto=Proyecto.objects.get(id=proyecto_id)
     return HttpResponse("El proyecto  --"+str(proyecto) +"-- no cuenta con sprints finalizados")
 def us_backlog(request,proyecto_id):
+    """
+    Busca los user stories que tienen estado en espera de un proyecto
+    Para poder trabajar con ellos en el siguiente sprint
+    :param request:
+    :param proyecto_id:
+    :return:
+    """
     proyecto=Proyecto.objects.get(id=proyecto_id)
     userstories=UserStory.objects.filter(proyecto=proyecto_id,estado='En Espera')
     print userstories
