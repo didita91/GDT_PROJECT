@@ -12,19 +12,24 @@
 {% if ver_items or abm_items or ver_miembros or abm_miembros or asignar_roles or generarlb or ver_items_ant%}
    <center><h4><strong> <u>SCRUM MASTER DEL PROYECTO</u>: <em class="text-danger">"{{proyecto.usuario_scrum.usuario}}"</em></strong></h4><br><br></center>
 
-   {% if ver_miembros or abm_miembros or asignar_roles %}
+   {% if ver_miembros or abm_miembros or asignar_roles or Ver_Miembros %}
       <center><a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/"><strong>MIEMBROS DEL PROYECTO</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    {% endif %}
+       {% if ver_flujos or Ver_Flujos %}
+
       <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/"><strong>FLUJOS</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    {% if ver_user_story or ver_us %}
+     {% endif %}
+           {% if ver_user_story or ver_us %}
    <a class="btn btn-default" href="/userstories&id={{proyecto.id}}/"><strong>USER STORIES</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  {% endif %}
 
-
-   <a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/"><strong>INICIAR PROYECTO</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-
+{% if sprint == 0  %}
+   <a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/"><strong>CONF_INICIO</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 {% else %}
-   <center><p><h4><strong>NO TIENES PERMISOS PARA VER ESTA SECCIÓN</strong></h4></p></center>
+       <a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/sprint"><strong>VER TABLA</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+    {% endif %}
+{% else %}
+   <center><p><h4><strong>NO TIENES PERMISOS PARA VER ESTA SECCIÓN</strong></h4></center>
 {% endif %}
-{% endblock%}
+{%endblock%}
