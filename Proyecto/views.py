@@ -1251,7 +1251,6 @@ def responsable_us(request, proyecto_id, us_id):
     print us.proyecto
     if request.method == 'POST':
         form = RespUserStoryForm(proyecto,sprint,request.POST)
-        print "jladfkjalf"
         if form.is_valid():
 
             nuevo = ResponsableUS()
@@ -1579,7 +1578,6 @@ def actividad_flujo(request, proyecto_id, flujo_id,us_id):
 
             us.actividad = form.cleaned_data['act_flujo']
             print us.actividad
-            print "dkdkkddkkd"
             us.estado_actividad= "1"
             us.save()
             return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id))
