@@ -233,6 +233,12 @@ class Sprint(models.Model):
 
 
 class Tarea(models.Model):
+    """Clase para el registro de una tarea, posee los siguientes campos:
+    descripcion: de la tarea realizada
+    nombre: dado a la tarea
+    tiempo: invertido en su realizacion
+    us: user story al que se le agrega la tarea
+    """
     descripcion =  models.TextField(null=True, blank=True)
     nombre = models.CharField(max_length = 100)
     tiempo = models.PositiveIntegerField()#
