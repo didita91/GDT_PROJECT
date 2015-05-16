@@ -126,8 +126,9 @@ select{
 
 	                     <!--<td><strong></strong></td>-->
 
-                         <td><strong>{{i.version}}</strong></td>
-                        <td><strong>{{ i.estado }}</strong></td>
+                         <td><strong>{{i.version}}</strong></td>{% if i.estado == '2' %}
+                        <td><strong>En Proceso</strong></td>{% else %}
+                        <td><strong>En Espera</strong></td>{% endif%}
 
                          <td><strong>{{i.valor_tecnico}}</strong></td>
                          <td><strong>{{i.valor_negocio}}</strong></td>
