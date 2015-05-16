@@ -1663,6 +1663,7 @@ def sprint_admin(request,proyecto_id):
     :param request:
     :param proyecto_id: identificador del proyecto
     :return:la vista de los sprint en ejecucion y los terminados.
+
     '''
     proyecto=Proyecto.objects.get(id=proyecto_id)
     return HttpResponse("El proyecto  --"+str(proyecto) +"-- no cuenta con sprints finalizados")
@@ -1677,5 +1678,4 @@ def us_backlog(request,proyecto_id):
     proyecto=Proyecto.objects.get(id=proyecto_id)
     userstories=UserStory.objects.filter(proyecto=proyecto_id,estado='En Espera')
     print userstories
-    print "ttttkkk"
     return render_to_response("conf/us_backlog.html",{'proyecto':proyecto,'userstories':userstories}, context_instance=RequestContext(request))
