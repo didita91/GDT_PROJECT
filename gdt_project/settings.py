@@ -45,8 +45,8 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = RUTA_PROYECTO.child('site_media'),
-
+#MEDIA_ROOT = RUTA_PROYECTO.child('site_media'),
+MEDIA_ROOT = RUTA_PROYECTO
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
@@ -122,3 +122,9 @@ LOGGING = {
 
 
 LOGIN_URL = '/login/'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'gdtprojectInfo@gmail.com'
+EMAIL_HOST_PASSWORD='12345gdt'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
