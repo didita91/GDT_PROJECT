@@ -32,14 +32,32 @@ urlpatterns = patterns('',
      url(r'^userstories&id=(?P<proyecto_id>\d+)/mod_us&id=(?P<us_id>\d+)/$', mod_user_story),
 #HISTORIAL
      url(r'^userstories&id=(?P<proyecto_id>\d+)/historial&id=(?P<us_id>\d+)/$',ver_historial),
+#TAREA
+     # url(r'^list/$', 'list', name='list'),0
+     # url(r'^userstories&id=(?P<proyecto_id>\d+)/adj&id=(?P<us_id>\d+)/nuevo/$',list,name='list'),
+     url(r'^userstories&id=(?P<proyecto_id>\d+)/adj&id=(?P<us_id>\d+)/nuevo/$',add_tarea),
 #CONFIGURACION DE PROYECTO INICIO
      url(r'^configuracion&id=(?P<proyecto_id>\d+)/$',conf_proyecto),
      url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/$', admin_equipo),
      url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/nuevo/$',add_miembro_equipo),
      url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/responsable&id=(?P<us_id>\d+)/$',responsable_us),
      url(r'^configuracion&id=(?P<proyecto_id>\d+)/flujo&id=(?P<us_id>\d+)/$',asignar_flujoUS),
-     url(r'^configuracion&id=(?P<proyecto_id>\d+)/sprint/$',iniciarsprint)
+     url(r'^configuracion&id=(?P<proyecto_id>\d+)/sprint/$',iniciarsprint),
+
+        url(r'^configuracion&id=(?P<proyecto_id>\d+)/flujouser/$',flujo_user_sprint),
+    #HISTORIAL
+     url(r'^userstories&id=(?P<proyecto_id>\d+)/historial&id=(?P<us_id>\d+)/$',ver_historial),
+            url(r'^configuracion&id=(?P<proyecto_id>\d+)/act_cambiar&id=(?P<act_id>\d+)/us&id=(?P<us_id>\d+)/flujo&id=(?P<flujo_id>\d+)/$',cambiar_actividad),
+
+        url(r'^configuracion&id=(?P<proyecto_id>\d+)/estado_cambiar&id=(?P<act_id>\d+)/us&id=(?P<us_id>\d+)/flujo&id=(?P<flujo_id>\d+)/$',cambiar_estado),
+
+
+        url(r'^configuracion&id=(?P<proyecto_id>\d+)/act_flujo&id=(?P<flujo_id>\d+)/us&id=(?P<us_id>\d+)/$',actividad_flujo),
+url(r'^userstories&id=(?P<proyecto_id>\d+)/adjunto&id=(?P<us_id>\d+)/$',add_adjunto),
+    url(r'^sprint&id=(?P<proyecto_id>\d+)/$',sprint_admin),
+        url(r'^userstories&id=(?P<proyecto_id>\d+)/backlog/$',us_backlog),
 
 
 )
+
 
