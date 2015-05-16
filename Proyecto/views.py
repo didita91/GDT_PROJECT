@@ -1660,7 +1660,7 @@ def add_adjunto(request, proyecto_id, us_id):
 def sprint_admin(request,proyecto_id):
     '''
     Muestra los sprint del proyecto dado. Aquellos en ejecucion y los terminados.
-    :param request:
+    :param request: peticion
     :param proyecto_id: identificador del proyecto
     :return:la vista de los sprint en ejecucion y los terminados.
 
