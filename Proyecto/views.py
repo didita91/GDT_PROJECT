@@ -21,6 +21,11 @@ from django.shortcuts import render
 from app.forms import *
 from app.models import *
 from app.helper import *
+from django.core.mail.message import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.utils.html import strip_tags
 # Create your views here.
 @login_required
 def admin_proyectos(request):
@@ -104,24 +109,31 @@ Crea un nuevo proyecto.
         form = ProyectosForm(request.POST, request.FILES)
         if form.is_valid():
             p = Proyecto()
+            sprint=Sprint()
             p.nombre = form.cleaned_data['nombre']
             p.usuario_scrum = form.cleaned_data['usuario_scrum']
-            p.product_owner = form.cleaned_data['product_owner']
+           # p.product_owner = form.cleaned_data['product_owner']
             p.descripcion = form.cleaned_data['descripcion']
             p.fecha_inicio = form.cleaned_data['fecha_inicio']
-            p.sprint = form.cleaned_data['sprint']
             p.save()
             relacion = UsuarioRolProyecto()
             relacion.usuario = p.usuario_scrum.usuario
             relacion.rol = Rol.objects.get(id=2)
-
+            #rel = UsuarioRolProyecto()
+            #rel.usuario= p.product_owner.usuario
+            #rel.rol=Rol.objects.get(id=5)
+            #rel.save()
+            sprint.estado=0
+            sprint.proyecto=p
+            sprint.nro_sprint=1
+            sprint.save()
             print relacion.rol
             print "chauuu"
             relacion.proyecto = p
             relacion.save()
-            p
 
-            return HttpResponseRedirect('/proyectos')
+
+        return HttpResponseRedirect('/proyectos')
     else:
         form = ProyectosForm()
         return render_to_response('admin/proyectos/crear_proyecto.html',
@@ -205,7 +217,9 @@ Administracion de proyecto
     user = User.objects.get(username=request.user.username)
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
     permisos = get_permisos_sistema(user)
-    #perm = get_permisos_proyecto(user, proyecto_id)
+    perm = get_permisos_proyecto(user, proyecto)
+    print perm
+    print "tototo"
     print proyecto
     print user
     print permisos
@@ -216,13 +230,34 @@ Administracion de proyecto
     #   permisos_ant = get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=1)) + get_permisos_proyecto_ant(user, proyecto, Fase.objects.get(pk=2))
     # print permisos_ant
     # linea = LineaBase.objects.filter(proyectos=proyecto, fase=3)
-    return render_to_response("desarrollo/admin_proyecto.html", {'proyecto': proyecto,
+    spt =Sprint.objects.get(proyecto=proyecto.id)
+    sprint =1
+
+    if spt.estado == '0':
+          sprint=0
+          return render_to_response("desarrollo/admin_proyecto.html", {'sprint':sprint,'proyecto': proyecto,
                                                                  'user': user,
                                                                  #  'fin':linea,
                                                                  'ver_flujos': 'Ver flujos' in permisos,
                                                                  'ver_user_story': 'Ver user story' in permisos,
-                                                                 # 'ver_us': 'Ver US' in perm,
-                                                                 #'ver_Flujos': 'Ver Flujos' in perm,
+                                                                  'ver_us': 'Ver US' in perm,
+                                                                 'Ver_Flujos': 'Ver Flujos' in perm,
+                                                                 'Ver_Miembros': 'Ver Miembros' in perm,
+                                                                 'ver_miembros': 'Ver miembros' in permisos,
+                                                                 'abm_miembros': 'ABM miembros' in permisos,
+                                                                 'asignar_roles': 'Asignar roles' in permisos,
+                                                                 'generarlb': 'Generar LB',
+                                                                 'asignar_tipoItm': 'Asignar tipo-item fase'},
+                              context_instance=RequestContext(request))
+
+    return render_to_response("desarrollo/admin_proyecto.html", {'sprint':sprint,'proyecto': proyecto,
+                                                                 'user': user,
+                                                                 #  'fin':linea,
+                                                                 'ver_flujos': 'Ver flujos' in permisos,
+                                                                 'ver_user_story': 'Ver user story' in permisos,
+                                                                  'ver_us': 'Ver US' in perm,
+                                                                 'Ver_Flujos': 'Ver Flujos' in perm,
+                                                                 'Ver_Miembros': 'Ver Miembros' in perm,
                                                                  'ver_miembros': 'Ver miembros' in permisos,
                                                                  'abm_miembros': 'ABM miembros' in permisos,
                                                                  'asignar_roles': 'Asignar roles' in permisos,
@@ -244,6 +279,7 @@ Administración de usuarios del proyecto
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p).only('rol')
     permisos_obj = []
+    perm = get_permisos_proyecto(user,p)
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
     permisos = []
@@ -253,6 +289,25 @@ Administración de usuarios del proyecto
     #-------------------------------------------------------------------
     miembros = UsuarioRolProyecto.objects.filter(proyecto=p).order_by('id')
     lista = []
+    roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p).only('rol')
+    usuario = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p)
+    permisos_obj = []
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    print permisos
+
+    #-------------------------------------------------------------------
+    if request.method == 'POST':
+        form = UsuarioProyectoForm(p,request.POST)
+        if form.is_valid():
+            relacion = UsuarioRolProyecto()
+            relacion.usuario = form.cleaned_data['usuario']
+            relacion.proyecto = Proyecto.objects.get(pk=proyecto_id)
+            relacion.save()
+            return HttpResponseRedirect("/proyectos/miembros&id=" + str(proyecto_id))
     for i in miembros:
         if not i.usuario in lista:
             lista.append(i.usuario)
@@ -273,11 +328,12 @@ Administración de usuarios del proyecto
                 pag = paginator.page(page)
             except (EmptyPage, InvalidPage):
                 pag = paginator.page(paginator.num_pages)
-            return render_to_response('desarrollo/admin_miembros.html', {'lista': lista, 'pag': pag, 'form': form,
+            return render_to_response('desarrollo/admin_miembros.html', {'form':form,'lista': lista, 'pag': pag, 'form': form,
                                                                          'user': user,
                                                                          'proyecto': Proyecto.objects.get(
                                                                              id=proyecto_id),
                                                                          'miembros': lista,
+                                                                         'Ver_Miembros':'Ver Miembros' in perm,
                                                                          'ver_miembros': 'Ver miembros' in permisos,
                                                                          'abm_miembros': 'ABM miembros' in permisos},
                                       context_instance=RequestContext(request))
@@ -294,11 +350,14 @@ Administración de usuarios del proyecto
             pag = paginator.page(page)
         except (EmptyPage, InvalidPage):
             pag = paginator.page(paginator.num_pages)
-        form = FilterForm(initial={'paginas': paginas})
-        return render_to_response('desarrollo/admin_miembros.html', {'lista': lista, 'pag': pag, 'form': form,
+        form2 = FilterForm(initial={'paginas': paginas})
+        form = UsuarioProyectoForm(p,request.POST)
+
+        return render_to_response('desarrollo/admin_miembros.html', {'form':form,'lista': lista, 'pag': pag, 'form': form,
                                                                      'user': user,
                                                                      'proyecto': Proyecto.objects.get(id=proyecto_id),
                                                                      'miembros': lista,
+                                                                     'Ver_Miembros':'Ver Miembros' in perm,
                                                                      'ver_miembros': 'Ver miembros' in permisos,
                                                                      'abm_miembros': 'ABM miembros' in permisos},
                                   context_instance=RequestContext(request))
@@ -332,8 +391,8 @@ Agregar usuarios al proyecto
             relacion = UsuarioRolProyecto()
             relacion.usuario = form.cleaned_data['usuario']
             relacion.proyecto = Proyecto.objects.get(pk=proyecto_id)
+
             relacion.save()
-            relacion.eq=1
             return HttpResponseRedirect("/proyectos/miembros&id=" + str(proyecto_id))
     else:
         form = UsuarioProyectoForm(p)
@@ -394,7 +453,7 @@ Cambiar rol a un usuario de proyecto
         else:
             dict = {}
             for i in lista:
-                dict[i.rol.id] = True
+                dict[i.rol] = True
             form = AsignarRolesForm(2, initial={'roles': dict})
     return render_to_response("desarrollo/cambiar_usuario_rol.html", {'user': user,
                                                                       'form': form,
@@ -503,6 +562,7 @@ Administracion de flujos
     user = User.objects.get(username=request.user.username)
     proyectos = Proyecto.objects.get(id=proyecto_id)
     permisos = get_permisos_sistema(user)
+    perm = get_permisos_proyecto(user,proyectos)
     print user
     print permisos
     lista = Flujo.objects.filter(proyecto=proyectos)
@@ -512,7 +572,8 @@ Administracion de flujos
         'user': user, 'lista': lista, 'proyecto': proyectos, 'actividades': actividades,
         'mod_acti': 'Modificar actividad' in permisos, 'ver_flujos': 'Ver flujos' in permisos,
         'crear_flujos': 'Crear flujos' in permisos, 'ver_actividades': 'Ver actividades' in permisos,
-        'crear_actividades': 'Crear actividades' in permisos,
+        'crear_actividades': 'Crear actividades' in permisos,'Ver_Actividades':'Ver Actividades' in perm,
+        'Ver_Flujos':'Ver Flujos' in perm,
 
     }, context_instance=RequestContext(request))
 
@@ -614,8 +675,8 @@ Adhiere actividades a un flujo dado
         print "ktkkk"
         if form.is_valid():
             lista_nueva = form.cleaned_data['actividades']
-            for i in lista_actividades:
-               i.delete()
+            #for i in lista_actividades:
+             #  i.delete()
 
             print "chau"
             for j in lista_nueva:
@@ -631,7 +692,7 @@ Adhiere actividades a un flujo dado
         print "chauuuuuuuuuuu"
         dict = {}
         for i in lista_actividades:
-            dict[i.actividades.id] = False
+            dict[i.actividades.id] = True
         form = AddActividadesForm(proyecto, initial={'actividades': dict})
     return render_to_response("flujo/add_actividades.html",
                               {'form': form, 'user': user, 'flujo': flujo, 'proyecto': proyecto,
@@ -690,7 +751,7 @@ def admin_us(request, proyecto_id):
     #linea = LineaBase.objects.filter(proyectos=proyect, fase=proyect.fase)
     perm = get_permisos_proyecto(user, proyecto)
     permisos = get_permisos_sistema(user)
-    lista = UserStory.objects.filter(habilitado=True).order_by('id')
+    lista = UserStory.objects.filter(habilitado=True,proyecto=proyecto.id).order_by('id')
     print permisos
     print "holaaa"
     print perm
@@ -717,6 +778,7 @@ def admin_us(request, proyecto_id):
                                                  'abm_user_story': 'ABM user story' in permisos,
                                                  'ver_user_story': 'Ver user story' in permisos,
                                                  'ver_us': 'Ver US' in perm,
+                                                 'Crear_US': 'Crear US' in perm,
                                                  'revisar_user_story': 'Revisar user story'})
             return render_to_response('us/user_story.html', variables)
 
@@ -741,6 +803,7 @@ def admin_us(request, proyecto_id):
                                              'abm_user_story': 'ABM user story' in permisos,
                                              'ver_user_story': 'Ver user story' in permisos,
                                              'ver_us': 'Ver US' in perm,
+                                             'Crear_US': 'Crear US' in perm,
                                              'revisar_user_story': 'Revisar user story'})
         return render_to_response('us/user_story.html', variables)
 
@@ -757,6 +820,8 @@ Agrega un nuevo us
     proyecto =Proyecto.objects.get(id=proyecto_id)
     permisos_obj = []
     perm = get_permisos_proyecto(user,proyecto)
+
+
     for i in roles:
         permisos_obj.extend(i.rol.permisos.all())
     permisos = []
@@ -772,7 +837,7 @@ Agrega un nuevo us
             us.nombre = form.cleaned_data['nombre']
             #us.usuario = form.cleaned_data['usuario']  #solo en el historial?
 
-            us.estado = 1
+            us.estado = "En Espera"
             us.version = 1
             us.valor_negocio=form.cleaned_data['valor_negocio']
             us.valor_tecnico=form.cleaned_data['valor_tecnico']
@@ -781,7 +846,10 @@ Agrega un nuevo us
             us.habilitado = True
             us.proyecto = proyecto
             us.duracion = form.cleaned_data['duracion']
+            us.estado_actividad=1
             us.save()
+            print "pruebaa"
+            print us.estado
 
             #Generacion del historial
             hist = Historial()
@@ -800,15 +868,12 @@ Agrega un nuevo us
 
 
 
-@login_required
+
+
+"""@login_required
 def ver_historial(request, proyecto_id, us_id):
-    """
-Ver historial
-:param request:
-:param proyecto_id:
-:param us_id:
-:return:
-"""
+    
+    print "chaaaaaaaaaaaaaaaaa"
     us = UserStory.objects.get(pk=us_id)
     user = User.objects.get(username=request.user.username)
     proyecto = Proyecto.objects.get(pk=proyecto_id)
@@ -823,7 +888,9 @@ Ver historial
         permisos.append(i.nombre)
     #-------------------------------------------------------------------
     historial = Historial.objects.get(user_story=us)
-    versiones = RegistroHistorial.objects.filter(historial=historial).order_by('version')
+    versiones = RegistroHistorial.objects.filter(us=us).order_by('version')
+    print versiones.descripcion
+    print "hadfakjfld"
     #linea = LineaBase.objects.filter(proyectos=proyect, fase=3)
     #if (linea):
     fin = 0
@@ -838,7 +905,7 @@ Ver historial
                                          'ver_historial_us': 'Ver Historial'})
     return render_to_response('us/historial.html', variables)
 
-
+"""
 @login_required
 def mod_user_story(request, proyecto_id, us_id):
     """Modifica los datos de un usuario y los actualiza en el sistema"""
@@ -933,27 +1000,94 @@ def conf_proyecto(request, proyecto_id):
     proyecto = Proyecto.objects.get(id=proyecto_id)
     flujos= Flujo.objects.filter(proyecto=proyecto_id)
     us = UserStory.objects.filter(proyecto=proyecto_id,estado=1)
+    list = []
+    sprint=Sprint.objects.get(proyecto=proyecto_id)
+    usS=UsSprint.objects.filter(sprint=sprint.id)
+    perm = get_permisos_proyecto(user,proyecto)
+    duracion=duracionSprintForm(request.POST)
+    if duracion.is_valid():
+        proyecto.duracion_sprint=duracion.cleaned_data['Duracion']
+        proyecto.save()
+        return HttpResponseRedirect("/configuracion&id="+str(proyecto_id))
+
     for i in us:
+        list.append(i)
+        print list
         print i.nombre
     act =0
-    for i in flujos:
-        actividad= ActividadesFlujo.objects.filter(flujo=i)
-        if actividad:
-           # print actividad
-            act=1
+    print "hadlñakjfñaldif"
+
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+
+    usflujo=flujoUS.objects.filter()
+    equi=Equipo.objects.filter(proyecto=proyecto.id,sprint=sprint.id)
+    sprint=Sprint()
+   # return render_to_response("conf/sprint.html",{'us':us,'proyecto':proyecto,'usflujo':usflujo
+    form= USaSprintForm(request.POST)
+    if form.is_valid():
+
+        print us
+        list=form.cleaned_data['userStory']
+        print list
+        sprint=Sprint.objects.get(proyecto=proyecto)
+        for i in list:
+
+            nuevo=UsSprint()
+            nuevo.us= i
+            nuevo.sprint=sprint.id
+            nuevo.save()
+
+            us= UserStory.objects.get(id=i.id)
+
+
+            us.estado= 2
+
+            us.save()
+            print "teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeest"
+
+            return HttpResponseRedirect("/configuracion&id="+str(proyecto_id))
+    else:
+
+            dict1 = {}
+            for i in us:
+                dict1[i.id] = True
+            form = USaSprintForm(initial={'userStory': dict1})
+            for i in flujos:
+                actividad= ActividadesFlujo.objects.filter(flujo=i)
+                if actividad:
+                    act=1
+
+            print "chaaaau"
     if act is not 0:
-        return render_to_response('conf/config_inicial.html', {'lista': proyecto,
-                                                                   'proyecto':proyecto, 'us':us,
+            equi=Equipo.objects.filter(proyecto=proyecto.id,sprint=sprint.id)
+            suma=0
+            for i in equi:
+                suma=int(x=i.horas)+suma
+
+
+            lis=UserStory.objects.filter(proyecto=proyecto_id)
+            band=1
+            for i in lis:
+                if i.responsable == None or i.flujo == None :
+                    band=0
+                else:
+                    band=1
+            return render_to_response('conf/config_inicial.html', {'duracion':duracion,'suma':suma,'band':band,'form':form,'lista': proyecto,'usflujo':usflujo,
+                                                                   'proyecto':proyecto, 'us':usS,
                                                                    'user': user,
                                                                    'ver_proyectos': 'Ver proyectos' in permisos,
                                                                    'crear_proyecto': 'Crear proyecto' in permisos,
                                                                    'mod_proyecto': 'Modificar proyecto' in permisos,
                                                                    'ver_flujos': 'Ver flujos' in permisos,
+                                                                   'Asignar_Flujo': 'Asignar Flujo' in permisos,
+                                                                   'Asignar_Responsable':'Asignar Responsable' in permisos,
+                                                                   'Agregar_US': 'Agregar us' in permisos,
+                                                                   'Iniciar_Proyecto':'Iniciar Proyecto' in permisos,
                                                                    'eliminar_proyecto': 'Eliminar proyecto' in permisos},
                                                                      context_instance=RequestContext(request))
 
     else:
-        return HttpResponse("Debe agregar por lo menos un flujo con una actividad para  iniciar el proyecto")
+            return HttpResponse("Debe agregar por lo menos un flujo con una actividad para  iniciar el proyecto")
 
 
 #----------->Generar Equipo
@@ -978,7 +1112,7 @@ Dirigue a la interfaz, para la creacion de equipos de trabajo  para el sprint da
         permisos.append(i.nombre)
     print permisos
     #-------------------------------------------------------------------
-    miembros = Equipo.objects.filter(sprint=1).order_by('id')
+    miembros = Equipo.objects.filter(proyecto=proyecto_id).order_by('id')
     lista = []
     listah=[]
 
@@ -1056,7 +1190,8 @@ Agregar usuarios al equipo correspondiente en un sprint
     for i in permisos_obj:
         permisos.append(i.nombre)
     print permisos
-
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    sprint=Sprint.objects.get(proyecto=proyecto_id)
     #-------------------------------------------------------------------
     if request.method == 'POST':
         form = MiembroEquipoForm(p, request.POST)
@@ -1064,8 +1199,8 @@ Agregar usuarios al equipo correspondiente en un sprint
             relacion = Equipo()
 
             relacion.usuario = form.cleaned_data['usuario']
-            relacion.proyecto = Proyecto.objects.get(pk=proyecto_id)
-            relacion.sprint=1
+            relacion.proyecto = proyecto
+            relacion.sprint= sprint.id
             relacion.horas=form.cleaned_data['horas']
             relacion.save()
 
@@ -1097,11 +1232,17 @@ def responsable_us(request, proyecto_id, us_id):
     perm = get_permisos_proyecto(user,proyecto)
     lista_miembros = UsuarioRolProyecto.objects.filter(proyecto=proyecto)
 
+    sprint=Sprint.objects.get(proyecto=proyecto.id)
     us= UserStory.objects.get(id=us_id)
+    usprint=UsSprint.objects.get(us=us_id,sprint=sprint.id)
+    print usprint
+    lista_equipo= Equipo.objects.filter(sprint=sprint.id, proyecto=proyecto.id)
+
     print "holaaaaa"
     print us.proyecto
     if request.method == 'POST':
-        form = RespUserStoryForm(1,request.POST)
+        form = RespUserStoryForm(proyecto,sprint,request.POST)
+        print "jladfkjalf"
         if form.is_valid():
 
             nuevo = ResponsableUS()
@@ -1109,17 +1250,29 @@ def responsable_us(request, proyecto_id, us_id):
             nuevo.usuario = form.cleaned_data['usuario']
             nuevo.us= us
             nuevo.save()
+            print "st es"
+            print nuevo.usuario.usuario.id
+            usrol=UsuarioRolProyecto.objects.get(id=nuevo.usuario.usuario.id,proyecto=proyecto_id)
+            print usrol.id
 
+            print "nuevo"
+            equipo=Equipo.objects.get(usuario=usrol.id,sprint=sprint.id)
+            us.responsable=equipo.usuario.usuario
+            us.horas=equipo.horas
+            us.save()
+            sprint.estado=1
+            sprint.save()
 
             return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id))
         else:
             return render_to_response("conf/asignar_us.html", {'form':form,'proyecto':us.proyecto}, context_instance=RequestContext(request))
-    dict = {}
-    for i in lista_miembros:
-            print i.usuario
-            dict[i.usuario.id] = False
-    form = RespUserStoryForm(1,initial = {'usuario': dict})
-    return render_to_response("conf/asignar_us.html", {'form':form,'proyecto':us.proyecto}, context_instance=RequestContext(request))
+    else:
+        dict = {}
+        for i in lista_equipo:
+            print i.usuario.usuario
+            dict[i.usuario.usuario] = False
+        form = RespUserStoryForm(proyecto,sprint,initial = {'usuario': dict})
+        return render_to_response("conf/asignar_us.html", {'form':form,'proyecto':us.proyecto}, context_instance=RequestContext(request))
 
 @login_required
 def asignar_flujoUS(request, proyecto_id, us_id):
@@ -1136,28 +1289,329 @@ Asigna flujos a user story
     perm = get_permisos_proyecto(user,proyecto)
     lista_flujos = Flujo.objects.filter(proyecto=proyecto_id)
     us= UserStory.objects.get(id=us_id)
+
     if request.method == 'POST':
-        form = UserStoryFlujoForm(1,request.POST)
+        form = UserStoryFlujoForm(proyecto,request.POST)
         if form.is_valid():
 
             nuevo = flujoUS()
             nuevo.flujo = form.cleaned_data['flujo']
             nuevo.us= us
             nuevo.save()
-            return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id))
+            us.flujo=nuevo.flujo
 
-            #flujoID= flujoUS();
-            #flujoID.flujo= lista_flujos.id
-            #flujoID.us=us
-            #flujoID.save()
+            us.save()
+
+            return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id)+"/act_flujo&id="+str(nuevo.flujo.id)+"/us&id="+str(us.id))
+
+
         else:
+
             return render_to_response("conf/asignar_flujoaUS.html", {'form':form}, context_instance=RequestContext(request))
     dict = {}
     for i in lista_flujos:
             print i.nombre
             dict[i.proyecto] = False
-    form = UserStoryFlujoForm(1,initial = {'flujo': dict})
+    form = UserStoryFlujoForm(proyecto,initial = {'flujo': dict})
     return render_to_response("conf/asignar_flujoaUS.html", {'form':form}, context_instance=RequestContext(request))
-
 def iniciarsprint(request, proyecto_id):
-    return render_to_response("conf/sprint.html", context_instance=RequestContext(request))
+
+    flujo=Flujo.objects.filter(proyecto=proyecto_id)
+    user=User.objects.get(id=request.user.id)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    actividades=ActividadesFlujo.objects.filter(proyecto=proyecto_id)
+    usflujo= UserStory.objects.filter(proyecto=proyecto_id)
+    sprint=Sprint.objects.get(proyecto=proyecto_id)
+    equi=Equipo.objects.filter(proyecto=proyecto.id,sprint=sprint.id)
+    suma=0
+    for i in equi:
+                suma=int(x=i.horas)+suma
+
+    suma = suma*5*proyecto.duracion_sprint
+    return render_to_response("conf/sprint_iniciado.html",{'suma':suma,'user':user,'flujo':flujo,'proyecto':proyecto,'actividades':actividades,'usflujo':usflujo}, context_instance=RequestContext(request))
+
+def cambiar_estado(request, proyecto_id, act_id, us_id,flujo_id):
+    flujo=Flujo.objects.filter(proyecto=proyecto_id)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    actividades=ActividadesFlujo.objects.filter(proyecto=proyecto_id)
+    act=Actividades.objects.get(id=act_id)
+    print "alñdkfjañdlfkjakdfñlakfajñflkaf"
+    print act_id
+    fluj=Flujo.objects.get(id=flujo_id)
+    usflujo= UserStory.objects.filter(proyecto=proyecto_id)
+    us= UserStory.objects.get(id=us_id)
+    lista_flujos=ActividadesFlujo.objects.filter(flujo=flujo)
+    if request.method == 'POST':
+        form = CambiarEstadoActividadForm(request.POST)
+
+        if form.is_valid() :
+            us.estado_actividad = form.cleaned_data["Estado"]
+            us.save()
+
+            return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id)+"/sprint")
+        else:
+
+            return render_to_response("conf/cambiar_estado.html", {'form':form,'act':act,'us':us,'flujo':fluj}, context_instance=RequestContext(request))
+    else:
+
+        form= CambiarEstadoActividadForm(initial = {'Estados': us.estado_actividad})
+    return render_to_response("conf/cambiar_estado.html",{'form':form,'act':act,'us':us,'flujo':fluj,'proyecto':proyecto,'actividades':actividades,'usflujo':usflujo}, context_instance=RequestContext(request))
+
+def flujo_user_sprint(request, proyecto_id):
+    us=UsSprint.objects.filter(sprint=1)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    usflujo=flujoUS.objects.filter()
+
+    return render_to_response("conf/sprint.html",{'us':us,'proyecto':proyecto,'usflujo':usflujo},context_instance=RequestContext(request))
+
+
+#------------------------VIEW PARA ENVIAR CORREO
+#enviar_correo(request,user,'Fueron Agregados los siguientes cambios al User Story : ',us.nombre,us.descripcion)
+def enviar_correo(request,User_nombre,titulo,us_nombre,tarea):
+    """
+Funcion de envio de correo, ante modificaciones en el HIstorial de tareas del User Story.
+:param request:
+:param User_nombre: nombre del usuario que hizo el cambio
+:param titulo: tituo de la tarea realizada
+:param us_nombre: nombre del user story detallado
+:param tarea: tarea realizada
+:return:
+"""
+    email_context = {
+        'titulo':titulo+us_nombre,
+        'usuario':request.user.get_full_name(),#cambiar
+        'mensaje':' \n CAMBIOS: '+tarea,
+    }
+    email_html =  render_to_string('email.html',email_context)
+    email_text = strip_tags(email_html)
+    #destinatario = request.user.email
+    correo = EmailMultiAlternatives(
+        'GDT Project - Notificacion',
+        email_text,#contenido del correo
+        'gdtprojectinfo@gmail.com',#quien lo envia
+        #[destinatario],
+       ['didif.91@gmail.com'],#a quien se le envia
+    )
+    # se especifica que el contenido es html
+    correo.attach_alternative(email_html, 'text/html')
+    correo.send()
+    return HttpResponseRedirect('/')
+
+#---ADJUNTOS
+
+@login_required
+def add_tarea(request, proyecto_id, us_id):
+    """
+    Agrega tarea a un user story
+    """
+    #####
+    user = User.objects.get(username=request.user.username)
+    proyect = get_object_or_404(Proyecto, id=proyecto_id)
+    permisos = get_permisos_proyecto(user, proyect)
+    us = get_object_or_404(UserStory, id=us_id)
+    #Validacion de permisos---------------------------------------------
+    roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
+    proyecto =Proyecto.objects.get(id=proyecto_id)
+    permisos_obj = []
+    perm = get_permisos_proyecto(user,proyecto)
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    print permisos
+    #-------------------------------------------------------------------
+    if request.method == 'POST':
+        form = TareaForm(request.POST)
+
+        if form.is_valid():
+            #docu=get_object_or_404(Documento,us=us)
+            nuevo = Tarea()
+            nuevo.tiempo=form.cleaned_data['tiempo']
+            nuevo.descripcion = form.cleaned_data['descripcion']
+            nuevo.nombre = form.cleaned_data['nombre']
+            nuevo.us = us
+            nuevo.save()
+            #envio de email ante tarea sobre el us
+            enviar_correo(request,user,'Fueron Agregados los siguientes cambios al User Story : ',us.nombre,nuevo.descripcion)
+            #Generacion del historial
+            hist = Historial()
+            hist.usuario = user
+            hist.fecha_creacion = datetime.date.today()
+            hist.user_story = us
+           # hist.documento=docu
+            hist.descripcion=nuevo.descripcion
+            hist.save()
+
+	    registrar_historial(us,hist,nuevo)
+            return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id) + "/sprint")
+    else:
+        form = TareaForm()
+    return render_to_response('us/crear_tarea.html',{'proyecto': proyecto,'us':us,
+            'form': form,
+            'abm_user_story': 'ABM user story' in permisos,
+            'crear_us': 'Crear US' in perm},context_instance=RequestContext(request))
+
+
+@login_required
+def ver_historial(request, proyecto_id, us_id):
+    """
+Ver historial
+:param request:
+:param proyecto_id:
+:param us_id:
+:return:
+"""
+    us = UserStory.objects.get(pk=us_id)
+    user = User.objects.get(username=request.user.username)
+    proyecto = Proyecto.objects.get(pk=proyecto_id)
+    perm = get_permisos_proyecto(user, proyecto)
+    #Validacion de permisos---------------------------------------------
+    roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=proyecto).only('rol')
+    permisos_obj = []
+    for i in roles:
+        permisos_obj.extend(i.rol.permisos.all())
+    permisos = []
+    for i in permisos_obj:
+        permisos.append(i.nombre)
+    #-------------------------------------------------------------------
+    versiones = RegistroHistorial.objects.filter(us=us)
+    #linea = LineaBase.objects.filter(proyectos=proyect, fase=3)
+    #if (linea):
+    fin = 0
+    #else:
+    #    fin = 1
+    hist=Historial.objects.filter(user_story=us)
+    variables = RequestContext(request, {
+                                         'lista': versiones,
+                                         'user_story': us,'hist':hist,
+                                         'fin': fin,
+                                         'proyecto': proyecto,
+                                         'ver_historial_user_story': 'Ver historial' in permisos,
+                                         'ver_historial_us': 'Ver Historial'})
+    return render_to_response('us/historial.html', variables)
+
+
+def list(request, proyecto_id, us_id):
+    proyect = get_object_or_404(Proyecto, id=proyecto_id)
+    # Handle file upload
+    if request.method == 'POST':
+        form = DocumentoForm(request.POST, request.FILES)
+        if form.is_valid():
+            newdoc = Documento(docfile = request.FILES['docfile'])
+            newdoc.save()
+
+            # Redirect to the document list after POST
+            return HttpResponseRedirect("/userstories&id="+ str(proyect.id) +  "/")
+    else:
+        form = DocumentoForm() # A empty, unbound form
+
+    # Load documents for the list page
+    documents = Documento.objects.all()
+
+    # Render list page with the documents and the form
+    return render_to_response(
+        'us/crear_tarea.html',
+        {'documents': documents, 'form': form},
+        context_instance=RequestContext(request)
+    )
+
+
+@login_required
+def actividad_flujo(request, proyecto_id, flujo_id,us_id):
+    print"llllllllllllllll"
+    user = User.objects.get(username=request.user.username)
+    p = get_object_or_404(Proyecto, id=proyecto_id)
+    permisos = get_permisos_sistema(user)
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    perm = get_permisos_proyecto(user,proyecto)
+    flujo = Flujo.objects.get(id=flujo_id)
+    us= UserStory.objects.get(id=us_id)
+    lista_flujos=ActividadesFlujo.objects.filter(flujo=flujo)
+    print "tesssssssssssssst"
+    if request.method == 'POST':
+        form = ActividadesFlujoForm(flujo,request.POST)
+
+        if form.is_valid():
+
+
+            us.actividad = form.cleaned_data['act_flujo']
+            print us.actividad
+            print "dkdkkddkkd"
+            us.estado_actividad= "1"
+            us.save()
+            return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id))
+        else:
+
+            return render_to_response("conf/act_flujo.html", {'form':form}, context_instance=RequestContext(request))
+    dict = {}
+    for i in lista_flujos:
+            print i.actividades
+            dict[i.actividades] = False
+    form =ActividadesFlujoForm(flujo,initial = {'act_flujo': dict})
+    return render_to_response("conf/act_flujo.html", {'form':form}, context_instance=RequestContext(request))
+def cambiar_actividad(request, proyecto_id, act_id, us_id,flujo_id):
+    act=Actividades.objects.get(id=act_id)
+    flujo=Flujo.objects.filter(proyecto=proyecto_id)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    actividades=ActividadesFlujo.objects.filter(proyecto=proyecto_id)
+    usflujo= UserStory.objects.filter(proyecto=proyecto_id)
+    us= UserStory.objects.get(id=us_id)
+    lista_flujos=ActividadesFlujo.objects.filter(flujo=flujo_id)
+    user=User.objects.get(id=request.user.id)
+    for i in lista_flujos:
+        print "probandooooo"
+        print i.actividades.id
+        print act_id
+
+        if i.actividades.id == act.id :
+            nueva= int(x=i.id)+1
+            nuevaActi=ActividadesFlujo.objects.get(id=nueva)
+
+
+
+
+            us.actividad= nuevaActi
+            us.estado_actividad=1
+    us.save()
+    return render_to_response("conf/sprint_iniciado.html",{'user':user,'flujo':flujo,'proyecto':proyecto,'actividades':actividades,'usflujo':usflujo}, context_instance=RequestContext(request))
+
+def add_adjunto(request, proyecto_id, us_id):
+    proyect = get_object_or_404(Proyecto, id=proyecto_id)
+    us = get_object_or_404(UserStory, id=us_id)
+        # Handle file upload
+    if request.method == 'POST':
+        form = DocumentoForm(request.POST, request.FILES)
+        if form.is_valid():
+            newdoc = Documento(docfile = request.FILES['docfile'],us=us)
+            newdoc.save()
+            # Redirect to the document list after POST
+            hist = Historial()
+            hist.usuario = request.user
+            hist.fecha_creacion = datetime.date.today()
+            hist.user_story = us
+            hist.documento=newdoc
+
+            hist.save()
+            return HttpResponseRedirect("/configuracion&id="+ str(proyect.id) +  "/sprint")
+    else:
+        form = DocumentoForm() # A empty, unbound form
+
+    # Load documents for the list page
+    documents = Documento.objects.all()
+
+    # Render list page with the documents and the form
+    return render_to_response(
+        'us/add_adjunto.html',
+        {'documents': documents, 'form': form},
+        context_instance=RequestContext(request)
+    )
+def sprint_admin(request,proyecto_id):
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    return HttpResponse("El proyecto  --"+str(proyecto) +"-- no cuenta con sprints finalizados")
+def us_backlog(request,proyecto_id):
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    userstories=UserStory.objects.filter(proyecto=proyecto_id,estado='En Espera')
+    print userstories
+    print "ttttkkk"
+    return render_to_response("conf/us_backlog.html",{'proyecto':proyecto,'userstories':userstories}, context_instance=RequestContext(request))
