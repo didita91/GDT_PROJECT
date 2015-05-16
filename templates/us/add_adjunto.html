@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Agregar nueva tarea{% endblock %}
+{% block content %}
+
+</ol>
+<ol class="breadcrumb">    <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+    <li><a class="text-danger" href="/configuracion&id={{proyecto.id}}/sprint"><strong>TABLA</strong></a></li>
+   <li class="active"><strong>ADJUNTAR ARCHIVO</strong></li>
+</ol>
+<center><h2 class="text-danger"><strong> ADJUNTAR ARCHIVO</strong></h2></center>
+  <table class="abm">
+              <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {{ form.as_p }}
+        <input type="submit" value="Submit">
+        </form>
+         </table>
+{% endblock %}
