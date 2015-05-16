@@ -1658,6 +1658,12 @@ def add_adjunto(request, proyecto_id, us_id):
         context_instance=RequestContext(request)
     )
 def sprint_admin(request,proyecto_id):
+    '''
+    Muestra los sprint del proyecto dado. Aquellos en ejecucion y los terminados.
+    :param request:
+    :param proyecto_id: identificador del proyecto
+    :return:la vista de los sprint en ejecucion y los terminados.
+    '''
     proyecto=Proyecto.objects.get(id=proyecto_id)
     return HttpResponse("El proyecto  --"+str(proyecto) +"-- no cuenta con sprints finalizados")
 def us_backlog(request,proyecto_id):
