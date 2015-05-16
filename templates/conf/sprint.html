@@ -79,16 +79,48 @@ select{
                </ul>
            </div>
 
-            <div class="col-sm-8">
+<div class="col-sm-8">
  <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">Sprint 1 </li>
+          <li class="nav-header-tools">Configuracion Sprint - {{ proyecto.sprint }} Horas Disponible</li>
           <li class="alert alert-danger">
-   <form action="." method="POST">
-            
-            <img src="/site_media/images/construccion.png">
+   <form  id="form_id"  action="." method="POST">
+   {% csrf_token %}
+		   {{ form.as_table }}
 
+                <table class="table table-bordered">
+                <thead>
+                    <th class="titulo"><b class="text-danger"><strong>USER STORY</strong></b></th>
+                <th class="titulo"><b class="text-danger"><strong>Prioridad</strong></b></th>
+                 <th class="titulo"><b class="text-danger"><strong>Flujo</strong></b></th>
+                    <th class="titulo"><b class="text-danger"><strong> Responsable</strong></b></th>
+
+                 <th class="titulo"><b class="text-danger"><strong>Horas del Responsable</strong></b></th>
+                 <th class="titulo"><b class="text-danger"><strong>Horas del US</strong></b></th>
+
+                </thead>
+
+            <tbody>
+              {% for i in us %}
+<tr>
+
+
+                    <td><font color="gray"><strong><em><u>{{i.us.nombre}}</u></em></strong></font></td>
+                    <td><font color="gray"><strong>{{i.us.prioridad}}</strong></font></td>
+                    <td><font color="gray"><strong>{{i.us.flujo.nombre}}</strong></font></td>
+                    <td><font color="gray"><strong>{{i.us.responsable}}</strong></font></td>
+                    <td><font color="gray"><strong>{{i.us.horas}}</strong></font></td>
+                    <td><font color="gray"><strong>{{i.us.duracion}}</strong></font></td>
+
+
+    <td><a class="btn btn-default btn-xs" href="/configuracion&id={{proyecto.id}}/flujo&id={{i.us.id }}/"><strong>Asignar Flujo</strong></a></td>
+    <td><a class="btn btn-default btn-xs" href="/configuracion/equipo&id={{proyecto.id}}/responsable&id={{i.us.id }}/"><strong>Responsable</strong></a></td>
+
+                         </tr>
+{% endfor %}
+   </tbody>
 	    </table>
-   </form>
+                            <center><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/sprint/"><strong>INICIAR SPRINT</strong></a></td></center>
+     </form>
      </li>
      </ul>
             </div>
