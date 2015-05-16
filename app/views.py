@@ -56,7 +56,9 @@ Muestra la pagina principal del sistema
     rolesp = UsuarioRolProyecto.objects.filter(usuario = user).only('rol')
     lista_proyectos = []
     for i in rolesp:
+        print "kkk"
         if not i.proyecto.id in lista_proyectos:
+            print "tt"
             lista_proyectos.append(i.proyecto.id)
     #variables['acciones']=True
     print lista_proyectos
@@ -198,7 +200,7 @@ Asigna roles de sistema a un usuario
                 if i.id == 2:
                     rel.usuario = usuario
                     rel.save()
-                if i.id == 3:
+                if i.id == 5:
                     relac.usuario = usuario
                     relac.save()
             return HttpResponseRedirect("/usuarios")
