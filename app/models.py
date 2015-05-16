@@ -198,12 +198,18 @@ class UserStory(models.Model):
 
 
 class ResponsableUS(models.Model):
+    """
+    Contiene datos del responsable del user story
+    """
     usuario = models.ForeignKey(Equipo)
     us = models.ForeignKey(UserStory)
     def __unicode__(self):
         return unicode(self.usuario)
 
 class flujoUS(models.Model):
+    """
+    Contiene relación entre flujo y user story
+    """
     flujo=models.ForeignKey(Flujo)
     us = models.ForeignKey(UserStory)
     def __unicode__(self):
@@ -211,6 +217,9 @@ class flujoUS(models.Model):
 
 
 class UsSprint(models.Model):
+    """
+    Contiene datos de los user stories que se encuentran en un sprint
+    """
     us=models.ForeignKey(UserStory)
     sprint=models.IntegerField()
     estado = models.CharField(max_length=10, choices=SPRINT_STATUS)
