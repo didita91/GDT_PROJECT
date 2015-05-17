@@ -1251,7 +1251,6 @@ def responsable_us(request, proyecto_id, us_id):
     print us.proyecto
     if request.method == 'POST':
         form = RespUserStoryForm(proyecto,sprint,request.POST)
-        print "jladfkjalf"
         if form.is_valid():
 
             nuevo = ResponsableUS()
@@ -1571,7 +1570,6 @@ def actividad_flujo(request, proyecto_id, flujo_id,us_id):
     flujo = Flujo.objects.get(id=flujo_id)
     us= UserStory.objects.get(id=us_id)
     lista_flujos=ActividadesFlujo.objects.filter(flujo=flujo)
-    print "tesssssssssssssst"
     if request.method == 'POST':
         form = ActividadesFlujoForm(flujo,request.POST)
 
@@ -1580,7 +1578,6 @@ def actividad_flujo(request, proyecto_id, flujo_id,us_id):
 
             us.actividad = form.cleaned_data['act_flujo']
             print us.actividad
-            print "dkdkkddkkd"
             us.estado_actividad= "1"
             us.save()
             return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id))
@@ -1612,7 +1609,6 @@ def cambiar_actividad(request, proyecto_id, act_id, us_id,flujo_id):
     lista_flujos=ActividadesFlujo.objects.filter(flujo=flujo_id)
     user=User.objects.get(id=request.user.id)
     for i in lista_flujos:
-        print "probandooooo"
         print i.actividades.id
         print act_id
 
@@ -1684,5 +1680,4 @@ def us_backlog(request,proyecto_id):
     proyecto=Proyecto.objects.get(id=proyecto_id)
     userstories=UserStory.objects.filter(proyecto=proyecto_id,estado='En Espera')
     print userstories
-    print "ttttkkk"
     return render_to_response("conf/us_backlog.html",{'proyecto':proyecto,'userstories':userstories}, context_instance=RequestContext(request))
