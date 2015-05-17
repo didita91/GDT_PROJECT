@@ -76,47 +76,38 @@ select{
 <center><div class="row">
 
 {% for i in flujo %}
-             <div class="col-sm-8">
+             <div class="col-sm-16">
             <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">{{i.nombre}} </li><tr>
+          <li class="nav-header-tools">{{i.nombre}} </li>
             <li class="alert alert-danger">
           <table class="table table-bordered">
-            <thead>
+          <tr>
+ {% for j in actividades %}
+                  {% if i.id == j.flujo.id and j.proyecto.id == proyecto.id %}
+<td colspan="3" bgcolor="#008b8b"><center><strong><span >{{j.actividades}}</span></strong></center></td>
+{% endif %}
+ {% endfor %}
+</tr>
+<tr>
+{% for j in actividades %}
+                  {% if i.id == j.flujo.id and j.proyecto.id == proyecto.id %}
+<td bgcolor="#db4c2a"><strong><center>TO DO</center></strong></td>
+<td bgcolor="#dbd915"><strong><center>DOING</center></strong></td>
+<td bgcolor="#94db2b"><strong><center>DONE</center></strong></td>
+{% endif %}
+{% endfor %}
+</tr>
 
-            <th bgcolor="#f5f5dc" class="titulo"><b class="text-danger"><strong>NOMBRE DE ACTIVIDAD</strong></b></th>
-               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-            <th bgcolor=#db7093 class="titulo" ><b class="text-danger"><strong>HACER</strong></b></th>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-            <th bgcolor=#9acd32 class="titulo"><b class="text-danger"><strong>HACIENDO</strong></b></th>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-        <th bgcolor="aqua" class="titulo"><b class="text-danger"><strong>HECHO</strong></b></th>
-
-
-
-
-
-
-              {% for j in actividades %}
+                {% for j in actividades %}
                   {% if i.id == j.flujo.id and j.proyecto.id == proyecto.id %}
 
-               <tr><th class="titulo"><b class="text-danger"><strong>{{j.actividades}}</strong></b></th>
-                    <p>
-                      <th class="titulo"><b class="text-danger"><strong>             {% for k in usflujo %}{% if k.estado_actividad ==  1%}
+                    <th class="titulo"><b class="text-danger"><strong>             {% for k in usflujo %}{% if k.estado_actividad ==  1%}
 
                                                     {% if k.actividad.id == j.id %}
 
 
                                                          <div class="btn-group">
-                            <button style="background:#db7093" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.nombre }} <span class="caret"></span>
+                            <button style="background:#db4c2a" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.nombre }} <span class="caret"></span>
                             </button>
                                   <ul class="dropdown-menu" role="menu">
                                       {% if user.id == k.responsable.id %}
@@ -127,22 +118,16 @@ select{
 
                                       <li><a href="/configuracion&id={{proyecto.id}}/estado_cambiar&id={{j.actividades.id}}/us&id={{ k.id }}/flujo&id={{ i.id }}"><strong>Cambiar de Estado</strong></a></li>
                                                                         {% endif %}
-
-                                          </ul>
+                                  </ul>
                             </div>
-
-
 {% endif %}
 {% endif %}
 {% endfor %}</strong></b></th>
                       <th class="titulo"><b class="text-danger"><strong>     {% for k in usflujo %}{% if k.estado_actividad == 2 %}
 
                                                     {% if k.actividad.id == j.id %}
-
-
-
                                                          <div class="btn-group">
-                            <button  style="background:#9acd32" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.nombre }}<span class="caret"></span>
+                            <button  style="background:#dbd915" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.nombre }}<span class="caret"></span>
                             </button>
                                   <ul class="dropdown-menu" role="menu">
                                                                             {% if user.id == k.responsable.id %}
@@ -154,22 +139,15 @@ select{
 
                                       <li><a href="/configuracion&id={{proyecto.id}}/estado_cambiar&id={{j.actividades.id}}/us&id={{ k.id }}/flujo&id={{ i.id }}"><strong>Cambiar de Estado</strong></a></li>
                                                                                                                                          {% endif %}
-
                                   </ul>
                             </div>
-
-
 {% endif %}{% endif %}
 {% endfor %}</strong></b></th>
                        <th class="titulo"><b class="text-danger"><strong>     {% for k in usflujo %}{% if k.estado_actividad == 3 %}
 
-
                                                     {% if k.actividad.id == j.id %}
-
-
-
                                                          <div class="btn-group">
-                            <button  style="background:aqua" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.nombre }} <span class="caret"></span>
+                            <button  style="background:#94db2b" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.nombre }} <span class="caret"></span>
                             </button>
                                   <ul class="dropdown-menu" role="menu">
                                                                             {% if user.id == k.responsable.id %}
@@ -181,34 +159,17 @@ select{
 
                                       <li><a href="/configuracion&id={{proyecto.id}}/estado_cambiar&id={{j.actividades.id}}/us&id={{ k.id }}/flujo&id={{ i.id }}"><strong>Cambiar de Estado</strong></a></li>
                                                                                                          {% endif %}
-
                                   </ul>
                             </div>
-
-
 {% endif %}{% endif %}
 {% endfor %}</strong></b></th>
-                </tr>
-
-
 
                     {% endif %}
                   {% endfor %}
-
-
-          </thead>
-    </table>
+               </table>
      </li>
      </ul>
             </div>
-
-
-
-
 {% endfor %}
-
-
     </div></center>
-
-
 {% endblock %}
