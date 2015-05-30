@@ -46,7 +46,14 @@ def registrar_historial(user_story,historial,tarea,adjunto):
     #reg.fecha_modificacion = datetime.datetime.today()
     reg.historial = historial
     reg.save()
-    user_story.save()           
+    user_story.save()
+
+def funcion_sprint(sprint):
+    fecha_ini= datetime(sprint.fecha_inicio.year,sprint.fecha_inicio.month,sprint.fecha_inicio.day)
+    fecha_fin= fecha_ini + timedelta(weeks=sprint.duracion) - timedelta(days=3)
+    sprint.fecha_fin=fecha_fin
+    sprint.save()
+
 
 def funcion_sprint(sprint):
     fecha_ini= datetime(sprint.fecha_inicio.year,sprint.fecha_inicio.month,sprint.fecha_inicio.day)
