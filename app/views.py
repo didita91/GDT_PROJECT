@@ -102,8 +102,8 @@ Agrega un nuevo usuario en el sistema
             nuevo.is_active = True
 
             nuevo.is_superuser = True
-            nuevo.last_login = datetime.datetime.now()
-            nuevo.date_joined = datetime.datetime.now()
+            nuevo.last_login = datetime.now()
+            nuevo.date_joined = datetime.now()
             nuevo.save()
             return HttpResponseRedirect("/usuarios")
     else:
