@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Cambiar hora estimada para el User Story {{ us.nombre }}{% endblock %}
+{% block content %}
+
+</ol>
+<ol class="breadcrumb">
+    <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}/"><strong>PROYECTO</strong></a></li>
+    <li><a class="text-danger" href="/configuracion&id={{proyecto.id}}/confsprint&id={{ sprint.id }}"><strong>CONFIGURACION SPRINT</strong></a></li>
+    <li class="active"><strong>CAMBIAR HORA ESTIMADA</strong></li>
+</ol>
+<center><h2 class="text-danger"><strong> CAMBIAR HORA ESTIMADA PARA EL USER STORY {{ us.nombre }}</strong></h2></center>
+  <table class="abm">
+              <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {{ form.as_p }}
+        <input type="submit" value="Cambiar">
+        </form>
+         </table>
+{% endblock %}
