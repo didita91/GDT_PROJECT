@@ -8,7 +8,7 @@ from django.test import Client
 from app.models import *
 from app.views import *
 import datetime
-# tere
+
 #*******************************************PRUEBAS DE VISTAS*************************************************
 class TestLlamadas(TestCase):
     def setUp(self):
