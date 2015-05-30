@@ -226,7 +226,7 @@ class UserStoryForm(forms.Form):
 			return nombre"""
 
 #************
-class AdjuntoForm(forms.Form):
+class AdjuntosForm(forms.Form):
     archivo = forms.FileField(required = False)
 
 class ModUserStoryForm(forms.Form):
@@ -264,6 +264,7 @@ class RespUserStoryForm(forms.Form):
         super(RespUserStoryForm,self).__init__(*args,**kwargs)
         print "holis"
         self.fields['usuario'].queryset= Equipo.objects.filter(proyecto=proyecto.id,sprint=sprint.id)
+
         print "tqm"
     """def clean_usuario(self):
         if 'usuario' in self.cleaned_data:
@@ -290,13 +291,17 @@ class UserStoryFlujoForm(forms.Form):
             flujos_existentes = Flujo.objects.filter(id =self.proyecto.id)
             return self.cleaned_data['flujo']
 
+class SprintForm(forms.Form):
+    duracion = forms.IntegerField(label='Duracion Sprints(semanas)')
+
+
 
 
 class USaSprintForm(forms.Form):
     userStory = forms.ModelMultipleChoiceField(queryset = None,  required = True)
-    def __init__(self, *args, **kwargs):
+    def __init__(self, proyecto,*args, **kwargs):
         super(USaSprintForm, self).__init__(*args, **kwargs)
-        self.fields['userStory'].queryset=UserStory.objects.filter(estado='En Espera')
+        self.fields['userStory'].queryset=UserStory.objects.filter(estado='En Espera', proyecto=proyecto.id)
     """def clean_userStory(self):
         if 'userStory' in self.cleaned_data:
             us = UsSprint.objects.filter()
@@ -330,7 +335,21 @@ class ActividadesFlujoForm(forms.Form):
 
 class CambiarEstadoActividadForm(forms.Form):
 
-    Estado = forms.CharField(max_length=1, widget=forms.RadioSelect(choices=status_activity), label='Estados')
+    Estado = forms.CharField(max_length=5, widget=forms.RadioSelect(choices=cambio_estado), label='Estados')
 
 class duracionSprintForm(forms.Form):
     Duracion = forms.IntegerField(label='Duracion Sprints(semanas)')
+
+class duracionEstimadaForm(forms.Form):
+    duracion = forms.IntegerField(label='DuracionEstimada')
+
+
+class RecambiarActividadForm(forms.Form):
+    actividad = forms.ModelChoiceField(queryset = None)
+    def __init__(self,actividad,flujo, *args, **kwargs):
+        super(RecambiarActividadForm, self).__init__(*args, **kwargs)
+        self.fields['actividad'].queryset=ActividadesFlujo.objects.filter( flujo=actividad.flujo.id )
+
+        
+class AdjuntoForm(forms.Form):
+	archivo = forms.FileField(required = False)
