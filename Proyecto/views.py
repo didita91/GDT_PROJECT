@@ -28,10 +28,6 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.utils.html import strip_tags
 #from matplotlib import *
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import numpy as np
 #from somewhere import handle_uploaded_file
 # Create your views here.
 
@@ -2490,21 +2486,21 @@ def grafico(request,proyecto_id):
 	:param proyecto_id:
 	:return:
     """
-    matplotlib.pyplot.style.use('ggplot')
+    #matplotlib.pyplot.style.use('ggplot')
 
-    x = [5,8,10]
-    y = [12,16,6]
+    #x = [5,8,10]
+    #y = [12,16,6]
 
-    x2 = [6,9,11]
-    y2 = [6,15,7]
+    #x2 = [6,9,11]
+    #y2 = [6,15,7]
 
 # can plot specifically, after just showing the defaults:
-    plt.plot(x,y,linewidth=5)
-    plt.plot(x2,y2,linewidth=5)
+    #plt.plot(x,y,linewidth=5)
+    #plt.plot(x2,y2,linewidth=5)
 
-    plt.title('Epic Info')
-    plt.ylabel('Y axis')
-    plt.xlabel('X axis')
-    plt.show()
+    #plt.title('Epic Info')
+    #plt.ylabel('Y axis')
+    #plt.xlabel('X axis')
+    #plt.show()
 
     return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/sprint_bk/")
