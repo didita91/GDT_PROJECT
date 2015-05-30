@@ -62,153 +62,147 @@ select{
 
 <ol class="breadcrumb">
   <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
-  <li class="active"><strong>TABLA</strong></li>
-</ol>
-<center><h1 class="text-danger"><strong> <a class="submit" ><strong> sprint 1 -En Ejecucion <a class="submit" href="/sprint&id={{ proyecto.id }}/" ><strong> >>Ver Sprints Finalizados  </strong> </a>  <a class="submit" href="/userstories&id={{ proyecto.id }}/backlog/" ><strong> >>BackLog US </strong> </a></strong> </a>
-</strong></h1></center><br>
-    <div class="col-sm-8">
-            <ul class="nav nav-list-tools">
-                <li class="nav-header-tools">Duracion Estimada del Sprint en horas: {{ suma }}</li>
-            </ul>
-    </div>
-    <br>  <br>  <br>  <br>
+          <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>ADMIN PROYECTO</strong></a></li>
 
+  <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/sprint_bk/"><strong>SPRINTS</strong></a></li>
+
+  <li class="active"><strong>TABLA KANBAN</strong></li>
+</ol>
+<center><h1 class="text-danger"><strong> <a class="submit" ><strong> SPRINT {{ nro }} </strong> </a>
+</strong></h1></center><br>
+    <h2 class="text-danger"><strong> <a><strong> Observaciones:  </strong> </a>
+
+                 <button  style="background:#db4c2a" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> Por Hacer<span class="caret"></span></button>
+                     <button  style="background:#dbd915" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> En Proceso <span class="caret"></span></button>
+
+                     <button  style="background:#94db2b" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> Terminado  <span class="caret"></span></button>
+                 <button  style="background:cornflowerblue" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> Pendiente-Release <span class="caret"></span></button>
+                 <button  style="background:darkgrey" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> Cancelado <span class="caret"></span></button>
+
+
+
+
+
+<br><br>
 <center><div class="row">
 
 {% for i in flujo %}
-             <div class="col-sm-8">
+             <div class="col-sm-12">
             <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">{{i.nombre}} </li><tr>
+          <li class="nav-header-tools">{{i.nombre}} </li>
             <li class="alert alert-danger">
           <table class="table table-bordered">
-            <thead>
+          <tr>
+ {% for j in actividades %}
+                  {% if i.id == j.flujo.id and j.proyecto.id == proyecto.id %}
+<td colspan="3" bgcolor="#008b8b"><center><strong><span >{{j.actividades}}</span></strong></center></td>
+{% endif %}
+ {% endfor %}
+</tr>
+<tr>
+{% for j in actividades %}
+                  {% if i.id == j.flujo.id and j.proyecto.id == proyecto.id %}
+<td bgcolor="#db4c2a"><strong><center>TO DO</center></strong></td>
+<td bgcolor="#dbd915"><strong><center>DOING</center></strong></td>
+<td bgcolor="#94db2b"><strong><center>DONE</center></strong></td>
+{% endif %}
+{% endfor %}
+</tr>
 
-            <th bgcolor="#f5f5dc" class="titulo"><b class="text-danger"><strong>NOMBRE DE ACTIVIDAD</strong></b></th>
-               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-            <th bgcolor=#db7093 class="titulo" ><b class="text-danger"><strong>HACER</strong></b></th>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-            <th bgcolor=#9acd32 class="titulo"><b class="text-danger"><strong>HACIENDO</strong></b></th>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-        <th bgcolor="aqua" class="titulo"><b class="text-danger"><strong>HECHO</strong></b></th>
-
-
-
-
-
-
-              {% for j in actividades %}
+                {% for j in actividades %}
                   {% if i.id == j.flujo.id and j.proyecto.id == proyecto.id %}
 
-               <tr><th class="titulo"><b class="text-danger"><strong>{{j.actividades}}</strong></b></th>
-                    <p>
-                      <th class="titulo"><b class="text-danger"><strong>             {% for k in usflujo %}{% if k.estado_actividad ==  1%}
-
-                                                    {% if k.actividad.id == j.id %}
+                    <th class="titulo"><b class="text-danger"><strong>             {% for k in usflujo %}{% if k.us.estado != 'Aprobado' %}{% if k.us.estado_actividad ==  'To Do'%}
+                                                    {% if k.us.actividad.id == j.id %}
 
 
                                                          <div class="btn-group">
-                            <button style="background:#db7093" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.nombre }} <span class="caret"></span>
+                            <button style="background:#db4c2a" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.us.nombre }} <span class="caret"></span>
                             </button>
                                   <ul class="dropdown-menu" role="menu">
-                                      {% if user.id == k.responsable.id %}
-                                      <li><a href="/userstories&id={{proyecto.id}}/adj&id={{k.id}}/nuevo/"><strong>Agregar Tarea</strong></a></li>
-                                      <li class="divider"></li>
-                                      <li><a href="/userstories&id={{proyecto.id}}/historial&id={{k.id}}/"><strong>Ver historial de tareas</strong></a></li>
-                                      <li class="divider"></li>
-
-                                      <li><a href="/configuracion&id={{proyecto.id}}/estado_cambiar&id={{j.actividades.id}}/us&id={{ k.id }}/flujo&id={{ i.id }}"><strong>Cambiar de Estado</strong></a></li>
+                                      {% if user.id == k.us.responsable.id %}
+                                      <li><a href="/userstories&id={{proyecto.id}}/adj&id={{k.us.id}}/nuevo/"><strong>Agregar Tarea</strong></a></li>
+                                      {% endif %}
                                                                         {% endif %}
-
-                                          </ul>
-                            </div>
-
-
-{% endif %}
-{% endif %}
-{% endfor %}</strong></b></th>
-                      <th class="titulo"><b class="text-danger"><strong>     {% for k in usflujo %}{% if k.estado_actividad == 2 %}
-
-                                                    {% if k.actividad.id == j.id %}
-
-
-
-                                                         <div class="btn-group">
-                            <button  style="background:#9acd32" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.nombre }}<span class="caret"></span>
-                            </button>
-                                  <ul class="dropdown-menu" role="menu">
-                                                                            {% if user.id == k.responsable.id %}
-
-                                      <li><a href="/userstories&id={{proyecto.id}}/adj&id={{k.id}}/nuevo/"><strong>Agregar Tarea</strong></a></li>
-                                      <li class="divider"></li>
-                                      <li><a href="/userstories&id={{proyecto.id}}/historial&id={{k.id}}/"><strong>Ver historial de tareas</strong></a></li>
-                                      <li class="divider"></li>
-
-                                      <li><a href="/configuracion&id={{proyecto.id}}/estado_cambiar&id={{j.actividades.id}}/us&id={{ k.id }}/flujo&id={{ i.id }}"><strong>Cambiar de Estado</strong></a></li>
-                                                                                                                                         {% endif %}
-
                                   </ul>
                             </div>
-
-
-{% endif %}{% endif %}
+{% endif %}
+{% endif %}
 {% endfor %}</strong></b></th>
-                       <th class="titulo"><b class="text-danger"><strong>     {% for k in usflujo %}{% if k.estado_actividad == 3 %}
+                      <th class="titulo"><b class="text-danger"><strong>     {% for k in usflujo %}{% if k.us.estado != 'Aprobado' %}{% if k.us.estado_actividad == 'Doing' %}
 
-
-                                                    {% if k.actividad.id == j.id %}
-
-
-
+                                                    {% if k.us.actividad.id == j.id %}
                                                          <div class="btn-group">
-                            <button  style="background:aqua" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.nombre }} <span class="caret"></span>
+                                                             {% if k.us.estado == 'Cancelado' %}
+
+                                                        <button  style="background:darkgray" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.us.nombre }} <span class="caret"></span>
+                        {% else %}
+                            <button  style="background:#dbd915" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.us.nombre }}<span class="caret"></span>
                             </button>
                                   <ul class="dropdown-menu" role="menu">
-                                                                            {% if user.id == k.responsable.id %}
+                                                                            {% if user.id == k.us.responsable.id %}
 
-                                      <li><a href="/userstories&id={{proyecto.id}}/adj&id={{k.id}}/nuevo/"><strong>Agregar Tarea</strong></a></li>
+                                      <li><a href="/userstories&id={{proyecto.id}}/adj&id={{k.us.id}}/nuevo/"><strong>Agregar Tarea</strong></a></li>
                                       <li class="divider"></li>
-                                      <li><a href="/userstories&id={{proyecto.id}}/historial&id={{k.id}}/"><strong>Ver historial de tareas</strong></a></li>
+                                      <li><a href="/userstories&id={{proyecto.id}}/historial&id={{k.us.id}}/"><strong>Ver historial de tareas</strong></a></li>
                                       <li class="divider"></li>
 
-                                      <li><a href="/configuracion&id={{proyecto.id}}/estado_cambiar&id={{j.actividades.id}}/us&id={{ k.id }}/flujo&id={{ i.id }}"><strong>Cambiar de Estado</strong></a></li>
+                                      <li><a href="/configuracion&id={{proyecto.id}}/estado_cambiar&id={{j.actividades.id}}/us&id={{ k.us.id }}/flujo&id={{ i.id }}"><strong>Cambiar de Estado</strong></a></li>
+                                                                                <li class="divider"></li> {% if rol == 1 %}
+
+
+                                  <li><a href="/userstories&id={{proyecto.id}}/cancelar&id={{ k.us.id }}"><strong>Cancelar</strong></a></li>
                                                                                                          {% endif %}
-
+                                                                                                                                         {% endif %}
                                   </ul>
                             </div>
-
-
-{% endif %}{% endif %}
+{% endif %}{% endif %} {% endif %}{% endif %}
 {% endfor %}</strong></b></th>
-                </tr>
+                       <th class="titulo"><b class="text-danger"><strong>     {% for k in usflujo %}{% if k.us.estado != 'Aprobado' %}{% if k.us.estado_actividad == 'Done' %}
+
+                                                    {% if k.us.actividad.id == j.id %}
+                                                         <div class="btn-group">
+                                                         {% if k.us.estado == 'Pendiente' %}
+                            <button  style="background:cornflowerblue" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.us.nombre }} <span class="caret"></span>                            </button>
+
+                           {% elif k.us.estado == 'Cancelado' %}
+                                                        <button  style="background:darkgray" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.us.nombre }} <span class="caret"></span>  </button>
+{% else  %}
+
+                                                        <button  style="background:#94db2b" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown">{{ k.us.nombre }} <span class="caret"></span></button>
+
+                                  <ul class="dropdown-menu" role="menu">
+
+                                                                            {% if user.id == k.us.responsable.id %}
+                                        {% if k.us.estado_actividad != 'Done' %}
+                                      <li><a href="/userstories&id={{proyecto.id}}/adj&id={{k.us.id}}/nuevo/"><strong>Agregar Tarea</strong></a></li>
+                                      {% endif %}<li class="divider"></li>
+                                      <li><a href="/userstories&id={{proyecto.id}}/historial&id={{k.us.id}}/"><strong>Ver historial de tareas</strong></a></li>
+                                       {% if k.us.estado_actividad == 'Done' and k.us.actividad.ultimo != 1 %}<li class="divider"></li>
+
+                                      <li><a href="/configuracion&id={{proyecto.id}}/estado_cambiar&id={{j.actividades.id}}/us&id={{ k.us.id }}/flujo&id={{ i.id }}"><strong>Cambiar de Estado</strong></a></li>
+                                         {% endif %}  {% if k.us.actividad.ultimo == 1 %}     <li class="divider"></li> {% if rol == 1 %}
 
 
+                                  <li><a href="/configuracion&id={{proyecto.id}}/enviararelease&id={{ k.us.id }}"><strong>Enviar a Release</strong></a></li>
+                                                                                                         {% endif %}{% endif %}
+                                                                            <li class="divider"></li> {% if rol == 1 %}
+
+
+                                  <li><a href="/userstories&id={{proyecto.id}}/cancelar&id={{ k.us.id }}"><strong>Cancelar</strong></a></li>
+                                                                                                         {% endif %}{% endif %}
+                                  </ul>
+                                                             {% endif %}
+                            </div>
+{% endif %}{% endif %}{% endif %}
+{% endfor %}</strong></b></th>
 
                     {% endif %}
                   {% endfor %}
-
-
-          </thead>
-    </table>
+               </table>
      </li>
      </ul>
             </div>
-
-
-
-
 {% endfor %}
-
-
     </div></center>
-
-
 {% endblock %}

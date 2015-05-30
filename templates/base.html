@@ -13,6 +13,13 @@
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="/site_media/js/bootstrap-dropdown.js"></script>
+           <!--Para ordenar las filas de una tabla-->
+       <script type="text/javascript" src="/site_media/js/jquery.tablesorter.js"></script>
+    <!-- load jQuery and tablesorter scripts -->
+     <!-- <script type="text/javascript" src="/path/to/jquery-latest.js"></script>-->
+    <!-- tablesorter widgets (optional) -->
+        <script type="text/javascript" src="/site_media/js/jquery.tablesorter.widgets.js"></script>
+<script src="http://d3js.org/d3.v3.js"></script>
         <style type="text/css">
 	   body{
 
@@ -61,6 +68,10 @@
 	     <div class= "navbar-inner">
                   <p class="navbar-text pull-left">
 		  <strong><a href='/principal' class="text-danger-pull"> PROYECTO GDT &nbsp;</a></strong>
+<script>
+var f = new Date();
+document.write(f.getDate() + "/" + (f.getMonth() +1) + "/" + f.getFullYear());
+</script>
 		     {% if user.is_authenticated %}
 		      <p class="navbar-text pull-right">
 		        <strong> USTED A INGRESADO COMO, {{ user.username }}|

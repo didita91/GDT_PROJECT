@@ -28,7 +28,6 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.utils.html import strip_tags
 #from matplotlib import *
-
 #from somewhere import handle_uploaded_file
 # Create your views here.
 
@@ -38,7 +37,7 @@ def admin_proyectos(request):
 	Administracion general de proyectos
 	:param request:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     lista = Proyecto.objects.all().order_by('id')
@@ -97,7 +96,7 @@ def crear_proyecto(request):
 	Crear un nuevo proyecto.
 	:param request:
 	:return:
-"""
+    """
 
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
@@ -149,7 +148,7 @@ def del_proyecto(request, proyecto_id):
 	:param request:
 	:param proyecto_id:
 	:return:
-"""
+    """
 
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id=proyecto_id)
@@ -209,11 +208,11 @@ def add_usuario_proyecto(request, object_id):
 @login_required
 def administrar_proyecto(request, proyecto_id):
     """
-	Administración de proyecto: flujos, user story, miembros.
-	:param request:
-	:param proyecto_id:
+    Administración de proyecto: flujos, user story, miembros.
+    :param request:
+    :param proyecto_id:
 	:return:
-"""
+    """
 
     user = User.objects.get(username=request.user.username)
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
@@ -264,11 +263,11 @@ def administrar_proyecto(request, proyecto_id):
 @login_required
 def admin_usuarios_proyecto(request, proyecto_id):
     """
-	Administración de usuarios del proyecto: ver miembros.
+    Administración de usuarios del proyecto: ver miembros.
 	:param request:
 	:param proyecto_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     p = Proyecto.objects.get(pk=proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -361,11 +360,11 @@ def admin_usuarios_proyecto(request, proyecto_id):
 @login_required
 def add_usuario_proyecto(request, proyecto_id):
     """
-	Agregar usuarios a un proyecto.
-	:param request:
-	:param proyecto_id:
+    Agregar usuarios a un proyecto.
+    :param request:
+    :param proyecto_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id=proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -402,12 +401,12 @@ def add_usuario_proyecto(request, proyecto_id):
 @login_required
 def cambiar_rol_usuario_proyecto(request, proyecto_id, user_id):
     """
-	Cambiar rol a un usuario del proyecto.
-	:param request:
-	:param proyecto_id:
-	:param user_id:
-	:return:
-"""
+    Cambiar rol a un usuario del proyecto.
+    :param request:
+    :param proyecto_id:
+    :param user_id:
+    :return:
+    """
     user = User.objects.get(username=request.user.username)
     p = Proyecto.objects.get(pk=proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -463,12 +462,12 @@ def cambiar_rol_usuario_proyecto(request, proyecto_id, user_id):
 @login_required
 def eliminar_miembro_proyecto(request, proyecto_id, user_id):
     """
-	Eliminar miembro o usuario de un proyecto.
-	:param request:
-	:param proyecto_id:
+    Eliminar miembro o usuario de un proyecto.
+    :param request:
+    :param proyecto_id:
 	:param user_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     usuario = get_object_or_404(User, pk=user_id)
     proy = get_object_or_404(Proyecto, pk=proyecto_id)
@@ -502,7 +501,7 @@ def mod_proyecto(request, proyecto_id):
     :param request:
     :param proyecto_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id=proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -549,11 +548,11 @@ def mod_proyecto(request, proyecto_id):
 @login_required
 def admin_flujos(request, proyecto_id):
     """
-	Administracion de flujos y actividades de un proyecto
+    Administracion de flujos y actividades de un proyecto
 	:param request:
 	:param proyecto_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     proyectos = Proyecto.objects.get(id=proyecto_id)
     permisos = get_permisos_sistema(user)
@@ -579,7 +578,7 @@ def crear_flujos(request,proyecto_id):
     Creación de un nuevo flujo.
     :param request:
     :return:
-"""
+    """
     proyecto=Proyecto.objects.get(id=proyecto_id)
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
@@ -609,10 +608,10 @@ def crear_flujos(request,proyecto_id):
 @login_required
 def crear_actividades(request,proyecto_id):
     """
-	Creación de una nueva actividad en el proyecto
+    Creación de una nueva actividad en el proyecto
 	:param request:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -632,7 +631,7 @@ def crear_actividades(request,proyecto_id):
         if form.is_valid():
             p = Actividades()
 
-	    p.nombre = form.cleaned_data['nombre']
+            p.nombre = form.cleaned_data['nombre']
             p.proyecto = proyecto
 
             p.save()
@@ -646,12 +645,12 @@ def crear_actividades(request,proyecto_id):
 @login_required
 def add_actividades(request, proyecto_id, flujo_id):
     """
-	Adherir actividades existentes a flujos existentes.
+    Adherir actividades existentes a flujos existentes.
 	:param request:
 	:param proyecto_id:
 	:param flujo_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     flujo = Flujo.objects.get(id=flujo_id)
     permisos = get_permisos_sistema(user)
@@ -700,12 +699,12 @@ def add_actividades(request, proyecto_id, flujo_id):
 @login_required
 def ver_actividades(request, proyecto_id, flujo_id):
     """
-	Visualizar las actividades existentes en un proyecto.
-	:param request:
-	:param proyecto_id:
-	:param flujo_id:
+    Visualizar las actividades existentes en un proyecto.
+    :param request:
+    :param proyecto_id:
+    :param flujo_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
     flujo = get_object_or_404(Flujo, id=flujo_id)
@@ -738,7 +737,7 @@ def admin_us(request, proyecto_id):
     :param request:
     :param proyecto_id:
     :return:
-"""
+    """
     print "proyectooooo"
     print proyecto_id
     user = User.objects.get(username=request.user.username)
@@ -807,10 +806,10 @@ def admin_us(request, proyecto_id):
 @login_required
 def crear_user_story(request,proyecto_id):
     """
-	Creación de un nuevo user story en un proyecto.
+    Creación de un nuevo user story en un proyecto.
 	:param request:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     #Validacion de permisos---------------------------------------------
     roles = UsuarioRolSistema.objects.filter(usuario = user).only('rol')
@@ -877,13 +876,12 @@ def crear_user_story(request,proyecto_id):
 
 
 def cambiar_hora_estimada(request, proyecto_id,us_id,sprint_id):
-    """
-	Permite modificar las horas estimadas a un user story.
-	:param request:
-	:param proyecto_id:
-	:param us_id:
-	:sprint_id:
-	:return:
+    """ Cambia la hora estimada de un user story
+    :param request:
+    :param proyecto_id:
+    :param us_id:
+    :param sprint_id:
+    :return:
     """
     proyect = get_object_or_404(Proyecto, id=proyecto_id)
     us = UserStory.objects.get(id=us_id)
@@ -907,7 +905,7 @@ def cambiar_hora_estimada(request, proyecto_id,us_id,sprint_id):
 
 """@login_required
 def ver_historial(request, proyecto_id, us_id):
-
+    
     print "chaaaaaaaaaaaaaaaaa"
     us = UserStory.objects.get(pk=us_id)
     user = User.objects.get(username=request.user.username)
@@ -950,7 +948,7 @@ def mod_user_story(request, proyecto_id, us_id):
     :param proyecto_id:
     :param us_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     perm = get_permisos_proyecto(user, proyecto)
@@ -994,7 +992,7 @@ def mod_actividades(request, proyecto_id, acti_id):
     :param proyecto_id:
     :param acti_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     #flujo = Flujo.objects.get(pk=flujo_id)
@@ -1038,7 +1036,7 @@ def conf_proyecto(request, proyecto_id,sprint_id):
     :param proyecto_id:
 	:param sprint_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     proyecto = Proyecto.objects.get(id=proyecto_id)
@@ -1140,7 +1138,7 @@ def admin_equipo(request,proyecto_id,sprint_id):
 	:param proyecto_id:
 	:param sprint_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     p = Proyecto.objects.get(pk=proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -1229,7 +1227,7 @@ def add_miembro_equipo(request, proyecto_id,sprint_id):
     :param proyecto_id:
 	:param sprint_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id=proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -1280,7 +1278,7 @@ def responsable_us(request, proyecto_id, us_id,sprint_id):
 	:param us_id:
 	:param sprint_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     proyecto = Proyecto.objects.get(id=proyecto_id)
@@ -1349,7 +1347,7 @@ def asignar_flujoUS(request, proyecto_id, us_id,sprint_id):
 	:param us_id:
 	:param sprint_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id=proyecto_id)
     permisos = get_permisos_sistema(user)
@@ -1405,7 +1403,7 @@ def iniciarsprint(request, proyecto_id,sprint_id):
     :param proyecto_id:
 	:param sprint_id:
     :return:
-"""
+    """
     sprint=Sprint.objects.get(id=sprint_id)
     usS=UsSprint.objects.filter(sprint=sprint_id,proyecto=proyecto_id)
     bandera=0
@@ -1447,7 +1445,7 @@ def cambiar_estado(request, proyecto_id, act_id, us_id,flujo_id):
     :param us_id:
     :param flujo_id:
     :return:
-"""
+    """
     flujo=Flujo.objects.filter(proyecto=proyecto_id)
     proyecto=Proyecto.objects.get(id=proyecto_id)
     actividades=ActividadesFlujo.objects.filter(proyecto=proyecto_id)
@@ -1507,7 +1505,7 @@ def flujo_user_sprint(request, proyecto_id):
     :param request:
     :param proyecto_id:
     :return:
-"""
+    """
     us=UsSprint.objects.filter(sprint=1)
     proyecto=Proyecto.objects.get(id=proyecto_id)
     usflujo=flujoUS.objects.filter()
@@ -1524,11 +1522,11 @@ def enviar_correo(request,User_nombre,mensaje,emailtoscrum,emailtorespo):
 	Se envía un correo al scrum y al responsable, ante modificaciones en el Historial de tareas del User Story.
     :param request:
     :param User_nombre: nombre del usuario que realizó el cambio.
-	:param mensaje:
+	:param mensaje:    
 	:param emailtoscrum:
     :param emailtorespo:
     :return:
-"""
+    """
 
     email_context = {
         'titulo': "Actualizaciones:",
@@ -1558,7 +1556,7 @@ def add_tarea(request, proyecto_id, us_id):
     :param proyecto_id:
     :param us_id:
     :return:
-"""
+    """
     #####
     user = User.objects.get(username=request.user.username)
     proyect = get_object_or_404(Proyecto, id=proyecto_id)
@@ -1628,7 +1626,7 @@ def ver_historial(request, proyecto_id, us_id):
     :param proyecto_id:
     :param us_id:
     :return:
-"""
+    """
     us = UserStory.objects.get(pk=us_id)
     user = User.objects.get(username=request.user.username)
     proyecto = Proyecto.objects.get(pk=proyecto_id)
@@ -1666,7 +1664,7 @@ def list(request, proyecto_id, us_id):
     :param proyecto_id:
     :param us_id:
     :return:
-"""
+    """
     proyect = get_object_or_404(Proyecto, id=proyecto_id)
     # Handle file upload
     if request.method == 'POST':
@@ -1700,7 +1698,7 @@ def actividad_flujo(request, proyecto_id, flujo_id,us_id):
     :param flujo_id:
     :param us_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     p = get_object_or_404(Proyecto, id=proyecto_id)
     permisos = get_permisos_sistema(user)
@@ -1739,7 +1737,7 @@ def cambiar_actividad(request, proyecto_id, act_id, us_id,flujo_id):
     :param us_id:
     :param flujo_id:
     :return:
-"""
+    """
     act=Actividades.objects.get(id=act_id)
     flujo=Flujo.objects.filter(proyecto=proyecto_id)
     proyecto=Proyecto.objects.get(id=proyecto_id)
@@ -1781,7 +1779,7 @@ def ver_tablero(request, proyecto_id):
     :param request:
     :param proyecto_id:
     :return:
-"""
+    """
     flujo=Flujo.objects.filter(proyecto=proyecto_id)
     user=User.objects.get(id=request.user.id)
     proyecto=Proyecto.objects.get(id=proyecto_id)
@@ -1805,7 +1803,7 @@ def sprint_admin(request,proyecto_id):
     :param request: peticion
     :param proyecto_id: identificador del proyecto
     :return:la vista de los sprint en ejecucion y los terminados.
-"""
+    """
     proyecto=Proyecto.objects.get(id=proyecto_id)
     return HttpResponse("El proyecto  --"+str(proyecto) +"-- no cuenta con sprints finalizados")
 
@@ -1816,7 +1814,7 @@ def us_backlog(request,proyecto_id):
     :param request: peticion
     :param proyecto_id:
     :return:
-"""
+    """
     proyecto=Proyecto.objects.get(id=proyecto_id)
     userstories=UserStory.objects.filter(proyecto=proyecto_id,estado='En Espera')
     print userstories
@@ -1829,7 +1827,7 @@ def sprint_bk(request,proyecto_id):
     :param request:
     :param proyecto_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     proyecto=Proyecto.objects.get(id=proyecto_id)
@@ -1933,7 +1931,7 @@ def add_us_sprint(request, proyecto_id,us_id,sprint_id):
 	:param us_id:
 	:param sprint_id;
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     proyecto = Proyecto.objects.get(id=proyecto_id)
@@ -1962,7 +1960,7 @@ def conf_inicio_sprint(request, proyecto_id):
     :param request:
     :param proyecto_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     proyecto = Proyecto.objects.get(id=proyecto_id)
@@ -2012,7 +2010,7 @@ def sprint_us(request, proyecto_id,sprint_id):
     :param proyecto_id:
 	:param sprint_id:
     :return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     permisos = get_permisos_sistema(user)
     proyecto = Proyecto.objects.get(id=proyecto_id)
@@ -2100,7 +2098,7 @@ def enviar_a_release(request, proyecto_id, us_id):
 	:param proyecto_id:
 	:param us_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     proyect = Proyecto.objects.get(id=proyecto_id)
     us= UserStory.objects.get(pk=us_id)
@@ -2134,7 +2132,7 @@ def release(request, proyecto_id):
 	:param request:
 	:param proyecto_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     proyect = Proyecto.objects.get(id=proyecto_id)
     #Validacion de permisos---------------------------------------------
@@ -2163,7 +2161,7 @@ def revisar_us(request, proyecto_id, us_id):
 	:param proyecto_id:
 	:param us_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     proyect = Proyecto.objects.get(id=proyecto_id)
     us= UserStory.objects.get(pk=us_id)
@@ -2208,7 +2206,7 @@ def recambiar_actividad(request, proyecto_id, act_id, us_id,flujo_id):
     :param us_id:
     :param flujo_id:
     :return:
-"""
+    """
     flujo=Flujo.objects.filter(proyecto=proyecto_id)
     proyecto=Proyecto.objects.get(id=proyecto_id)
     actividades=ActividadesFlujo.objects.filter(proyecto=proyecto_id)
@@ -2256,7 +2254,7 @@ def ver_historial_us(request, proyecto_id, us_id):
     :param proyecto_id:
     :param us_id:
     :return:
-"""
+    """
     us = UserStory.objects.get(pk=us_id)
     user = User.objects.get(username=request.user.username)
     proyecto = Proyecto.objects.get(pk=proyecto_id)
@@ -2297,7 +2295,7 @@ def admin_adjuntos(request, proyecto_id, us_id):
 	:param proyecto_id:
 	:param us_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     us = get_object_or_404(UserStory, id =us_id)
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
@@ -2316,7 +2314,7 @@ def add_adjunto(request, proyecto_id, us_id):
 	:param proyecto_id:
 	:param us_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     proyect = get_object_or_404(Proyecto, id=proyecto_id)
     permisos = get_permisos_proyecto(user, proyect)
@@ -2361,7 +2359,7 @@ def add_adjunto(request, proyecto_id, us_id):
         #return render_to_response('error.html', {'form': form})
     else:
         formset = AdjuntoFormSet()
-        return render_to_response('us/add_adjunto.html', {'formset':formset,'us':us,
+        return render_to_response('us/add_adjunto.html', {'formset':formset,'us':us, 
                                                                                       'user':user, 'proyecto':proyect,
                                                                                       'abm_items': 'ABM items' in permisos})
 
@@ -2375,14 +2373,14 @@ def quitar_archivo(request, proyecto_id, us_id, arch_id):
 	:param us_id:
 	:param arch_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     proyect = get_object_or_404(Proyecto, id=proyecto_id)
     permisos = get_permisos_proyecto(user, proyect)
     us= get_object_or_404(UserStory, id=us_id)
     adjunto = get_object_or_404(Adjunto, id=arch_id)
     if request.method == 'POST':
-        archivos = Adjunto.objects.filter(us= us, habilitado=True)
+        archivos = Adjunto.objects.filter(us= us, habilitado=True)      
         adjunto.habilitado = False
         adjunto.save()
         return HttpResponseRedirect('/userstories&id=' + str(proyecto_id) + '/adj&id=' + str(us_id) + '/')
@@ -2398,7 +2396,7 @@ def retornar_archivo(request, proyecto_id, us_id, arch_id):
 	:param us_id:
 	:param arch_id:
 	:return:
-"""
+    """
     user = User.objects.get(username=request.user.username)
     proyect = get_object_or_404(Proyecto, id=proyecto_id)
     us = get_object_or_404(UserStory, id=us_id)
@@ -2415,12 +2413,12 @@ def retornar_archivo(request, proyecto_id, us_id, arch_id):
 @login_required
 def cancelar_us(request, proyecto_id, us_id):
     """
-	Permite cancelar un user story.
+	Permite cancelar un user story.	
 	:param request:
 	:param proyecto_id:
 	:param us_id:
 	:return:
-"""
+    """
     user= User.objects.get(username=request.user.username)
     proyecto=Proyecto.objects.get(id=proyecto_id)
     us = UserStory.objects.get(id=us_id)
@@ -2450,7 +2448,7 @@ def ver_historial_release(request, proyecto_id, us_id):
     :param proyecto_id:
     :param us_id:
     :return:
-"""
+    """
     us = UserStory.objects.get(pk=us_id)
     user = User.objects.get(username=request.user.username)
     proyecto = Proyecto.objects.get(pk=proyecto_id)
@@ -2487,6 +2485,22 @@ def grafico(request,proyecto_id):
 	:param request:
 	:param proyecto_id:
 	:return:
-"""
+    """
+    #matplotlib.pyplot.style.use('ggplot')
+
+    #x = [5,8,10]
+    #y = [12,16,6]
+
+    #x2 = [6,9,11]
+    #y2 = [6,15,7]
+
+# can plot specifically, after just showing the defaults:
+    #plt.plot(x,y,linewidth=5)
+    #plt.plot(x2,y2,linewidth=5)
+
+    #plt.title('Epic Info')
+    #plt.ylabel('Y axis')
+    #plt.xlabel('X axis')
+    #plt.show()
 
     return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/sprint_bk/")

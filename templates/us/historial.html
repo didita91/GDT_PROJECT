@@ -4,9 +4,14 @@
 {% block content %}
 
     <ol class="breadcrumb">
+   <ol class="breadcrumb">
     <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
-    <li><a class="text-danger" href="/configuracion&id={{proyecto.id}}/sprint"><strong>TABLA</strong></a></li>
-    <li class="active"><strong>VER HISTORIAL DE TAREAS</strong></li>
+                 <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>ADMIN PROYECTO</strong></a></li>
+
+  <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/sprint_bk/"><strong>SPRINTS</strong></a></li>
+
+
+    <li class="active"><strong>HISTORIAL DE TAREAS</strong></li>
     </ol>
 <center><h2 class="text-danger"><strong> HISTORIAL DE TAREAS REALIZADAS SOBRE EL USER STORY "{{ user_story.nombre }}" </strong></h2></center>
 <!--condiciones-->
@@ -15,10 +20,15 @@
     <table class="table table-bordered">
 	      <thead>
 	        <tr>
-
-                     <th class="titulo"><b class="text-danger"><strong>FECHA</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>TAREA</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>Realizada por</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>En fecha</strong></b></th>
                      <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
-                                     <th class="titulo"><b class="text-danger"><strong>ADJUNTO</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>DURACION</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>En el Proyecto</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>En el Flujo</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>En la actividad</strong></b></th>
+                     <th class="titulo"><b class="text-danger"><strong>ADJUNTO</strong></b></th>
 
 
             </tr>
@@ -26,21 +36,29 @@
  <tbody>
 	{% for i in lista %}
 	<tr>
-
+        <td>{{ i.tarea.nombre }}</td>
+        <td>{{ i.us.responsable }}</td>
         <td>{{i.fecha_modificacion}}</td>
-		<td>{{i.descripcion}}</td>
+		<td>{{i.tarea.descripcion}}</td>
+        <td>{{i.tarea.tiempo}} horas</td>
+        <td>{{ i.tarea.fluactpro.proyecto }}</td>
+        <td>{{ i.tarea.fluactpro.flujo }}</td>
+        <td>{{ i.tarea.fluactpro.actividades }}</td>
+{% if i.adjunto.nombre != 'Ninguno' %}    	<td><a href = "/userstories&id={{i.us.proyecto.id}}/adj&id={{i.us.id}}/get&id={{i.adjunto.id}}/">{{i.adjunto.nombre}}</a></td>
 
-        {% for j in hist %}
-        {% if i.user_story.id == j.us.id %}
-             <td>{{j.documento.docfile}}</td>
-            {% endif %}
+{% else %}
+            <td>{{ i.adjunto.nombre }}</td>
+    {% endif %}
 
-{% endfor %}
+
+
 	</tr>
 	{% endfor %}
 
                </tbody>
     </table>
+          <input type="button" class= "btn btn-default" value="VOLVER" onClick ="location.href='/configuracion&id={{proyecto.id}}/tablero/' "/>
+
 
 {% else %}
 <ul>

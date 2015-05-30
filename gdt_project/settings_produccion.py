@@ -18,7 +18,7 @@ WSGI_APPLICATION = 'gdt_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'gdt_produccion',
+        'NAME': 'gdt',
 	    'USER': 'postgres',
 	    'PASSWORD': '12345',
 	    'HOST': 'localhost',
@@ -46,7 +46,7 @@ USE_I18N = True
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 #MEDIA_ROOT = RUTA_PROYECTO.child('site_media'),
-MEDIA_ROOT = RUTA_PROYECTO
+MEDIA_ROOT = "/var/www/gdt_project/documentos"
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"

@@ -198,9 +198,9 @@ class ActividadesForm(forms.Form):
 class ModActividadesForm(forms.Form):
     #Modificar datos del usuario
         nombre = forms.CharField(max_length=30, label='NOMBRE')
+	
 
-
-
+        
 class AddActividadesForm(forms.Form):
     #Asignar roles
     actividades = forms.ModelMultipleChoiceField(queryset = None, label = 'ACTIVIDADES DISPONIBLES', required=False)
@@ -233,7 +233,7 @@ class ModUserStoryForm(forms.Form):
     #Modificar datos del usuario
        nombre = forms.CharField(max_length=30, label='NOMBRE')
        descripcion= forms.CharField(widget=forms.Textarea(), required=False, label='Descripcion')
-
+ 
 #**********************EQUIPO DE TRABAJO EN SPRINT
 class MiembroEquipoForm(forms.Form):
     usuario = forms.ModelChoiceField(queryset = None, label = 'Usuarios', required=True)
@@ -350,6 +350,6 @@ class RecambiarActividadForm(forms.Form):
         super(RecambiarActividadForm, self).__init__(*args, **kwargs)
         self.fields['actividad'].queryset=ActividadesFlujo.objects.filter( flujo=actividad.flujo.id )
 
-
+        
 class AdjuntoForm(forms.Form):
 	archivo = forms.FileField(required = False)

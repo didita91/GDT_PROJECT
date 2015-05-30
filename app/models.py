@@ -330,3 +330,4 @@ class HistorialUS(models.Model):
 
     def __unicode__(self):
         return self.us
+
