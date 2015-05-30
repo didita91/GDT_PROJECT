@@ -37,7 +37,7 @@ class TestAdministracion(TestCase):
         isinstance(rp,RolPermiso)
     def test_UsuarioRolProyecto(self):
         """
-    Contiene la lista de usuarios con sus roles en cada proyecto
+    Contiene la lista de usuarios con sus roles en cada proyectos
     """
         usuario = User()
         rol = Rol()
