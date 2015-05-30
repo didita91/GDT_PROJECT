@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block tittle %}{{proyecto.nombre}}{% endblock %}
+{% block head %}Gestion de User Stories<br>{% endblock %}
+{% block content %}
+    <ol class="breadcrumb">    <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+    <li><a class="text-danger" href="/configuracion&id={{proyecto.id}}/release"><strong>RELEASE</strong></a></li>
+</ol>
+<h4><strong>USER STORIE APROBADO!</strong></h4>
+    <input type="button" class= "btn btn-default" value="Volver" onClick = "location.href='/configuracion&id={{proyecto.id}}/release/'"/></td></tr>
+
+{% endblock %}
