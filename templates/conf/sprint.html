@@ -72,7 +72,7 @@ select{
 
        <div class="col-sm-3">
            <ul class="nav nav-list-tools">
-                <li class="nav-header-tools">Barra de Herramientas</li>
+                <li class="nav-header-tools"></li>
                 <li class="alert alert-danger">
                 <a class="btn btn-default" href="/principal"><strong> VOLVER A LA PÁGINA PRINCIPAL</strong> </a>&nbsp;&nbsp;
                 </li>
@@ -81,7 +81,7 @@ select{
 
 <div class="col-sm-8">
  <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">Configuracion Sprint - {{ proyecto.sprint }} Horas Disponible</li>
+          <li class="nav-header-tools">Sprint - {{ proyecto.sprint }} Horas Disponible</li>
           <li class="alert alert-danger">
    <form  id="form_id"  action="." method="POST">
    {% csrf_token %}

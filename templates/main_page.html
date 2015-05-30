@@ -68,14 +68,14 @@ margin-left: -5px;
    {% if roles or user or proyectos or tipo_item %}
     <div class="row">
     <div class="col-sm-3">
-            <ul class="nav nav-list-tools">
+            {% if user.id == 1 %} <ul class="nav nav-list-tools">
                 <li class="nav-header-tools">Administración</li>
                 <li class="alert alert-danger">
-                            {% if user.id == 1 %}
+
                <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/usuarios/'">
                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                    <strong>U S U A R I O S</strong></a>
-                            {% endif %}
+
 
                 {% if roles %}
                <a type="button" class="btn btn-default btn-lg btn-block" onClick ="location.href='/roles/'">
@@ -98,6 +98,7 @@ margin-left: -5px;
             {% endif %}
                 </li>
             </ul>
+                {% endif %}
             </div>
       <div class="col-sm-8">
           <ul class="nav nav-list-tools">
