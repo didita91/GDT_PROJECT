@@ -876,7 +876,7 @@ def crear_user_story(request,proyecto_id):
 
 
 def cambiar_hora_estimada(request, proyecto_id,us_id,sprint_id):
-    """ Cambia la hora estimada de un user story
+    """ Cambia la hora estimada de un user stories
     :param request:
     :param proyecto_id:
     :param us_id:
