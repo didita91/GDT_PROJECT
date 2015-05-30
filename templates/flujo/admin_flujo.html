@@ -63,7 +63,7 @@ select{
 
 <ol class="breadcrumb">
   <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
-      <li><a class="text-danger" href="/proyectos/admin&id={{proyecto.id}}/"><strong>PROYECTO</strong></a></li>
+      <li><a class="text-danger" href="/proyectos/admin&id={{proyecto.id}}/"><strong>ADMIN PROYECTO</strong></a></li>
 
   <li class="active"><strong>ADMINISTRACIÓN DE FLUJOS</strong></li>
 </ol>
@@ -78,14 +78,14 @@ select{
            <ul class="nav nav-list-tools">
                 <li class="nav-header-tools">Barra de Herramientas</li>
                 <li class="alert alert-danger">
-                <a class="btn btn-default" href="/principal"><strong> Volver a Inicio</strong> </a>&nbsp;&nbsp;
-                {% if crear_flujos %}
-
-                    <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/crear/"><strong>Crear Flujos </strong></a>
-                {% endif %}<br>
                     {% if crear_actividades %}
                <a class="btn btn-default"  onClick ="location.href='/flujos&id={{proyecto.id}}/crear_actividades'"><strong>Crear Actividades</strong></a>
                  {% endif %}<br>
+                    {% if crear_flujos %}
+
+                    <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/crear/"><strong>Crear Flujos </strong></a>
+                {% endif %}<br>
+
                </li>
                </ul>
 
@@ -93,41 +93,9 @@ select{
 
 
 
-            <div class="col-sm-8">
- <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">FLUJOS DEFINIDOS </li>
-          <li class="alert alert-danger">
-   <form action="." method="POST">
-         {% csrf_token %}
-            <table class="table table-bordered">
-              <thead>
-               <tr>
-
-                     {%if ver_flujos or Ver_Flujos%}
-	            <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
-
-
-	            </tr>
-               </thead>
-               <tbody>
-	                {%for i in lista%}<tr>
-                        <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font>
-                              {% if Crear_Actividades or crear_actividades %}  <center><a class="btn btn-default" href="/flujos&id={{proyecto.id}}/add_actividades&id={{i.id}}"><strong>Agregar Actividades </strong></a>
-                                                                <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/ver_actividades&id={{i.id}}"><strong>Ver Actividades </strong></a></center></td>
-{% endif %}
-                        </tr>
-	                {% endfor %}
-               {% endif %}
-              </tbody>
-	        </table>
-     </form>
-     </li>
-     </ul>
-            </div>
-
    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <center><div class="col-sm-8">
  <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">Actividades </li>
+          <li class="nav-header-tools">Actividades Disponibles en el Proyecto </li>
           <li class="alert alert-danger">
    <form action="." method="POST">
          {% csrf_token %}
@@ -155,6 +123,39 @@ select{
      </li>
      </ul>
             </div></center>
+
+
+            <div class="col-sm-8">
+ <ul class="nav nav-list-tools">
+          <li class="nav-header-tools">FLUJOS DEFINIDOS </li>
+          <li class="alert alert-danger">
+   <form action="." method="POST">
+         {% csrf_token %}
+            <table class="table table-bordered">
+              <thead>
+               <tr>
+
+                     {%if ver_flujos or Ver_Flujos%}
+	            <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
+
+
+	            </tr>
+               </thead>
+               <tbody>
+	                {%for i in lista%}<tr>
+                        <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font>
+                              {% if Crear_Actividades or crear_actividades %}  <center><a class="btn btn-default" href="/flujos&id={{proyecto.id}}/add_actividades&id={{i.id}}"><strong>Agregar Actividades </strong></a>
+                                                                <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/ver_actividades&id={{i.id}}"><strong>Ver Actividades del Flujo</strong></a></center></td>
+{% endif %}
+                        </tr>
+	                {% endfor %}
+               {% endif %}
+              </tbody>
+	        </table>
+     </form>
+     </li>
+     </ul>
+            </div>
             </div>
 
      <a colspan="3">

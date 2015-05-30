@@ -1,18 +1,27 @@
 {% extends "base.html" %}
 {% block title %}{{ proyecto.nombre }}{% endblock %}
-{% block head %}Agregar nueva tarea{% endblock %}
+{% block head %}Anadir adjuntos de &lt;{{ us.nombre }}&gt;<br>{% endblock %}
 {% block content %}
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+          <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>ADMIN PROYECTO</strong></a></li>
 
+  <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/sprint_bk/"><strong>SPRINTS</strong></a></li>
+  <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/tablero/"><strong>TABLA KANBAN</strong></a></li>
+
+   <li class="active"><strong>AGREGAR ADJUNTOS</strong></li>
 </ol>
-<ol class="breadcrumb">    <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
-    <li><a class="text-danger" href="/configuracion&id={{proyecto.id}}/sprint"><strong>TABLA</strong></a></li>
-   <li class="active"><strong>ADJUNTAR ARCHIVO</strong></li>
-</ol>
-<center><h2 class="text-danger"><strong> ADJUNTAR ARCHIVO</strong></h2></center>
-  <table class="abm">
-              <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
-            {{ form.as_p }}
-        <input type="submit" value="Submit">
-        </form>
-         </table>
+    <center><h2 class="text-danger"><strong>AGREGAR  ADJUNTO</strong></h2></center>
+
+<form action="" method="post" enctype="multipart/form-data">
+<p>(M&aacute;ximo 1MB)</p>
+	{{ formset.management_form }}
+    {% for form in formset.forms %}
+    {{ form.as_p }}
+    {% endfor %}
+<input type="submit" value="Aceptar" />
+<input type="button" value="Cancelar" onClick = "location.href='userstories&id={{proyecto.id}}/adj&id={{us.id}}/' "/>
+</form>	
+
 {% endblock %}
+

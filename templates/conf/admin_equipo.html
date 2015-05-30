@@ -3,10 +3,16 @@
 {% block content %}
 
 <ol class="breadcrumb">
-  <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/"><strong>Configuracion</strong></a></li>
-    <li class="active"><strong>Equipo</strong></li>
+    <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+          <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>ADMIN PROYECTO</strong></a></li>
+
+      <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/sprint_bk/"><strong>SPRINTS</strong></a></li>
+  <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/confsprint&id={{ sprint.id }}"><strong>CONFIGURACION SPRINT</strong></a></li>
+    <li class="active"><strong>ADMINISTRACION DE EQUIPO</strong></li>
 </ol>
-<center><h2 class="text-danger"><strong> Equipo </strong></h2></center><br><br>
+
+
+<center><h2 class="text-danger"><strong> ADMINISTRACION DE EQUIPO </strong></h2></center><br><br>
 
 {% if ver_miembros or abm_miembros %}
 
@@ -53,11 +59,14 @@
 {% if abm_miembros %}
 <div class="footer">
            <div class="volver">
-                <a class="btn btn-default" href="/configuracion/equipo&id={{proyecto.id}}/nuevo/"><strong> AGREGAR NUEVO MIEMBRO</strong> </a>&nbsp;&nbsp;
-               {% endif %}
+                <a class="btn btn-default" href="/configuracion/equipo&id={{proyecto.id}}/nuevo&id={{sprint.id}}/"><strong> AGREGAR NUEVO MIEMBRO</strong> </a>&nbsp;&nbsp;
+                                      <tr> <input type="button" class= "btn btn-default" value="Volver" onClick = "location.href='/configuracion&id={{proyecto.id}}/confsprint&id={{ sprint.id }}'"/></tr>
+
+{% endif %}
 <!--<input type="button" class= "btn btn-default" value="VOLVER" onClick = "location.href='/configuracion' "/>-->
 </div>
      </div>
+
    {% else %}
 
 	<center><p><strong>NO TIENE PERMISO PARA VER ESTA SECCIÓN</strong></p></center>

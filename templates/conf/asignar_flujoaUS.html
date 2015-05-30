@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Flujos{% endblock %}
 {% block content %}
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+      <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>ADMIN PROYECTO</strong></a></li>
+      <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/sprint_bk"><strong>SPRINTS</strong></a></li>
+          <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/confsprint&id={{ sprint }}"><strong>CONF SPRINT</strong></a></li>
 
+
+  <li class="active"><strong>ASIGNACION FLUJO</strong></li>
+</ol>
 <center><h2><b> Asignar Flujo a User Story </b></h2></center><br>
 
 
@@ -10,7 +18,7 @@
       <p>{{mensaje}}</p></center>
    {% else %}
       <center><table class="abm">
-             <form id="form_id" action="." method="POST">
+             <form id="form_id" action="" method="POST">
                    {% csrf_token %}
 		   {{ form.as_p }}
 		   <tr>

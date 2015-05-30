@@ -59,105 +59,120 @@ select{
 
     </style>
 
-
 <ol class="breadcrumb">
-  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
-  <li class="active"><strong>ADMINISTRACIÓN DE PROYECTOS</strong></li>
+    <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+          <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>ADMIN PROYECTO</strong></a></li>
+
+  <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/sprint_bk/"><strong>SPRINTS</strong></a></li>
+
+
+  <li class="active"><strong>PRECONFIGURACION DE SPRINT</strong></li>
 </ol>
-<center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE PROYECTOS </strong></h2></center><br><br>
+<center><h2 class="text-danger"><strong> PRECONFIGURACION DE SPRINT </strong></h2></center><br><br>
 
+       <div class="row">
 
-        <div class="row">
 {% if Agregar_US  %}
        <div class="col-sm-3">
            <ul class="nav nav-list-tools">
-                <li class="nav-header-tools">BARRA DE HERRAMIENTAS</li>
+                <li class="nav-header-tools"><center>DURACION-EQUIPO</center></li>
                 <li class="alert alert-danger">
-                <a class="btn btn-default" href="/principal"><strong> VOLVER A LA PÁGINA PRINCIPAL</strong> </a>&nbsp;&nbsp;
-                    <a class="btn btn-default" href="/configuracion/equipo&id={{proyecto.id}}/"><strong> GENERAR EQUIPO</strong> </a>&nbsp;&nbsp;
-                 {%  if proyecto.duracion_sprint == None %}     <form id="duracion_id" action="." method="POST">
-                             {% csrf_token %}
-                <center>  {{ duracion.as_table }} </center>
+                    <br><br><br>
+                    <a class="btn btn-default" href="/configuracion/equipo&id={{proyecto.id}}/sprint&id={{sprint.id}}"><strong> ADMINISTRACION EQUIPO</strong> </a>&nbsp;&nbsp;
+<br><br><br>
+                 LA DURACION DEL SPRINT {{ sprint.nro_sprint }} EN SEMANAS: {{ sprint.duracion }}
 
-   <tr>
-                      <td class="buttonlist" colspan="2">
-                          <br><center>
-                                  <input type="submit" class= "btn btn-default" value="GUARDAR" />&nbsp;&nbsp;&nbsp;&nbsp;
 
-	                   </center>
-                      </td>
-	          </tr>
-	     </form>
-{% else %} La duracion del Sprint en Semanas es {{ proyecto.duracion_sprint }}{% endif %}
-               <li class="nav-header-tools">BackLog</li>
-                         <li class="alert alert-danger">
-  <form id="form_id" action="." method="POST">
-                  {% csrf_token %}
-                <center>  {{ form.as_table }} </center>
-	          <tr>
-                      <td class="buttonlist" colspan="2">
-                          <br><center>
-                                  <input type="submit" class= "btn btn-default" value="AGREGAR" />&nbsp;&nbsp;&nbsp;&nbsp;
+           </ul>
+        {% endif %}
+    </div>
+    <!--ACA -->
+       {% if equipo == True %}
+    <div class="col-sm-8">
+          <!--<div class="col-sm-6">-->
+              <ul class="nav nav-list-tools">
+                <li class="nav-header-tools">Configuracion Sprint - {{ sprint.nro_sprint }} &nbsp;&nbsp;&nbsp;&nbsp;{{ sprint.disponibilidad }} Horas Disponible</li>
+                <li class="alert alert-danger">
+                    <table class="table table-bordered">
+                        <thead>
+                             <th class="titulo"><b class="text-danger"><strong>USER STORY</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong>Prioridad</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong>Estado del US</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong>Flujo</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong> Responsable</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong>HR/Dia</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong>Horas del US</strong></b></th>
+                        </thead>
+                        <tbody>
+                        {% for i in us %}
+                        <tr>
+                            <td><font color="gray"><strong><em><u>{{i.us.nombre}}</u></em></strong></font></td>
+                            <td><font color="gray"><strong>{{i.us.prioridad}}</strong></font></td>
+                            <td><font color="gray"><strong>En espera</strong></font></td>
+                            <td><font color="gray"><strong>{{i.us.flujo.nombre}}</strong></font></td>
+                            <td><font color="gray"><strong>{{i.us.responsable}}</strong></font></td>
+                            <td><font color="gray"><strong>{{i.us.horas}}</strong></font></td>
+                            <td><font color="gray"><strong>{{i.us.duracion}}</strong></font></td>
+                        {% if Asignar_Flujo %}
+                            <td><a class="btn btn-default btn-xs" href="/configuracion&id={{proyecto.id}}/flujo&id={{i.us.id }}/sprint&id={{sprint.id }}"><strong>Asignar Flujo</strong></a></td>
+                        {% endif%} {% if Asignar_Responsable %}
+                            <td><a class="btn btn-default btn-xs" href="/configuracion/equipo&id={{proyecto.id}}/responsable&id={{i.us.id }}/sprint&id={{sprint.id }}"><strong>Responsable</strong></a></td>
+                        {% endif %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+	                </table>
+                    </form>
+                </li>
+              </ul>
+             <ul class="nav nav-list-tools">
+                <li class="nav-header-tools">BACKLOG {{ proyecto.sprint }}</li>
+                <li class="alert alert-danger">
 
-	                   </center>
-                      </td>
-	          </tr>
-	     </form>
+                <table id="myTable" class="tablesorter table table-bordered" >
+                     <thead>
+                             <th class="titulo"><b class="text-danger"><strong>USER STORY</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong>Prioridad</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong>Valor del negocio</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong>Valor tecnico</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong> Duracion estimada</strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong></strong></b></th>
+                             <th class="titulo"><b class="text-danger"><strong> Acciones</strong></b></th>
+
+                        </thead>
+                        <tbody>
+                        {% for i in listaUS %}
+                        <tr>
+                            <td><font color="black"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
+                            <td><font color="gray"><strong>{{i.prioridad}}</strong></font></td>
+                            <td><font color="gray"><strong>{{ i.valor_negocio }}</strong></font> </td>
+                            <td><font color="gray"><strong>{{ i.valor_tecnico }}</strong></font> </td>
+                            <td><font color="gray"><strong>{{i.duracion}}</strong></font></td>
+                             <th class="titulo"><b class="text-danger"><strong></strong></b></th>
+
+                            <td><a class="btn btn-primary " href="/configuracion&id={{proyecto.id}}/cambiarhoraestimada&id={{ i.id }}/sprint&id={{ sprint.id }}"><strong>Cambiar</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+                              <a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/addussprint&id={{ i.id }}/sprint&id={{ sprint.id }}"><strong>Agregar</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </td></tr>
+                       {% endfor %}
+                </table>
 
                 </li>
-               </ul>
-           </div>
+              </ul>
+</div>
+    </div>
+
+        <br><br>    {% if band == 1 %} <a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/sprint_bk"><strong>HECHO</strong></a>{% else %}<th class="titulo"><b class="text-danger"><strong> Debe completar todos los datos para continuar</strong></b></th>{% endif %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+      </div>
 {% endif %}
-          <div class="col-sm-8">
- <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">Configuracion Sprint - {{ proyecto.sprint }} {{ suma }} Horas Disponible</li>
-          <li class="alert alert-danger">
+<script>
 
+$(function(){
+  $("#myTable").tablesorter({ sortList: [[0,0], [1,0]]
+  })
 
-
-                <table class="table table-bordered">
-                <thead>
-                    <th class="titulo"><b class="text-danger"><strong>USER STORY</strong></b></th>
-                <th class="titulo"><b class="text-danger"><strong>Prioridad</strong></b></th>
-                    <th class="titulo"><b class="text-danger"><strong>Estado del US</strong></b></th>
-
-                 <th class="titulo"><b class="text-danger"><strong>Flujo</strong></b></th>
-                    <th class="titulo"><b class="text-danger"><strong> Responsable</strong></b></th>
-
-                 <th class="titulo"><b class="text-danger"><strong>HR/Dia</strong></b></th>
-                 <th class="titulo"><b class="text-danger"><strong>Horas del US</strong></b></th>
-
-                </thead>
-
-            <tbody>
-              {% for i in us %}
-<tr>
-
-
-                    <td><font color="gray"><strong><em><u>{{i.us.nombre}}</u></em></strong></font></td>
-                    <td><font color="gray"><strong>{{i.us.prioridad}}</strong></font></td>
-                    <td><font color="gray"><strong>En espera</strong></font></td>
-
-                    <td><font color="gray"><strong>{{i.us.flujo.nombre}}</strong></font></td>
-                    <td><font color="gray"><strong>{{i.us.responsable}}</strong></font></td>
-                    <td><font color="gray"><strong>{{i.us.horas}}</strong></font></td>
-                    <td><font color="gray"><strong>{{i.us.duracion}}</strong></font></td>
-{% if Asignar_Flujo %}
-
-    <td><a class="btn btn-default btn-xs" href="/configuracion&id={{proyecto.id}}/flujo&id={{i.us.id }}/"><strong>Asignar Flujo</strong></a></td>
-   {% endif%} {% if Asignar_Responsable %} <td><a class="btn btn-default btn-xs" href="/configuracion/equipo&id={{proyecto.id}}/responsable&id={{i.us.id }}/"><strong>Responsable</strong></a></td>
-{% endif %}
-                         </tr>
-{% endfor %}
-   </tbody>
-	    </table>{% if Iniciar_Proyecto  %}
-              {% if band == 1 %}
-                            <center><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/sprint/"><strong>INICIAR SPRINT</strong></a></td></center>
-   {% endif %}   {% endif %} </form>
-     </li>
-     </ul>
-            </div>
-            </div>
-    <br><br>
-
+});
+</script>
 {% endblock %}

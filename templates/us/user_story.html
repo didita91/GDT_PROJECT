@@ -62,7 +62,9 @@ select{
 
 
 <ol class="breadcrumb">
-  <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>PROYECTO</strong></a></li>
+      <li><a class="text-danger" href="/principal"><strong>PAGINA PRINCIPAL</strong></a></li>
+
+  <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>ADMIN PROYECTO</strong></a></li>
 
   <li class="active"><strong>ADMINISTRACIÓN DE USER STORIES</strong></li>
 </ol>
@@ -78,7 +80,6 @@ select{
            <ul class="nav nav-list-tools">
                 <li class="nav-header-tools">Barra de Herramientas</li>
                 <li class="alert alert-danger">
-                <a class="btn btn-default" href="/principal"><strong> VOLVER A LA PÁGINA PRINCIPAL</strong> </a>&nbsp;&nbsp;
               {% if abm_user_story  or crear_us or Crear_US%}
   <a class="btn btn-default" href="/userstories&id={{proyecto.id}}/crear/"><strong>CREAR NUEVO USER STORY </strong></a>{% endif %}
                 </li>
@@ -105,7 +106,7 @@ select{
               </tr>
 	        <tr>
                      <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th> 
-                    <!-- <th class="titulo"><b class="text-danger"><strong>ASIGNADO A</strong></b></th>-->
+                     <th class="titulo"><b class="text-danger"><strong>RESPONSABLE</strong></b></th>
                      <th class="titulo"><b class="text-danger"><strong>VERSION</strong></b></th>
                      <th class="titulo"><b class="text-danger"><strong>ESTADO</strong></b></th>
                      <th class="titulo"><b class="text-danger"><strong>VALOR TECNICO</strong></b></th>
@@ -124,11 +125,11 @@ select{
                           <td><font color="black"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
          {% endif %}
 
-	                     <!--<td><strong></strong></td>-->
+        <td><strong>{% if i.responsable == None %}-{% else %}{{ i.responsable }}{% endif %}</strong></td>
 
-                         <td><strong>{{i.version}}</strong></td>{% if i.estado == '2' %}
-                        <td><strong>En Proceso</strong></td>{% else %}
-                        <td><strong>En Espera</strong></td>{% endif%}
+                         <td><strong>{{i.version}}</strong></td>
+                        <td><strong>{{ i.estado }}</strong></td>
+
 
                          <td><strong>{{i.valor_tecnico}}</strong></td>
                          <td><strong>{{i.valor_negocio}}</strong></td>
@@ -144,6 +145,8 @@ select{
                </tbody>
 	  </table>
    </form>
+                                                      <tr> <input type="button" class= "btn btn-default" value="Volver" onClick = "location.href='/proyectos/admin&id={{proyecto.id}}'"/></tr>
+
 
 
 
