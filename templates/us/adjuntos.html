@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Archivos adjuntos de &lt;{{ us.nombre }}&gt;<br>{% endblock %}
+{% block content %}
+
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+          <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>ADMIN PROYECTO</strong></a></li>
+
+  <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/sprint_bk/"><strong>SPRINTS</strong></a></li>
+  <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/tablero/"><strong>TABLA KANBAN</strong></a></li>
+
+   <li class="active"><strong>ADJUNTOS</strong></li>
+</ol>
+{% if lista %}
+     <table class="table table-bordered">
+     <thead>
+	        <tr>
+	      <th class="titulo"><b class="text-danger"><strong>Nombre</strong></b></th>
+      <th class="titulo"><b class="text-danger"><strong>TAMANO</strong></b></th>
+           <th class="titulo"><b class="text-danger"><strong>ACCIONES</strong></b></th>
+
+            </tr>
+                </thead>
+     <tbody>
+	{% for i in lista %}
+
+	<tr>	
+	<td><a href = "/userstories&id={{proyecto.id}}/adj&id={{us.id}}/get&id={{i.id}}/">{{i.nombre}}</a></td>
+	<td>{{i.tamano}} B</td><td><a href="/userstories&id={{proyecto.id}}/adj&id={{us.id}}/quitar&id={{i.id}}/">Quitar</a></td>
+	</tr>
+	{% endfor %}
+      </tbody>
+	</table>
+{% else %}
+	<p>No hay adjuntos</p>
+{% endif %}
+<p></p>
+<p><a href="/userstories&id={{proyecto.id}}/adj&id={{us.id}}/nuevoadjunto/">Anadir archivos</a> </p>
+<input type="button" value="Volver" onClick = "location.href='/configuracion&id={{proyecto.id}}/tablero' "/>
+
+{% endblock %}
