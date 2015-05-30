@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ proyecto.nombre }}{% endblock %}
+{% block head %}Quitar adjunto de &lt;{{ us.nombre }}&gt;<br>{% endblock %}
+{% block content %}
+<form id="form_id" action="" method="post">
+<p>¿Est&aacute; seguro de que desea quitar este archivo?<span class="optionbuttons">
+	<input type="submit" value="S&iacute;" />
+	<input type="button" value="No" onClick ="location.href='/userstories&id={{proyecto.id}}/adj&id={{us.id}}/' "/></span></p>
+</form>
+{% endblock %}
+
