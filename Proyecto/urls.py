@@ -1,4 +1,4 @@
-__author__ = 'tere'
+
 #-*- coding: utf-8 -*-
 from django.conf.urls import *
 from django.views.generic import *
@@ -37,27 +37,56 @@ urlpatterns = patterns('',
      # url(r'^userstories&id=(?P<proyecto_id>\d+)/adj&id=(?P<us_id>\d+)/nuevo/$',list,name='list'),
      url(r'^userstories&id=(?P<proyecto_id>\d+)/adj&id=(?P<us_id>\d+)/nuevo/$',add_tarea),
 #CONFIGURACION DE PROYECTO INICIO
-     url(r'^configuracion&id=(?P<proyecto_id>\d+)/$',conf_proyecto),
-     url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/$', admin_equipo),
-     url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/nuevo/$',add_miembro_equipo),
-     url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/responsable&id=(?P<us_id>\d+)/$',responsable_us),
-     url(r'^configuracion&id=(?P<proyecto_id>\d+)/flujo&id=(?P<us_id>\d+)/$',asignar_flujoUS),
-     url(r'^configuracion&id=(?P<proyecto_id>\d+)/sprint/$',iniciarsprint),
+     url(r'^configuracion&id=(?P<proyecto_id>\d+)/confsprint&id=(?P<sprint_id>\d+)$',conf_proyecto),
+
+         url(r'^configuracion&id=(?P<proyecto_id>\d+)/sprint/$',conf_inicio_sprint),
+             url(r'^configuracion&id=(?P<proyecto_id>\d+)/grafico/$',grafico),
+
+
+
+     url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/sprint&id=(?P<sprint_id>\d+)/$', admin_equipo),
+     url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/nuevo&id=(?P<sprint_id>\d+)/$',add_miembro_equipo),
+     url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/responsable&id=(?P<us_id>\d+)/sprint&id=(?P<sprint_id>\d+)$',responsable_us),
+     url(r'^configuracion&id=(?P<proyecto_id>\d+)/flujo&id=(?P<us_id>\d+)/sprint&id=(?P<sprint_id>\d+)$',asignar_flujoUS),
+     url(r'^configuracion&id=(?P<proyecto_id>\d+)/sprint&id=(?P<sprint_id>\d+)$',iniciarsprint),
 
         url(r'^configuracion&id=(?P<proyecto_id>\d+)/flujouser/$',flujo_user_sprint),
     #HISTORIAL
      url(r'^userstories&id=(?P<proyecto_id>\d+)/historial&id=(?P<us_id>\d+)/$',ver_historial),
+         url(r'^userstories&id=(?P<proyecto_id>\d+)/historialrelease&id=(?P<us_id>\d+)/$',ver_historial_release),
+
             url(r'^configuracion&id=(?P<proyecto_id>\d+)/act_cambiar&id=(?P<act_id>\d+)/us&id=(?P<us_id>\d+)/flujo&id=(?P<flujo_id>\d+)/$',cambiar_actividad),
 
         url(r'^configuracion&id=(?P<proyecto_id>\d+)/estado_cambiar&id=(?P<act_id>\d+)/us&id=(?P<us_id>\d+)/flujo&id=(?P<flujo_id>\d+)/$',cambiar_estado),
 
-
+     url(r'^configuracion&id=(?P<proyecto_id>\d+)/cambiarhoraestimada&id=(?P<us_id>\d+)/sprint&id=(?P<sprint_id>\d+)$',cambiar_hora_estimada),
         url(r'^configuracion&id=(?P<proyecto_id>\d+)/act_flujo&id=(?P<flujo_id>\d+)/us&id=(?P<us_id>\d+)/$',actividad_flujo),
-url(r'^userstories&id=(?P<proyecto_id>\d+)/adjunto&id=(?P<us_id>\d+)/$',add_adjunto),
+#url(r'^userstories&id=(?P<proyecto_id>\d+)/adjunto&id=(?P<us_id>\d+)/$',add_adjunto),
     url(r'^sprint&id=(?P<proyecto_id>\d+)/$',sprint_admin),
         url(r'^userstories&id=(?P<proyecto_id>\d+)/backlog/$',us_backlog),
+     url(r'^configuracion&id=(?P<proyecto_id>\d+)/sprint_bk/$',sprint_bk),
+         url(r'^configuracion&id=(?P<proyecto_id>\d+)/tablero/$',ver_tablero),
 
+         url(r'^configuracion&id=(?P<proyecto_id>\d+)/sprint_bk&id=(?P<sprint_id>\d+)/us/$',sprint_us),
+             url(r'^configuracion&id=(?P<proyecto_id>\d+)/enviararelease&id=(?P<us_id>\d+)/$',enviar_a_release),
+                url(r'^configuracion&id=(?P<proyecto_id>\d+)/release/$',release),
+                    url(r'^configuracion&id=(?P<proyecto_id>\d+)/revisarus&id=(?P<us_id>\d+)/$',revisar_us),
+
+
+             url(r'^configuracion&id=(?P<proyecto_id>\d+)/cambiaractividad&id=(?P<us_id>\d+)/flujo&id=(?P<flujo_id>\d+)/actividad&id=(?P<act_id>\d+)/$',recambiar_actividad),
+
+
+            url(r'^configuracion&id=(?P<proyecto_id>\d+)/addussprint&id=(?P<us_id>\d+)/sprint&id=(?P<sprint_id>\d+)$',add_us_sprint),
+
+     url(r'^configuracion&id=(?P<proyecto_id>\d+)/historialus&id=(?P<us_id>\d+)/$',ver_historial_us),
+
+  url(r'^userstories&id=(?P<proyecto_id>\d+)/adj&id=(?P<us_id>\d+)/$',admin_adjuntos),
+    url(r'^userstories&id=(?P<proyecto_id>\d+)/adj&id=(?P<us_id>\d+)/nuevoadjunto/$',add_adjunto),
+
+    url(r'^userstories&id=(?P<proyecto_id>\d+)/adj&id=(?P<us_id>\d+)/get&id=(?P<arch_id>\d+)/$',retornar_archivo),
+
+   url (r'^userstories&id=(?P<proyecto_id>\d+)/adj&id=(?P<us_id>\d+)/quitar&id=(?P<arch_id>\d+)/$',quitar_archivo),
+       url (r'^userstories&id=(?P<proyecto_id>\d+)/cancelar&id=(?P<us_id>\d+)/$',cancelar_us),
 
 )
-
 

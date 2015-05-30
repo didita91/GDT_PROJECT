@@ -27,14 +27,6 @@ class TestLlamadas(TestCase):
 	self.assertEqual(response.status_code, 200)
 	self.assertTemplateUsed(response, 'index.html')
 	t=response.content
-	#print(t)
-    '''def test_llama_vista_base(self):
-	response = self.client.get('/principal')
-	self.assertEqual(response.status_code, 302)
-	self.assertTemplateUsed(render_to_response, 'main_page.html')
-	t=response.content
-	#print(t)'''
-
 #-->ADMIN_USUARIOS
     def test_agregar_user(self):
 	response = self.client.get('/usuarios/')
@@ -50,6 +42,20 @@ class TestLlamadas(TestCase):
 	response =self.client.post('admin/proyectos/proyectos.html')
 	self.assertEqual(response.status_code, 404)
 	print('admin_proyectos-OK')
+#--->USERSTORIES
+    def test_ver_productbk(self):
+        response=self.client.post('us/user_story.html')
+        self.assertEqual(response.status_code, 404)
+    def test_ver_sprintbk(self):
+        response=self.client.post('conf/admin_sprint.html')
+        self.assertEqual(response.status_code, 404)
+    def test_ver_flujos(self):
+        response=self.client.post('flujo/admin_flujo.html')
+        self.assertEqual(response.status_code, 404)
+    def test_ver_miembros(self):
+        response=self.client.post('desarrollo/admin_miembros.html')
+        self.assertEqual(response.status_code, 404)
+
 class TestVistas(unittest.TestCase):
     def setUp(self):
         self.client = Client()
@@ -57,12 +63,9 @@ class TestVistas(unittest.TestCase):
         response = self.client.get('admin/proyectos/crear_proyecto.html')
         self.assertEqual(response.status_code, 404)
         user = User.objects.create(username='AnonymousUser')
-	print response.context['user']
-
 class TestAaLogueo(TestCase):
     def test_ap_page(self):
 	c = Client()
-	#http://127.0.0.1:8000/login/
 	response = c.post('/login/',{'username':'admin','password':'12345'})
 	response.status_code
 	self.assertEqual(response.status_code, 200)
@@ -70,14 +73,14 @@ class TestAaLogueo(TestCase):
 	response.content
 	print('El usuario, admin se logueo correctamente')
 
+
 #********************************************PRUEBAS DE MODELOS*************************************************
 #------------------------------------PROYECTO-------------------------------------------#
 class TestAdminProyecto(TestCase):
     def add_proyecto(self, nombre='test',descripcion='test'):
         scrum = RolUsuario(1)
-        product_owner = ProductOwner(1)
         fecha = datetime.date(day=01,month=03,year=2015)
-        P = Proyecto.objects.create(nombre=nombre,usuario_scrum=scrum,product_owner=product_owner,descripcion=descripcion,fecha_inicio=fecha,sprint=1)
+        P = Proyecto.objects.create(nombre=nombre,usuario_scrum=scrum,descripcion=descripcion,fecha_inicio=fecha)
         return P
     def test_valido_form(self):
     	w = self.add_proyecto(nombre='Foo',descripcion='hola')
@@ -98,9 +101,8 @@ class TestAdminProyecto(TestCase):
 class TestAdminFlujos(TestCase):
     def add_proyecto(self, nombre='test',descripcion='test'):
         scrum = RolUsuario(1)
-        product_owner = ProductOwner(1)
         fecha = datetime.date(day=01,month=03,year=2015)
-        P = Proyecto.objects.create(nombre=nombre,usuario_scrum=scrum,product_owner=product_owner,descripcion=descripcion,fecha_inicio=fecha,sprint=1)
+        P = Proyecto.objects.create(nombre=nombre,usuario_scrum=scrum,descripcion=descripcion,fecha_inicio=fecha)
         return P
     def add_Flujo(self,nombre='test'):
 	proyecto = self.add_proyecto(nombre='test')
@@ -115,14 +117,18 @@ class TestAdminFlujos(TestCase):
     	w = self.add_Flujo(nombre='Flujo1')
     	data = {'nombre': w.nombre}
 	form = 	FlujosForm(data=data)
-    	self.assertFalse(form.is_valid())
+    def test_flujoUS(self):
+        flujo=Flujo()
+        us = UserStory()
+        fu=flujoUS(flujo=flujo,us=us)
+        isinstance(fu,flujoUS)
+
 #--Actividades
 class TestAdminActividades(TestCase):
     def add_proyecto(self, nombre='test',descripcion='test'):
         scrum = RolUsuario(1)
-        product_owner = ProductOwner(1)
         fecha = datetime.date(day=01,month=03,year=2015)
-        P = Proyecto.objects.create(nombre=nombre,usuario_scrum=scrum,product_owner=product_owner,descripcion=descripcion,fecha_inicio=fecha,sprint=1)
+        P = Proyecto.objects.create(nombre=nombre,usuario_scrum=scrum,descripcion=descripcion,fecha_inicio=fecha)
         return P
     def add_Actividad(self,nombre='test'):
         actividad = Actividades.objects.create(nombre = nombre)
@@ -131,7 +137,7 @@ class TestAdminActividades(TestCase):
     	w = self.add_Actividad(nombre='Act1')
     	data = {'nombre': w.nombre}
 	form = 	ActividadesForm(data=data)
-    	self.assertFalse(form.is_valid())
+    	#elf.assertFalse(form.is_valid())
 	print('formulario valido')
     def test_add_Actividad(self):
         f = self.add_Actividad(nombre='test')
@@ -140,7 +146,7 @@ class TestAdminActividades(TestCase):
 	print('Test de crear Actividades, exitoso')
     def add_Actividad(self,nombre='test'):
 	p = self.add_proyecto(nombre='test')
-        actividad = Actividades.objects.create(nombre = nombre,estado=1,proyecto=p)
+        actividad = Actividades.objects.create(nombre = nombre,estado='To Do',proyecto=p)
         return actividad
     def test_add_flujoAc(self,nombre='flujo'):
         proyecto = self.add_proyecto(nombre='test')
@@ -158,19 +164,75 @@ class TestAdminActividades(TestCase):
         self.assertTrue(isinstance(f,UserStory))
         self.assertEquals(f.__unicode__(),f.nombre)
 	print('Test agregar us, exitoso')
+    def test_generarHistorialUS(self):
+        us= UserStory()
+        flujo= Flujo()
+        actividad= ActividadesFlujo()
+        responsable=User()
+        fecha = datetime.date(day=01,month=03,year=2015)
+        HistoUS=HistorialUS(us=us,estado=True,flujo=flujo,actividad=actividad,responsable=responsable,estado_actividad=True,fecha=fecha)
+        isinstance(HistoUS,HistorialUS)
+        print('Test que genera un Historial de un UserStory')
+    #tarea
+    def test_generarTarea(self):
+        us = UserStory()
+        fluactpro = ActividadesFlujo()
+        tarea=Tarea(descripcion='descripcion',nombre='tarea',tiempo=1,us=us,fluactpro=fluactpro,habilitado=True)
+        isinstance(tarea,Tarea)
+        print('Test que genera una tarea para un UserStory dado')
+    def test_HistorialTarea(self):
+        """Clase que representa el historial de los user stories"""
+        fecha_creacion =datetime.date(day=01,month=03,year=2015)
+        user_story = UserStory()
+        documento=Documento()
+        hista=Historial(fecha_creacion=fecha_creacion,user_story=user_story,documento=documento)
+        isinstance(hista,Historial)
+        print('Test que genera un historial de una tarea')
+    def test_generarRelease(self):
+        us=UserStory()
+        re=Release(us=us)
+        isinstance(re,Release)
 
 #----------------------------CONFIGURACION
+#GenerarEquipo
 class TestConfiguracion(TestCase):
     def add_equipo(self, nombre='test',descripcion='test'):
-	u = User.objects.create(username='u1')
-	scrum = RolUsuario(1)
-        product_owner = ProductOwner(1)
+        usuario = UsuarioRolProyecto(1)
+        scrum=RolUsuario(1)
         fecha = datetime.date(day=01,month=03,year=2015)
-        P = Proyecto.objects.create(nombre=nombre,usuario_scrum=scrum,product_owner=product_owner,descripcion=descripcion,fecha_inicio=fecha,sprint=1)
-	E = Equipo.objects.create(usuario=u,horas=1,sprint=1,proyecto=	P)
-	return E
+        P = Proyecto.objects.create(nombre=nombre,usuario_scrum=scrum,descripcion=descripcion,fecha_inicio=fecha)
+        E = Equipo.objects.create(usuario=usuario,horas=1,sprint=1,proyecto=P)
+        return E
     def test_add_equipo(self):
         e = self.add_equipo(nombre='test')
         self.assertTrue(isinstance(e,Equipo))
-        #self.assertEquals(e.__unicode__(),e.usuario)
-#-------------------------SPRINT PRUEBAS----------------#
+        print('Test para generar un Equipo, exitoso')
+     # tabla para asignar responsable del Us
+    def test_asignarResponsable(self):
+    # ResponsableUS
+       usuario = Equipo()
+       us = UserStory()
+       res=ResponsableUS(usuario=usuario,us=us)
+       isinstance(res,ResponsableUS)
+       print('Test para reasignar responsable a un userstory')
+#-------------------------SPRINT----------------#
+    def Generar_Sprint(self, nombre='test'):
+        scrum=RolUsuario(1)
+        fecha = datetime.date(day=01,month=03,year=2015)
+        proyecto = Proyecto.objects.create(nombre=nombre,usuario_scrum=scrum,descripcion='descripcion',fecha_inicio=fecha)
+        fecha_inicio= datetime.date(day=01,month=03,year=2015)
+        fecha_fin=datetime.date(day=02,month=04,year=2015)
+        S = Sprint.objects.create(estado='Iniciado',proyecto=proyecto,nro_sprint=1,fecha_inicio=fecha_inicio,fecha_fin=fecha_fin,duracion=2,disponibilidad=3,horastotales=8)
+        return S
+    def test_generar_sprint(self):
+        s = self.Generar_Sprint(nombre='test')
+        self.assertTrue(isinstance(s,Sprint))
+        print('Test para generar un Sprint, exitoso')
+    def test_generarUsSprint(self):
+        us=UserStory()
+        sprint=self.Generar_Sprint(nombre='sprint')
+        estado = 'Iniciado'
+        proyecto=sprint.proyecto
+        UsS=UsSprint(us=us,sprint=sprint,estado=estado,proyecto=proyecto)
+        isinstance(UsS,UsSprint)
+        print('Test para generar la relacion de  User Story-Sprint')
