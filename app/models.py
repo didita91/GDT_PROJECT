@@ -12,9 +12,13 @@ CATEGORY_CHOICES = (
              )
 """ Estados de Actividades """
 status_activity = (
-                 ('1', 'To Do'),
-		         ('2', 'Doing'),
-                 ('', 'Done'),
+                 ('To Do', 'To Do'),
+		         ('Doing', 'Doing'),
+                 ('Done', 'Done'),
+             )
+cambio_estado = (
+                 ('Done', 'Done'),
+
              )
 
 """Estados de los UserStories"""
@@ -25,6 +29,7 @@ STATUS_CHOICES = (
                 ('Inactivo', 'Inactivo')
                 )
 SPRINT_STATUS = (
+                ('Preconfigurado', 'Preconfigurado'),
  	            ('Iniciado', 'Iniciado'),
  	            ('Terminado', 'Terminado'),
 
@@ -87,13 +92,20 @@ class UsuarioRolSistema(models.Model):
         unique_together = [("usuario", "rol")]
 
 class RolUsuario(models.Model):
+	"""
+	Relación existente entre un usuario y su rol
+	"""
 	usuario =models.ForeignKey(User)
 	def __unicode__(self):
 		return self.usuario.username
+
 class ProductOwner(models.Model):
-        usuario =models.ForeignKey(User)
-        def __unicode__(self):
-                return self.usuario.username
+    """
+    Tabla que contiene el nombre del usuario Product Owner
+    """
+    usuario =models.ForeignKey(User)
+    def __unicode__(self):
+         return self.usuario.username
 
 
 class Proyecto(models.Model):
@@ -102,10 +114,8 @@ class Proyecto(models.Model):
     """
     nombre = models.CharField(unique=True, max_length=50)
     usuario_scrum = models.ForeignKey(RolUsuario)
-    product_owner = models.ForeignKey(ProductOwner)
     descripcion = models.TextField(null=True, blank= True)
     fecha_inicio = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
-    sprint = models.IntegerField(max_length=2)
     def __unicode__(self):
         return self.nombre
 class UsuarioRolProyecto(models.Model):
@@ -119,37 +129,62 @@ class UsuarioRolProyecto(models.Model):
     class Meta:
         unique_together = [("usuario", "rol", "proyecto","eq")]
     def __unicode__(self):
-        return unicode(self.usuario)
+        return self.usuario
 
 class Flujo(models.Model):
+    """
+    Contiene datos del flujo
+    """
 
-    nombre = models.CharField(unique=True, max_length=50)
+    nombre = models.CharField( max_length=50)
     proyecto = models.ForeignKey(Proyecto)
     def __unicode__(self):
         return self.nombre
 
-class Actividades(models.Model):
 
-    nombre = models.CharField(unique=True, max_length=50)
-    estado = models.IntegerField(max_length=1, default=1)
+class Actividades(models.Model):
+    """
+    Contiene datos de las actividades
+    """
+    nombre = models.CharField( max_length=50)
+    estado = models.CharField(max_length=10, default='To Do')
     proyecto = models.ForeignKey(Proyecto)
+
     def __unicode__(self):
+
         return self.nombre
 
 class ActividadesFlujo(models.Model):
+    """
+    Contiene la relación entre flujo y actividades
+    """
     actividades = models.ForeignKey(Actividades, null=True)
     flujo = models.ForeignKey(Flujo)
     proyecto = models.ForeignKey(Proyecto)
+    ultimo= models.IntegerField(default=0)
     class Meta:
         unique_together = [("actividades", "flujo","proyecto")]
     def __unicode__(self):
-            return self.actividades.nombre
+        return self.actividades.nombre
 
 #---------------------------CONFIGURACION DE SPRINT
+class Equipo(models.Model):
+    """
+    Contiene datos de los equipos participantes del sprint
+    """
+    usuario = models.ForeignKey(UsuarioRolProyecto)
+    horas = models.PositiveIntegerField()#horas de trabajo de ese miembro
+    sprint = models.PositiveIntegerField()#sprint en el que se encuentra
+    proyecto = models.ForeignKey(Proyecto)
 
+    def __unicode__(self):
+        return self.usuario.usuario
 #***************************************USER STORY**********************************************
 class UserStory(models.Model):
-        nombre = models.CharField(unique=True, max_length=50)
+        """
+        Contiene datos del user story
+        """
+        nombre = models.CharField( max_length=50)
         estado = models.CharField(max_length=10, choices=STATUS_CHOICES)
         version = models.PositiveIntegerField()
         prioridad = models.IntegerField(max_length=3) #del 1 al 100 donde 1 es mas prioritario
@@ -158,32 +193,31 @@ class UserStory(models.Model):
         valor_tecnico=models.IntegerField(max_length=2) #del 1 al 10 donde 10 es de mas valor que 1
         duracion=models.IntegerField(max_length=2) #Duracion estimativa en dias de la historia de usuario
         descripcion = models.TextField(null=True, blank= True)
-        proyecto = models.ForeignKey(Proyecto) #Proyecto al cual pertenece
-        flujo= models.ForeignKey(Flujo)
-        responsable = models.ForeignKey(User)
-        horas = models.PositiveIntegerField()#horas de trabajo de ese miembro
-        actividad= models.ForeignKey(ActividadesFlujo)
-        estado_actividad= models.IntegerField()
+        proyecto = models.ForeignKey(Proyecto,null=True) #Proyecto al cual pertenece
+        flujo= models.ForeignKey(Flujo,null=True)
+        responsable = models.ForeignKey(User,null=True)
+        horas = models.PositiveIntegerField(null=True)#horas de trabajo de ese miembro
+        actividad= models.ForeignKey(ActividadesFlujo,null=True)
+        estado_actividad= models.CharField(max_length=10,default='To Do')
+        hora_acumulada=models.IntegerField(max_length=2,null=True)
         def __unicode__(self):
                 return self.nombre
 
 
-#---------------------------CONFIGURACION DE SPRINT
-class Equipo(models.Model):
-    usuario = models.ForeignKey(UsuarioRolProyecto)
-    horas = models.PositiveIntegerField()#horas de trabajo de ese miembro
-    sprint = models.PositiveIntegerField()#sprint en el que se encuentra
-    proyecto = models.ForeignKey(Proyecto)
 
-    def __unicode__(self):
-        return unicode(self.usuario)
 class ResponsableUS(models.Model):
-    usuario = models.ForeignKey(UsuarioRolProyecto)
+    """
+    Contiene datos del responsable del user story
+    """
+    usuario = models.ForeignKey(Equipo)
     us = models.ForeignKey(UserStory)
     def __unicode__(self):
         return unicode(self.usuario)
 
 class flujoUS(models.Model):
+    """
+    Contiene relación entre flujo y user story
+    """
     flujo=models.ForeignKey(Flujo)
     us = models.ForeignKey(UserStory)
     def __unicode__(self):
@@ -191,39 +225,109 @@ class flujoUS(models.Model):
 
 
 class UsSprint(models.Model):
+    """
+    Contiene datos de los user stories que se encuentran en un sprint
+    """
     us=models.ForeignKey(UserStory)
     sprint=models.IntegerField()
     estado = models.CharField(max_length=10, choices=SPRINT_STATUS)
+    proyecto=models.ForeignKey(Proyecto)
     def __unicode__(self):
         return unicode(self.us)
 
-#ARCHIVO ADJUNTO
-class Documento(models.Model):
-    docfile = models.FileField(upload_to='documentos/%Y/%m/%d')
 
 class Tarea(models.Model):
+    """Clase para el registro de una tarea, posee los siguientes campos:
+    descripcion: de la tarea realizada
+    nombre: dado a la tarea
+    tiempo: invertido en su realizacion
+    us: user story al que se le agrega la tarea
+    """
     descripcion =  models.TextField(null=True, blank=True)
     nombre = models.CharField(max_length = 100)
     tiempo = models.PositiveIntegerField()#
+
     #claves foraneas
     us = models.ForeignKey(UserStory)
+    fluactpro = models.ForeignKey(ActividadesFlujo)
+
     habilitado = models.BooleanField(default = True)
+
     def __unicode__(self):
                 return self.nombre
+
+#ARCHIVO ADJUNTO
+class Documento(models.Model):
+    """Clase que representa el tipo de archivo a adjuntar a un user story"""
+    docfile = models.FileField(upload_to='documentos/%Y/%m/%d')
+     #claves foraneas
+    us = models.ForeignKey(UserStory)
+
 
 class Historial(models.Model):
     """Clase que representa el historial de los user stories"""
     #usuario = models.ForeignKey(User)
     fecha_creacion = models.DateField(auto_now =False, auto_now_add=True, editable=False)
+   # descripcion = models.TextField(null=True,blank=True)
     #claves foraneas
+    #user_story = models.OneToOneField(UserStory, parent_link=False)
     user_story = models.ForeignKey(UserStory)
+    #tarea = models.ForeignKey(Tarea)
+    documento=models.ForeignKey(Documento,null=True)
+class Adjunto(models.Model):
+    #archivo = models.FileField(upload_to='items')
+    nombre = models.CharField(null=True,max_length = 100)
+    contenido = models.TextField(null=True)
+    tamano = models.IntegerField(null=True)
+    mimetype = models.CharField(null=True,max_length = 255)
+    #claves foraneas
+    us = models.ForeignKey(UserStory,null=True)
+    habilitado = models.BooleanField(default = True)
 
 class RegistroHistorial(models.Model):
-    """Clase que representa el Registro de versiones de los user stories"""
-    version = models.PositiveIntegerField()
+    """Clase que representa el Registro de tareas de los user stories"""
+    #version = models.PositiveIntegerField()
     prioridad = models.IntegerField()
     descripcion = models.TextField(null=True, blank=True)
     habilitado = models.BooleanField()
     fecha_modificacion = models.DateTimeField(auto_now=True, auto_now_add=False, editable=False)
     #claves foraneas
     historial = models.ForeignKey(Historial)
+    tarea=models.ForeignKey(Tarea)
+    us= models.ForeignKey(UserStory)
+    adjunto= models.ForeignKey(Adjunto,null=True)
+
+
+class Sprint(models.Model):
+    """ Clase de Sprint, tiene los campos: Estado, proyecto y nro. de sprint"""
+    estado = models.CharField(max_length=10, choices=SPRINT_STATUS)
+    proyecto = models.ForeignKey(Proyecto)
+    nro_sprint=models.PositiveIntegerField()
+    fecha_inicio= models.DateField(null=True)
+    fecha_fin=models.DateField(null=True)
+    duracion= models.PositiveIntegerField(null=True)
+    disponibilidad= models.PositiveIntegerField(null=True)
+    horastotales=models.PositiveIntegerField(null=True)
+
+
+class Release(models.Model):
+    us = models.ForeignKey(UserStory)
+    def __unicode__(self):
+                return self.us
+
+class HistorialUS(models.Model):
+    us= models.ForeignKey(UserStory)
+    estado=  models.CharField(null=True,max_length = 100)
+
+    flujo= models.ForeignKey(Flujo,null=True)
+
+    actividad= models.ForeignKey(ActividadesFlujo,null=True)
+    responsable= models.ForeignKey(User,null=True)
+    estado_actividad=  models.CharField(null=True,max_length = 100)
+
+
+    fecha = models.DateTimeField(auto_now=False, auto_now_add=True, null=True, blank=True, editable=False)
+
+    def __unicode__(self):
+        return self.us
+

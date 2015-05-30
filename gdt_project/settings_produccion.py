@@ -18,7 +18,7 @@ WSGI_APPLICATION = 'gdt_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'gdt_produccion',
+        'NAME': 'gdt',
 	    'USER': 'postgres',
 	    'PASSWORD': '12345',
 	    'HOST': 'localhost',
