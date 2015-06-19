@@ -461,7 +461,7 @@ def crear_rol(request):
             r = Rol()
             r.nombre = form.cleaned_data['nombre']
             r.descripcion = form.cleaned_data['descripcion']
-            r.fecHor_creacion = datetime.datetime.now()
+            r.fecHor_creacion = datetime.now()
             r.usuario_creador = user
             r.categoria = form.cleaned_data['categoria']
             r.save()
