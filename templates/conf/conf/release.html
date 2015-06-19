@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Proyectos{% endblock %}
+{% block content %}
+
+<style type="text/css" xmlns="http://www.w3.org/1999/html">
+        .alert-danger {
+            background: rgba(196,196,196,1);
+background: -moz-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -webkit-gradient(left top, right top, color-stop(0%, rgba(196,196,196,1)), color-stop(0%, rgba(191,191,191,1)), color-stop(100%, rgba(181,181,181,1)));
+background: -webkit-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -o-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -ms-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: linear-gradient(to right, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c4c4c4', endColorstr='#b5b5b5', GradientType=1 );
+            border-color: #808080;
+        border-radius: 0px 0px 10px 0px;
+
+        display: block;
+font-size: 15px;
+font-weight: bold;
+color: black;
+text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+margin-left: -5px;
+
+        }
+
+
+        .nav-list-tools>li.nav-header-tools {
+background-color: #8B0000;
+background-position: 8px 5px !important;
+color: #FFF;
+-webkit-border-radius: 10px 0px 0px;
+-moz-border-radius: 10px 0px 0px;
+border-radius: 10px 0px 0px ;
+padding-top: 15px;
+padding-bottom: 15px;
+
+/* padding-left: 40px; */
+    display: block;
+padding: 8px 15px;
+font-size: 18px;
+font-weight: bold;
+line-height: 18px;
+color: white;
+text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+text-transform: uppercase;
+margin-left: -5px;
+
+
+}
+
+.btn-default{
+font-weight: bold;
+
+    }
+
+select{
+    color: black;
+    }
+
+    </style>
+
+
+<ol class="breadcrumb">
+    <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
+  <li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/sprint_bk/"><strong>SPRINTS</strong></a></li>
+
+
+  <li class="active"><strong>RELEASE</strong></li>
+</ol>
+<!--
+    <center><h2 class="text-danger"><strong> ADMINISTRACIÓN DE USER STORIES </strong></h2></center><br><br>-->
+
+<center><h2 class="text-danger"><strong> VER USER STORIES PENDIENTES DE APROBACION </strong></h2></center><br><br>
+
+       <div class="row">
+
+
+
+
+<div class="col-sm-8">
+ <ul class="nav nav-list-tools">
+          <li class="nav-header-tools">User Stories </li>
+          <li class="alert alert-danger">
+    <form action="." method="POST">
+         {% csrf_token %}
+            <table class="table table-bordered">
+            {% if us %}
+	      <thead>
+
+	        <tr>
+                     <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
+                <th class="'titulo"><b class="text-danger"><strong>ACCIONES</strong></b></th>
+
+
+
+            </tr>
+                </thead>
+                <tbody>
+	{% for i in us %}
+	<tr>
+
+                          <td><font color="black"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
+
+        <td><a class="btn btn-primary " href="/configuracion&id={{proyecto.id}}/revisarus&id={{ i.id }}"><strong>REVISAR</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+
+
+
+                         </td>
+	</tr>
+	{% endfor %}
+
+               </tbody>
+            {% else %}
+                                      <td><font color="black"><strong>No se encuentra ningun elemento</strong></font></td>
+
+            {% endif %}
+
+	  </table>
+                        <tr> <input type="button" class= "btn btn-default" value="Volver" onClick = "location.href='/configuracion&id={{proyecto.id}}/sprint_bk/'"/></tr>
+
+   </form>
+
+	</li>
+	</ul>
+	</div>
+	</div>
+
+
+
+{% endblock %}
