@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Proyecto{% endblock %}
+{% block content %}
+<center><h2 class="text-danger"><strong> Prolongar Sprint</strong></h2></center>
+
+   {% if mensaje %}
+      {% autoescape off %}
+         <center><h3><p> SE HA PRODUCIDO EL SIGUIENTE INCONVENIENTE: </p></h3>
+                 <h4><p><em> {{ mensaje }} </em></p></h4>
+         </center>
+      {% endautoescape %}
+         <center><input type="button" class= "btn btn-default" value="VOLVER" onClick = "location.href='/configuracion&id={{proyecto.id}}/tablero' "/></center>
+   {% else %}
+      <form  id="form_id" action="" method="POST">
+       <center>{{ form.as_table }}</center>
+         {% csrf_token %}
+            <center><p>
+                       <span class="optionbuttons">
+                          <input type="submit" class= "btn btn-default" value="Guardar"/>&nbsp;&nbsp;&nbsp;&nbsp;
+	                  <input type="button" class= "btn btn-default" value="Cancelar" onClick = "location.href='/configuracion&id={{proyecto.id}}/sprint_bk' "/>
+                       </span>
+                    </p>
+            </center>
+      </form>
+
+{% endif %}
+{% endblock%}
