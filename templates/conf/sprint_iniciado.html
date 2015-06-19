@@ -68,8 +68,9 @@ select{
 
   <li class="active"><strong>TABLA KANBAN</strong></li>
 </ol>
-<center><h1 class="text-danger"><strong> <a class="submit" ><strong> SPRINT {{ nro }} </strong> </a>
+<center><h1 class="text-danger"><strong> <a class="submit" ><strong> Tablero Kanban </strong> </a>
 </strong></h1></center><br>
+
     <h2 class="text-danger"><strong> <a><strong> Observaciones:  </strong> </a>
 
                  <button  style="background:#db4c2a" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> Por Hacer<span class="caret"></span></button>
@@ -165,7 +166,7 @@ select{
                                                          {% if k.us.estado == 'Pendiente' %}
                             <button  style="background:cornflowerblue" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.us.nombre }} <span class="caret"></span>                            </button>
 
-                           {% elif k.us.estado == 'Cancelado' %}
+                           {% elif k.estado == 'Cancelado' %}
                                                         <button  style="background:darkgray" type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"> {{ k.us.nombre }} <span class="caret"></span>  </button>
 {% else  %}
 
@@ -181,12 +182,12 @@ select{
                                        {% if k.us.estado_actividad == 'Done' and k.us.actividad.ultimo != 1 %}<li class="divider"></li>
 
                                       <li><a href="/configuracion&id={{proyecto.id}}/estado_cambiar&id={{j.actividades.id}}/us&id={{ k.us.id }}/flujo&id={{ i.id }}"><strong>Cambiar de Estado</strong></a></li>
-                                         {% endif %}  {% if k.us.actividad.ultimo == 1 %}     <li class="divider"></li> {% if rol == 1 %}
+                                         {% endif %}  {% if k.us.actividad.ultimo == 1 %}     <li class="divider"></li> {% if rol == 1 or rol == 0 %}
 
 
                                   <li><a href="/configuracion&id={{proyecto.id}}/enviararelease&id={{ k.us.id }}"><strong>Enviar a Release</strong></a></li>
                                                                                                          {% endif %}{% endif %}
-                                                                            <li class="divider"></li> {% if rol == 1 %}
+                                                                            <li class="divider"></li> {% if rol == 0 %}
 
 
                                   <li><a href="/userstories&id={{proyecto.id}}/cancelar&id={{ k.us.id }}"><strong>Cancelar</strong></a></li>

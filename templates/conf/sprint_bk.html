@@ -67,6 +67,14 @@ select{
   <li class="active"><strong>SPRINTS</strong></li>
 </ol>
 <center><h2 class="text-danger"><strong> SPRINTS DEL PROYECTO</strong></h2></center><br><br>
+  {% if proyecto.estado == 'Preconf' or proyecto.estado == 'Iniciado' %}  Notificaciones: {% for i in noti %}{% if i.activado == False %}<a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/activar"><strong>Activar </strong></a>
+    {% else %}<a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/desactivar"><strong>Desactivar</strong></a>
+    {% endif %}
+    {% empty %}<a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/activar"><strong>Activar </strong></a>
+     {% endfor %}
+    {% endif %}
+
+
 
         <div class="row">
             <div class="col-sm-8">
@@ -74,18 +82,11 @@ select{
           <li class="nav-header-tools">SPRINTS </li>
           <li class="alert alert-danger">
    <form action="." method="POST">
+
          {% csrf_token %}
-            <table class="table table-bordered">
+          <table id="myTable" class="tablesorter table table-bordered" >
               <thead>
-               <tr>
-                    <th colspan="3"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                        {{form.filtro.label}}: {{form.filtro}}
-                    </th>
-                    <th>
-                        {{form.paginas.label}}: {{form.paginas}}&nbsp;&nbsp;
-                        <input type="submit" name="Buscar" class= "btn btn-default" value="ACEPTAR"/>
-                    </th>
-               </tr>
+
 	        <tr>
 
                     <th class="titulo"><b class="text-danger"><strong><center>NOMBRE</center></strong></b></th>
@@ -94,7 +95,7 @@ select{
                 <th class="titulo"><b class="text-danger"><strong><center>HORAS DISPONIBLES</center></strong></b></th>
                 <th class="titulo"><b class="text-danger"><strong><center>FECHA DE INICIO</center></strong></b></th>
                 <th class="titulo"><b class="text-danger"><strong><center>FECHA DE FINALIZACION</center></strong></b></th>
-
+                <th class="titulo"><b class="text-danger"><strong><center>BURNDOWN CHART</center></strong></b></th>
 
 
 
@@ -104,7 +105,7 @@ select{
                <tbody>
 	       {%for i in pag.object_list%}
 		    <tr>
-            {% if i.estado == 'Preconfig' %}
+            {% if i.estado == 'Preconfig' and proyecto.usuario_scrum.usuario == user %}
 
                     <td><a href="/configuracion&id={{proyecto.id}}/confsprint&id={{i.id}}"><font color="orange"><strong><center>Sprint {{i.nro_sprint}}</center></strong></font></a></td>
                     <td><a><font color="black"><strong><center>{{ i.estado }}</center></strong></font></a></td>
@@ -114,18 +115,17 @@ select{
                                         <td><a><font color="black"><strong>{{ i.fecha_inicio }}</strong></font></a></td>
 
                                         <td><a><font color="black"><strong>{{ i.fecha_fin }}</strong></font></a></td>
-            {% if estado != 1 and bandera != 1  %}
-
-
+            {% if estado != 1  and user.id == proyecto.usuario_scrum.usuario.id %}
 
                                                         <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/sprint&id={{i.id}}"><strong>INICIAR</strong></a></td>
 
-  {% endif %}
+  <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/grafico/sprint&id={{i.id}}"><strong>BURNDOWN CHART </strong></a></td>
+            {% endif %}
 
 
                 {% endif %}
 
-                {% if i.estado == 'Iniciado'%}
+                {% if i.estado == 'Iniciado' %}
 
                     <td><a href="/configuracion&id={{proyecto.id}}/sprint_bk&id={{i.id}}/us"><font color="green"><strong><center>Sprint {{i.nro_sprint}}</center></strong></font></a></td>
                     <td><a><font color="black"><strong><center>{{ i.estado }}</center></strong></font></a></td>
@@ -135,11 +135,17 @@ select{
                                         <td><a><font color="black"><strong>{{ i.fecha_inicio }}</strong></font></a></td>
 
                                         <td><a><font color="black"><strong>{{ i.fecha_fin }}</strong></font></a></td>
+                    <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/grafico/sprint&id={{i.id}}"><strong>BURNDOWN CHART </strong></a></td>
+                    {%if user.id == proyecto.usuario_scrum.usuario.id %}
 
+                    <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/terminarsprint&id={{i.id}}"><strong>Terminar</strong></a></td>
+{% endif %}
+                           {%if user.id == proyecto.usuario_scrum.usuario.id and fecha == fecha_actual %}
 
-
+                    <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/prolongarsprint&id={{i.id}}"><strong>Prolongar</strong></a></td>
+{% endif %}
                 {% endif %}
-            {% if i.estado == 'Finalizado'%}
+            {% if i.estado == 'Finalizado' and proyecto.usuario_scrum.usuario == user%}
 
                     <td><a href="/configuracion&id={{proyecto.id}}/sprint_bk&id={{i.id}}/us"><font color="red"><strong><center>Sprint {{i.nro_sprint}}</center></strong></font></a></td>
                     <td><a><font color="black"><strong><center>{{ i.estado }}</center></strong></font></a></td>
@@ -149,7 +155,7 @@ select{
                                         <td><a><font color="black"><strong>{{ i.fecha_inicio }}</strong></font></a></td>
 
                                         <td><a><font color="black"><strong>{{ i.fecha_fin }}</strong></font></a></td>
-
+<td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/grafico/sprint&id={{i.id}}"><strong>BURNDOWN CHART </strong></a></td>
 
 
                 {% endif %}
@@ -165,13 +171,12 @@ select{
             </div>
 
             </div>
-               {% if estado == 1 %} <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/tablero"><strong>TABLERO KANBAN</strong></a></td>
-{% endif %}
-    <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/release"><strong>RELEASE</strong></a></td>
+           <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/tablero"><strong>TABLERO KANBAN</strong></a></td>
 
-                      {% if crear_sprint %}            <a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/sprint"><strong>Crear Spring</strong></a>
+   {% if proyecto.usuario_scrum.usuario == user%} {%if proyecto.estado == 'Preconf' or proyecto.estado == 'Iniciado' %}  <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/release"><strong>RELEASE</strong></a></td>{% endif %}{% endif %}
+
+                      {% if crear_sprint %}      {% if proyecto.usuario_scrum.usuario == user and proyecto.estado == 'Preconf' or proyecto.estado == 'Iniciado' %}  <a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/sprint"><strong>Crear Spring</strong></a>     {% endif%}
     {% endif %} <a colspan="3">
-                    <br><h4 class="text-danger"><strong><center>Página {{ pag.number }} de {{ pag.paginator.num_pages }}</center></strong></h4><br>
                     {% if pag.has_previous %}
                        <a class="btn btn-mini btn btn-default" href="?page={{ pag.previous_page_number }}"><h5><strong> <span class=" glyphicon glyphicon-backward" aria-hidden="true"></span>&nbsp;&nbsp;ANTERIOR </strong></h5></a>
                     {% endif %}
@@ -180,4 +185,21 @@ select{
                     {% endif %}
     </a><br><br>
 
+   {% if proyecto.usuario_scrum.usuario == user%} {% if proyecto.estado == 'Preconf' or proyecto.estado == 'Iniciado' %} <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/cancelarproyecto"><strong>Cancelar Proyecto </strong></a></td>{% endif %}{% endif %}
+    {% for i in total %}
+    {% empty %}
+
+   {% if bandera == 0 %} {% if proyecto.usuario_scrum.usuario == user and proyecto.estado == 'Preconf' or proyecto.estado == 'Iniciado' %} <td><a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/finalizarproyecto"><strong>Finalizar Proyecto </strong></a></td>
+     {% endif%} {% endif%}
+    {% endfor %}
+
+    Obs: Para poder finalizar un proyecto todos los User Stories deben estar Aprobados o Cancelados
+<script>
+
+$(function(){
+  $("#myTable").tablesorter({ sortList: [[0,0], [1,0]]
+  })
+
+});
+</script>
 {% endblock %}
