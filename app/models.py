@@ -10,6 +10,8 @@ CATEGORY_CHOICES = (
 		         ('2', 'Rol de Proyecto'),
 
              )
+notificar= (( 'Si', 'Si'),
+            )
 """ Estados de Actividades """
 status_activity = (
                  ('To Do', 'To Do'),
@@ -116,6 +118,7 @@ class Proyecto(models.Model):
     usuario_scrum = models.ForeignKey(RolUsuario)
     descripcion = models.TextField(null=True, blank= True)
     fecha_inicio = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    estado=models.CharField(max_length=50,null=True)
     def __unicode__(self):
         return self.nombre
 class UsuarioRolProyecto(models.Model):
@@ -147,7 +150,7 @@ class Actividades(models.Model):
     Contiene datos de las actividades
     """
     nombre = models.CharField( max_length=50)
-    estado = models.CharField(max_length=10, default='To Do')
+    estado = models.CharField(max_length=10, default='-')
     proyecto = models.ForeignKey(Proyecto)
 
     def __unicode__(self):
@@ -198,8 +201,9 @@ class UserStory(models.Model):
         responsable = models.ForeignKey(User,null=True)
         horas = models.PositiveIntegerField(null=True)#horas de trabajo de ese miembro
         actividad= models.ForeignKey(ActividadesFlujo,null=True)
-        estado_actividad= models.CharField(max_length=10,default='To Do')
+        estado_actividad= models.CharField(max_length=10,default='-')
         hora_acumulada=models.IntegerField(max_length=2,null=True)
+        tiempo=models.DateField(null=True)
         def __unicode__(self):
                 return self.nombre
 
@@ -224,16 +228,7 @@ class flujoUS(models.Model):
         return unicode(self.flujo)
 
 
-class UsSprint(models.Model):
-    """
-    Contiene datos de los user stories que se encuentran en un sprint
-    """
-    us=models.ForeignKey(UserStory)
-    sprint=models.IntegerField()
-    estado = models.CharField(max_length=10, choices=SPRINT_STATUS)
-    proyecto=models.ForeignKey(Proyecto)
-    def __unicode__(self):
-        return unicode(self.us)
+
 
 
 class Tarea(models.Model):
@@ -246,7 +241,7 @@ class Tarea(models.Model):
     descripcion =  models.TextField(null=True, blank=True)
     nombre = models.CharField(max_length = 100)
     tiempo = models.PositiveIntegerField()#
-
+    fecha= models.DateField()
     #claves foraneas
     us = models.ForeignKey(UserStory)
     fluactpro = models.ForeignKey(ActividadesFlujo)
@@ -331,3 +326,18 @@ class HistorialUS(models.Model):
     def __unicode__(self):
         return self.us
 
+class UsSprint(models.Model):
+    """
+    Contiene datos de los user stories que se encuentran en un sprint
+    """
+    us=models.ForeignKey(UserStory)
+    sprint=models.ForeignKey(Sprint)
+    estado = models.CharField(max_length=10, choices=SPRINT_STATUS)
+    proyecto=models.ForeignKey(Proyecto)
+    def __unicode__(self):
+        return unicode(self.us)
+
+class Notificaciones(models.Model):
+    activado = models.BooleanField()
+    proyecto = models.ForeignKey(Proyecto)
+    usuario = models.ForeignKey(User)
