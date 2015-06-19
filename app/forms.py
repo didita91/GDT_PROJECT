@@ -319,7 +319,6 @@ class USaSprintForm(forms.Form):
             return self.cleaned_data['userStory']"""
 #--------TAREA
 
-    #archivo adjunto
 class DocumentoForm(forms.Form):
     docfile = forms.FileField(
         label = 'Select a file',
