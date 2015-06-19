@@ -306,17 +306,7 @@ class USaSprintForm(forms.Form):
     def __init__(self, proyecto,*args, **kwargs):
         super(USaSprintForm, self).__init__(*args, **kwargs)
         self.fields['userStory'].queryset=UserStory.objects.filter(estado='En Espera', proyecto=proyecto.id)
-    """def clean_userStory(self):
-        if 'userStory' in self.cleaned_data:
-            us = UsSprint.objects.filter()
-            print "jajajajaja"
-            print self.cleaned_data['userStory']
-            for i in us:
-                print "tttttt"
-                if(i.us == self.cleaned_data['userStory']):
-                    print "jajajajaaj"
-                    raise forms.ValidationError('Ya existe este user en el sprint')
-            return self.cleaned_data['userStory']"""
+
 #--------TAREA
 
     #archivo adjunto
