@@ -307,9 +307,7 @@ class USaSprintForm(forms.Form):
         super(USaSprintForm, self).__init__(*args, **kwargs)
         self.fields['userStory'].queryset=UserStory.objects.filter(estado='En Espera', proyecto=proyecto.id)
 
-#--------TAREA
 
-    #archivo adjunto
 class DocumentoForm(forms.Form):
     docfile = forms.FileField(
         label = 'Select a file',
