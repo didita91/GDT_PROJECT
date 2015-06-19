@@ -336,7 +336,6 @@ class AdjuntoForm(forms.Form):
 class NotificacionesForm(forms.Form):
     activacion=  forms.BooleanField()
 
-from django.forms.extras.widgets import SelectDateWidget
 class ProlongacionForm(forms.Form):
     fecha_fin=  forms.IntegerField(min_value=1,required=True, label='Semanas a prolongar')
 
