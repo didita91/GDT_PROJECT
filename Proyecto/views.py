@@ -4,11 +4,23 @@ import base64
 import os
 from django.core.context_processors import csrf
 from django.shortcuts import render_to_response
+from reportlab.platypus import Paragraph
+from reportlab.platypus import SimpleDocTemplate
+from reportlab.platypus import Spacer
+from reportlab.platypus import Table
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.http import Http404
 from django.contrib.auth import logout
 from django.template import *
+from reportlab.platypus import Paragraph, Table, TableStyle, Image
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+from reportlab.graphics.shapes import Drawing
+import graficoReporte
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib import *
@@ -21,7 +33,11 @@ from django.forms.formsets import formset_factory
 from django.shortcuts import render
 from app.forms import *
 from app.models import *
+from datetime import datetime, date, time, timedelta
 from app.helper import *
+from dateutil import rrule
+
+
 from django.core.mail.message import EmailMultiAlternatives
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -118,6 +134,7 @@ def crear_proyecto(request):
            # p.product_owner = form.cleaned_data['product_owner']
             p.descripcion = form.cleaned_data['descripcion']
             p.fecha_inicio = form.cleaned_data['fecha_inicio']
+            p.estado='Preconf'
             p.save()
             relacion = UsuarioRolProyecto()
             relacion.usuario = p.usuario_scrum.usuario
@@ -126,7 +143,11 @@ def crear_proyecto(request):
             #rel.usuario= p.product_owner.usuario
             #rel.rol=Rol.objects.get(id=5)
             #rel.save()
-
+            noti= Notificaciones()
+            noti.usuario= p.usuario_scrum.usuario
+            noti.activado=False
+            noti.proyecto= p
+            noti.save()
             print relacion.rol
             print "chauuu"
             relacion.proyecto = p
@@ -223,13 +244,19 @@ def administrar_proyecto(request, proyecto_id):
     print proyecto
     print user
     print permisos
+    product = 0
+    role= UsuarioRolProyecto.objects.filter(proyecto=proyecto,usuario=user, rol=6)
+    rol = None
+
+    for i in role:
+        rol= i.rol.id
 
     """ spt =Sprint.objects.get(proyecto=proyecto.id,fecha_inicio=None)
     sprint =1
 
     if spt.estado == '0':
           sprint=0"""
-    return render_to_response("desarrollo/admin_proyecto.html", {'proyecto': proyecto,
+    return render_to_response("desarrollo/admin_proyecto.html", {'product':rol,'proyecto': proyecto,
                                                                  'user': user,
                                                                  #  'fin':linea,
                                                                  'ver_flujos': 'Ver flujos' in permisos,
@@ -244,7 +271,7 @@ def administrar_proyecto(request, proyecto_id):
                                                                  'asignar_tipoItm': 'Asignar tipo-item fase'},
                               context_instance=RequestContext(request))
 
-    return render_to_response("desarrollo/admin_proyecto.html", {'sprint':sprint,'proyecto': proyecto,
+    return render_to_response("desarrollo/admin_proyecto.html", {'product':rol,'sprint':sprint,'proyecto': proyecto,
                                                                  'user': user,
                                                                  #  'fin':linea,
                                                                  'ver_flujos': 'Ver flujos' in permisos,
@@ -281,7 +308,8 @@ def admin_usuarios_proyecto(request, proyecto_id):
         permisos.append(i.nombre)
     print permisos
     #-------------------------------------------------------------------
-    miembros = UsuarioRolProyecto.objects.filter(proyecto=p).order_by('id')
+    miembros = UsuarioRolProyecto.objects.filter(proyecto=p).order_by('rol')
+
     lista = []
     roles = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p).only('rol')
     usuario = UsuarioRolProyecto.objects.filter(usuario=user, proyecto=p)
@@ -326,7 +354,8 @@ def admin_usuarios_proyecto(request, proyecto_id):
                                                                          'user': user,
                                                                          'proyecto': Proyecto.objects.get(
                                                                              id=proyecto_id),
-                                                                         'miembros': lista,
+                                                                         'miembros': miembros,
+                                                                         'ejemplo':miembros,
                                                                          'Ver_Miembros':'Ver Miembros' in perm,
                                                                          'ver_miembros': 'Ver miembros' in permisos,
                                                                          'abm_miembros': 'ABM miembros' in permisos},
@@ -347,10 +376,10 @@ def admin_usuarios_proyecto(request, proyecto_id):
         form2 = FilterForm(initial={'paginas': paginas})
         form = UsuarioProyectoForm(p,request.POST)
 
-        return render_to_response('desarrollo/admin_miembros.html', {'form':form,'lista': lista, 'pag': pag, 'form': form,
+        return render_to_response('desarrollo/admin_miembros.html', { 'ejemplo':miembros,'form':form,'lista': lista, 'pag': pag, 'form': form,
                                                                      'user': user,
                                                                      'proyecto': Proyecto.objects.get(id=proyecto_id),
-                                                                     'miembros': lista,
+                                                                     'miembros': miembros,
                                                                      'Ver_Miembros':'Ver Miembros' in perm,
                                                                      'ver_miembros': 'Ver miembros' in permisos,
                                                                      'abm_miembros': 'ABM miembros' in permisos},
@@ -382,6 +411,11 @@ def add_usuario_proyecto(request, proyecto_id):
     if request.method == 'POST':
         form = UsuarioProyectoForm(p,request.POST)
         if form.is_valid():
+            notif=Notificaciones()
+            notif.activado=False
+            notif.proyecto=p
+            notif.usuario=form.cleaned_data['usuario']
+            notif.save()
             relacion = UsuarioRolProyecto()
             relacion.usuario = form.cleaned_data['usuario']
             relacion.proyecto = Proyecto.objects.get(pk=proyecto_id)
@@ -842,10 +876,12 @@ def crear_user_story(request,proyecto_id):
             us.habilitado = True
             us.proyecto = proyecto
             duracion = form.cleaned_data['duracion']
-            us.duracion = duracion*5
-            us.estado_actividad='To Do'
+            us.duracion = duracion
+            us.estado_actividad='-'
             us.hora_acumulada=0
             us.save()
+            ver=HistorialUS.objects.filter(us=us)
+            tam=len(ver)
             histus = HistorialUS()
             histus.us = us
             histus.estado= us.estado
@@ -854,7 +890,11 @@ def crear_user_story(request,proyecto_id):
             histus.flujo = us.flujo
             histus.responsable = us.responsable
             histus.fecha = datetime.today()
+
+          #  print us.tiempo
+            print "probaaaa"
             histus.save()
+            us.save()
             print "pruebaa"
             print us.estado
 
@@ -1306,6 +1346,8 @@ def responsable_us(request, proyecto_id, us_id,sprint_id):
 
             nuevo.us= us
             nuevo.save()
+            ver=HistorialUS.objects.filter(us=us)
+            tam=len(ver)
             histus=HistorialUS()
             histus.us=us
             histus.estado= us.estado
@@ -1314,7 +1356,11 @@ def responsable_us(request, proyecto_id, us_id,sprint_id):
             histus.flujo = us.flujo
             histus.responsable = us.responsable
             histus.fecha=datetime.today()
+          #  us.tiempo= histus.fecha- ver[tam].fecha
+           # print us.tiempo
+            print "probaaaa"
             histus.save()
+            us.save()
             print "st es"
             print nuevo.usuario.usuario.id
             usrol=UsuarioRolProyecto.objects.get(id=nuevo.usuario.usuario.id,proyecto=proyecto_id)
@@ -1366,7 +1412,10 @@ def asignar_flujoUS(request, proyecto_id, us_id,sprint_id):
             nuevo.us= us
             nuevo.save()
             us.flujo=nuevo.flujo
+
             act_flujos= ActividadesFlujo.objects.filter(flujo=us.flujo)
+            ver=HistorialUS.objects.filter(us=us)
+            tam=len(ver)
             histus=HistorialUS()
             histus.us=nuevo.us
             histus.estado= us.estado
@@ -1375,7 +1424,13 @@ def asignar_flujoUS(request, proyecto_id, us_id,sprint_id):
             histus.flujo = us.flujo
             histus.responsable = us.responsable
             histus.fecha=datetime.today()
+          #  us.tiempo= histus.fecha- ver[tam-1].fecha
+           # print us.tiempo
+            us.save()
+
+            print "probaaaa"
             histus.save()
+            us.estado_actividad='To Do'
             list=[]
             for i in act_flujos:
                 list.append(i)
@@ -1420,7 +1475,8 @@ def iniciarsprint(request, proyecto_id,sprint_id):
     usflujo= UserStory.objects.filter(proyecto=proyecto_id)
     sprint.fecha_inicio= datetime.today()
     sprint.estado='Iniciado'
-
+    proyecto.estado= 'Iniciado'
+    proyecto.save()
 
     funcion_sprint(sprint)
     equi=Equipo.objects.filter(proyecto=proyecto.id,sprint=sprint.id)
@@ -1446,6 +1502,7 @@ def cambiar_estado(request, proyecto_id, act_id, us_id,flujo_id):
     :param flujo_id:
     :return:
     """
+    user=User.objects.get(username=request.user)
     flujo=Flujo.objects.filter(proyecto=proyecto_id)
     proyecto=Proyecto.objects.get(id=proyecto_id)
     actividades=ActividadesFlujo.objects.filter(proyecto=proyecto_id)
@@ -1474,6 +1531,8 @@ def cambiar_estado(request, proyecto_id, act_id, us_id,flujo_id):
         if form.is_valid() :
             us.estado_actividad = form.cleaned_data["Estado"]
             us.save()
+            ver=HistorialUS.objects.filter(us=us)
+            tam=len(ver)
             histus= HistorialUS()
             histus.us=us
             histus.estado= us.estado
@@ -1482,13 +1541,21 @@ def cambiar_estado(request, proyecto_id, act_id, us_id,flujo_id):
             histus.flujo = us.flujo
             histus.responsable = us.responsable
             histus.fecha=datetime.today()
+            print tam
+            print "lllkkk"
+          #  us.tiempo= histus.fecha- ver[tam].fecha
+            #print us.tiempo
+            print "probaaaa"
+            us.save()
             histus.save()
 
             for i in ussp:
                     if i.us.actividad.ultimo == 1 and i.us.estado_actividad == 'Done':
                         print "prooooo"
-                        mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'Responsable:' + str(i.us.responsable.get_full_name())+'  El user story debe ser verificado para enviar a release: '+ str(us)+ " pertenece al proyecto " + "'" +str(proyecto.nombre)+"'"+ " en el Sprint " + "'"+str(sp.nro_sprint)+"'"
-                        enviar_correo(request,request.user,mensaje,proyecto.usuario_scrum.usuario.email,us.responsable.email)
+                        notif=Notificaciones.objects.get(usuario=user,proyecto=proyecto)
+                        if notif.activado is True:
+                            mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'Responsable:' + str(i.us.responsable.get_full_name())+'  El user story debe ser verificado para enviar a release: '+ str(us)+ " pertenece al proyecto " + "'" +str(proyecto.nombre)+"'"+ " en el Sprint " + "'"+str(sp.nro_sprint)+"'"
+                            enviar_correo(request,request.user,mensaje,proyecto.usuario_scrum.usuario.email,us.responsable.email)
 
             return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id)+"/tablero")
         else:
@@ -1585,6 +1652,7 @@ def add_tarea(request, proyecto_id, us_id):
             nuevo.descripcion = form.cleaned_data['descripcion']
             nuevo.nombre = form.cleaned_data['nombre']
             nuevo.us = us
+            nuevo.fecha= datetime.today()
             nuevo.fluactpro=us.actividad
             nuevo.save()
             us.hora_acumulada= us.hora_acumulada+nuevo.tiempo
@@ -1592,10 +1660,12 @@ def add_tarea(request, proyecto_id, us_id):
             if us.estado_actividad == 'To Do':
                 us.estado_actividad = 'Doing'
                 us.save()
+            notif=Notificaciones.objects.get(usuario=user,proyecto=proyect)
+            if notif.activado is True:
             #envio de email ante tarea sobre el us
-            mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'Responsable:' + str(us.responsable.get_full_name())+ str("\n")+'  AVISO:'+ str("\n")+'  Se Agrego la tarea: '+ " ' " + nuevo.nombre+" ' "+str("\n")+ ' con la siguiente descripcion : '+" ' " + nuevo.descripcion + " ' " + str("\n")+' en la actividad: '+ " ' "+ nuevo.fluactpro.actividades.nombre+" ' "+  str("\n")+' en el flujo: '+" ' " + nuevo.fluactpro.flujo.nombre+" ' "
+                mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'Responsable:' + str(us.responsable.get_full_name())+ str("\n")+'  AVISO:'+ str("\n")+'  Se Agrego la tarea: '+ " ' " + nuevo.nombre+" ' "+str("\n")+ ' con la siguiente descripcion : '+" ' " + nuevo.descripcion + " ' " + str("\n")+' en la actividad: '+ " ' "+ nuevo.fluactpro.actividades.nombre+" ' "+  str("\n")+' en el flujo: '+" ' " + nuevo.fluactpro.flujo.nombre+" ' "
 
-            enviar_correo(request,user,mensaje,proyecto.usuario_scrum.usuario.email,us.responsable.email)
+                enviar_correo(request,user,mensaje,proyecto.usuario_scrum.usuario.email,us.responsable.email)
             #Generacion del historial
             hist = Historial()
             hist.usuario = user
@@ -1758,6 +1828,8 @@ def cambiar_actividad(request, proyecto_id, act_id, us_id,flujo_id):
                 us.actividad= ActividadesFlujo.objects.get(id=nueva,flujo=flujo_id)
                 us.estado_actividad='To Do'
                 us.save()
+                ver=HistorialUS.objects.filter(us=us)
+                tam=len(ver)
                 histus=HistorialUS()
                 histus.us=us
                 histus.estado= us.estado
@@ -1766,13 +1838,17 @@ def cambiar_actividad(request, proyecto_id, act_id, us_id,flujo_id):
                 histus.flujo = us.flujo
                 histus.responsable = us.responsable
                 histus.fecha = datetime.today()
+                print tam
+                #us.tiempo= int()(histus.fecha- ver[tam-1].fecha)
+                #print us.tiempo
+                print "probaaaa"
+                us.save()
                 histus.save()
                 return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/tablero/")
 
 
 
     return render_to_response("conf/sprint_iniciado.html",{'user':user,'flujo':flujo,'proyecto':proyecto,'actividades':actividades,'usflujo':usflujo}, context_instance=RequestContext(request))
-
 def ver_tablero(request, proyecto_id):
     """
     Visualización del tablero Kanban con todos los user stories existentes.
@@ -1784,18 +1860,20 @@ def ver_tablero(request, proyecto_id):
     user=User.objects.get(id=request.user.id)
     proyecto=Proyecto.objects.get(id=proyecto_id)
     actividades=ActividadesFlujo.objects.filter(proyecto=proyecto_id)
-    sprint=Sprint.objects.get(proyecto=proyecto_id,estado='Iniciado')
-    nro= sprint.nro_sprint
-    usflujo= UsSprint.objects.filter(proyecto=proyecto_id,sprint=sprint.id)
+   # sprint=Sprint.objects.get(proyecto=proyecto_id,estado='Iniciado')
+    #nro= sprint.nro_sprint
+    usflujo= UsSprint.objects.filter(proyecto=proyecto_id)
     roles = UsuarioRolProyecto.objects.filter(usuario = user, proyecto=proyecto_id).only('rol')
     rol=0
     for i in roles:
-        if i.rol.id == 2:
+        if i.rol.id != 2:
             rol = 1
-
-
-
-    return render_to_response("conf/sprint_iniciado.html",{'rol':rol,'nro':nro,'user':user,'flujo':flujo,'proyecto':proyecto,'actividades':actividades,'usflujo':usflujo}, context_instance=RequestContext(request))
+        else:
+            rol = 0
+    for i in usflujo:
+        print i.sprint.estado
+    print "testendo"
+    return render_to_response("conf/sprint_iniciado.html",{'rol':rol,'user':user,'flujo':flujo,'proyecto':proyecto,'actividades':actividades,'usflujo':usflujo}, context_instance=RequestContext(request))
 
 def sprint_admin(request,proyecto_id):
     """
@@ -1828,10 +1906,13 @@ def sprint_bk(request,proyecto_id):
     :param proyecto_id:
     :return:
     """
-    user = User.objects.get(username=request.user.username)
-    permisos = get_permisos_sistema(user)
+
+    usuario = User.objects.get(username=request.user.username)
+    permisos = get_permisos_sistema(usuario)
     proyecto=Proyecto.objects.get(id=proyecto_id)
-    perm = get_permisos_proyecto(user,proyecto)
+    print "scrum"
+    print usuario.id
+    perm = get_permisos_proyecto(usuario,proyecto)
     lista= Sprint.objects.filter(proyecto=proyecto.id)
     """for i in equi:
                 suma=int(x=i.horas)+suma
@@ -1839,6 +1920,24 @@ def sprint_bk(request,proyecto_id):
     suma = suma*5*sprint.duracion
     sprint.horastotales=suma
     sprint.save()"""
+    formnotificacion = NotificacionesForm(request.POST)
+    tot1=UserStory.objects.filter(proyecto=proyecto,estado='En Espera')
+
+    tot2=UserStory.objects.filter(proyecto=proyecto,estado='En Proceso')
+    total=[]
+    for i in tot1:
+        total.append(i)
+
+    for i in tot2:
+        total .append(i)
+    print total
+    sprint_finalizados= Sprint.objects.filter(proyecto=proyecto,estado='Iniciado')
+    bandera=0
+    print len(sprint_finalizados)
+    print "proooopooo"
+    if len(sprint_finalizados) != 0:
+        bandera=1
+
 
     for i in lista:
         print datetime.today()
@@ -1850,12 +1949,16 @@ def sprint_bk(request,proyecto_id):
             month=fecha_actual.month
             day=fecha_actual.day
             fecha_actual=datetime(year,month,day)
-            if fecha == fecha_actual:
+            if fecha == fecha_actual and i.estado == 'Iniciado':
 
+                notif=Notificaciones.objects.get(usuario=usuario,proyecto=proyecto)
+                if notif.activado is True:
+                #envio de email ante tarea sobre el us
+                    mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'AVISO:'+ str("\n")+'  El sprint:  '+str(i.nro_sprint)  + ' puede finalizar en la fecha: ' + str(fecha_actual)+' o modificar su fecha de finalizacion'
+                    enviar_correo(request,usuario,mensaje,proyecto.usuario_scrum.usuario.email,proyecto.usuario_scrum.usuario.email)
 
                 print "kkkk"
-                i.estado='Finalizado'
-                i.save()
+
                 uslista=UsSprint.objects.filter(sprint=i.id)
                 for j in uslista:
                     user=UserStory.objects.get(id=j.us.id)
@@ -1887,9 +1990,12 @@ def sprint_bk(request,proyecto_id):
             try:
                 pag = paginator.page(page)
             except (EmptyPage, InvalidPage):
+
+                noti=Notificaciones.objects.filter(usuario=usuario,proyecto=proyecto)
                 pag = paginator.page(paginator.num_pages)
-            return render_to_response('conf/sprint_bk.html', {'estado':estado,'proyecto':proyecto,'lista': lista, 'pag': pag, 'form': form,
-                                                                         'user': user,
+
+            return render_to_response('conf/sprint_bk.html', {'bandera':bandera,'total':total,'fecha':fecha,'fecha_actual':fecha_actual,'estado':estado,'proyecto':proyecto,'lista': lista, 'pag': pag, 'form': form,
+                                                                         'user': usuario,
                                                                          'ver_sprint': 'Ver Sprint' in perm,
                                                                          'Ver_Sprint': 'Ver sprint' in permisos,
                                                                          'crear_sprint': 'Crear Sprint' in permisos,
@@ -1912,8 +2018,10 @@ def sprint_bk(request,proyecto_id):
         except (EmptyPage, InvalidPage):
             pag = paginator.page(paginator.num_pages)
         form = FilterForm(initial={'paginas': paginas})
-        return render_to_response('conf/sprint_bk.html', {'estado':estado,'proyecto':proyecto,'lista': lista, 'pag': pag, 'form': form,
-                                                                         'user': user,
+
+        noti=Notificaciones.objects.filter(usuario=usuario,proyecto=proyecto)
+        return render_to_response('conf/sprint_bk.html', {'bandera':bandera,'total':total,'noti':noti,'estado':estado,'proyecto':proyecto,'lista': lista, 'pag': pag, 'form': form,
+                                                                         'user': usuario,
                                                                           'crear_sprint': 'Crear Sprint' in permisos,
                                                                          'ver_sprint': 'Ver Sprint' in perm,
                                                                          'Ver_Sprint': 'Ver sprint' in permisos,
@@ -1941,10 +2049,11 @@ def add_us_sprint(request, proyecto_id,us_id,sprint_id):
     nuevo.us= us
     us.estado='En Proceso'
     us.save()
-    nuevo.sprint=sprint.id
+    nuevo.sprint=sprint
     nuevo.proyecto=proyecto
     nuevo.save()
-    sprint.disponibilidad=sprint.disponibilidad-us.duracion
+    sprint.disponibilidad= sprint.disponibilidad - us.duracion
+
     print sprint.disponibilidad
     sprint.save()
     us= UserStory.objects.get(id=us_id)
@@ -2113,14 +2222,17 @@ def enviar_a_release(request, proyecto_id, us_id):
     print permisos
 
     #-------------------------------------------------------------------
+    if request.method == 'POST':
 
-    release = Release()
-    release.us = us
-    release.save()
-    us.estado= 'Pendiente'
-    us.save()
-    return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/tablero/")
-
+        release = Release()
+        release.us = us
+        release.save()
+        us.estado= 'Pendiente'
+        us.save()
+        return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/tablero/")
+    return render_to_response("conf/confirm_release.html", {'proyecto': proyect,
+                                                                                   'userstory':us},
+                                  context_instance=RequestContext(request))
 
     #return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/tablero/")
 
@@ -2178,6 +2290,8 @@ def revisar_us(request, proyecto_id, us_id):
     if request.method == 'POST':
             us.estado = 'Aprobado'
             us.save()
+            ver=HistorialUS.objects.filter(us=us)
+            tam=len(ver)
             histus=HistorialUS()
             histus.us=us
             histus.estado= us.estado
@@ -2186,6 +2300,10 @@ def revisar_us(request, proyecto_id, us_id):
             histus.flujo = us.flujo
             histus.responsable = us.responsable
             histus.fecha=datetime.today()
+           # us.tiempo= histus.fecha- ver[tam].fecha
+           # print us.tiempo
+            us.save()
+            print "probaaaa"
             histus.save()
             return render_to_response("conf/confirmacion.html",{'proyecto':us.proyecto})
 
@@ -2227,6 +2345,8 @@ def recambiar_actividad(request, proyecto_id, act_id, us_id,flujo_id):
             us.estado= 'En Espera'
 
             us.save()
+            ver=HistorialUS.objects.filter(us=us)
+            tam=len(ver)
             histus=HistorialUS()
             histus.us=us
             histus.estado= us.estado
@@ -2235,6 +2355,10 @@ def recambiar_actividad(request, proyecto_id, act_id, us_id,flujo_id):
             histus.flujo = us.flujo
             histus.responsable = us.responsable
             histus.fecha=datetime.today()
+          #  us.tiempo= histus.fecha- ver[tam].fecha
+           # print us.tiempo
+            print "probaaaa"
+            us.save()
             histus.save()
             return HttpResponseRedirect("/configuracion&id=" + str(proyecto_id)+"/tablero")
         else:
@@ -2336,13 +2460,15 @@ def add_adjunto(request, proyecto_id, us_id):
                 nuevo.contenido = base64.b64encode(f.read())
                 nuevo.us = us
                 nuevo.save()
-
-                mensaje= 'Scrum Master:' + str(proyect.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'Responsable:' + str(us.responsable.get_full_name())+ str("\n")+'  AVISO:'+ str("\n")+'  Se Agrego el adjunto: '+ " ' " + str(nuevo.nombre)+" '"
-                enviar_correo(request,user,mensaje,proyect.usuario_scrum.usuario.email,us.responsable.email)
+                notif=Notificaciones.objects.get(usuario=user,proyecto=proyect)
+                if notif.activado is True:
+                    mensaje= 'Scrum Master:' + str(proyect.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'Responsable:' + str(us.responsable.get_full_name())+ str("\n")+'  AVISO:'+ str("\n")+'  Se Agrego el adjunto: '+ " ' " + str(nuevo.nombre)+" '"
+                    enviar_correo(request,user,mensaje,proyect.usuario_scrum.usuario.email,us.responsable.email)
                 tarea = Tarea()
                 tarea.descripcion= "Adjunto"
                 tarea.nombre= 'Adjunto'+str(nuevo.id)
                 tarea.fluactpro= us.actividad
+                tarea.fecha= datetime.today()
                 tarea.us = us
                 tarea.tiempo= 1
                 tarea.save()
@@ -2422,21 +2548,39 @@ def cancelar_us(request, proyecto_id, us_id):
     user= User.objects.get(username=request.user.username)
     proyecto=Proyecto.objects.get(id=proyecto_id)
     us = UserStory.objects.get(id=us_id)
-    us.estado= 'Cancelado'
-    us.save()
-    histus=HistorialUS()
-    histus.us=us
-    histus.estado= us.estado
-    histus.actividad= us.actividad
-    histus.estado_actividad =us.estado_actividad
-    histus.flujo = us.flujo
-    histus.responsable = us.responsable
-    histus.fecha = datetime.today()
-    histus.save()
-    mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'Responsable:' + str(us.responsable.get_full_name())+'  El user story: '+ str(us)+ " que pertenece al proyecto " + "'" +str(proyecto.nombre)+"'"+ " ha sido cancelado"
-    enviar_correo(request,request.user,mensaje,proyecto.usuario_scrum.usuario.email,us.responsable.email)
+    form = DeleteForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            us.descripcion= form.cleaned_data['descripcion']
+            us.estado= 'Cancelado'
+            us.save()
+            ver=HistorialUS.objects.filter(us=us)
+            tam=len(ver)
+            histus=HistorialUS()
+            histus.us=us
+            histus.estado= us.estado
+            histus.actividad= us.actividad
+            histus.estado_actividad =us.estado_actividad
+            histus.flujo = us.flujo
+            histus.responsable = us.responsable
+            histus.fecha = datetime.today()
+         #   us.tiempo= histus.fecha- ver[tam].fecha
+          #  print us.tiempo
+            print "probaaaa"
+            us.save()
+            histus.save()
+            notif=Notificaciones.objects.get(usuario=user,proyecto=proyecto)
+            if notif.activado is True:
+                mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'Responsable:' + str(us.responsable.get_full_name())+'  El user story: '+ str(us)+ " que pertenece al proyecto " + "'" +str(proyecto.nombre)+"'"+ " ha sido cancelado"
+                enviar_correo(request,request.user,mensaje,proyecto.usuario_scrum.usuario.email,us.responsable.email)
+            return HttpResponseRedirect("/configuracion&id="+str(proyecto.id)+"/tablero" )
+    else:
+        form = DeleteForm()
+        return render_to_response("conf/confirm_delete.html", {'form':form,'proyecto': proyecto,
+                                                                                   'userstory':us},
+                                  context_instance=RequestContext(request))
 
-    return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/tablero/")
+
 
 
 @login_required
@@ -2504,3 +2648,587 @@ def grafico(request,proyecto_id):
     #plt.show()
 
     return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/sprint_bk/")
+def desactivarNotif(request,proyecto_id):
+    user=User.objects.get(username=request.user)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    notif=Notificaciones.objects.filter(usuario=user,proyecto=proyecto)
+    i=None
+    for i in notif:
+        i.activado=False
+        i.save()
+    if i is None:
+        notif=Notificaciones()
+        notif.activado= False
+        notif.proyecto=proyecto
+        notif.usuario=user
+        notif.save()
+    return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/sprint_bk")
+def activarNotif(request,proyecto_id):
+    user=User.objects.get(username=request.user)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    notif=Notificaciones.objects.filter(usuario=user,proyecto=proyecto)
+    i=None
+    for i in notif:
+        i.activado=True
+        i.save()
+    if i is None:
+        notif=Notificaciones()
+        notif.activado= True
+        notif.proyecto=proyecto
+        notif.usuario=user
+        notif.save()
+    return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/sprint_bk")
+
+def terminarsprint(request, proyecto_id,sprint_id):
+    """
+    Iniciar un sprint si cumple con los requerimientos: todos los user stories agregados al sprint, deben tener un flujo y responsable asignados.
+    :param request:
+    :param proyecto_id:
+	:param sprint_id:
+    :return:
+    """
+    sprint=Sprint.objects.get(id=sprint_id)
+
+    form = DeleteForm(request.POST)
+    flujo=Flujo.objects.filter(proyecto=proyecto_id)
+    user=User.objects.get(id=request.user.id)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    actividades=ActividadesFlujo.objects.filter(proyecto=proyecto_id)
+    usflujo= UserStory.objects.filter(proyecto=proyecto_id,estado = 'En Proceso')
+    ussp=UsSprint.objects.filter(proyecto=proyecto_id,sprint=sprint)
+    if request.method == 'POST':
+        print "ooooo"
+        if form.is_valid():
+            sprint.estado='Finalizado'
+            sprint.fecha_fin=datetime.today()
+            sprint.save()
+            for i in usflujo:
+                print "aka toy"
+                i.estado='En Espera'
+                i.save()
+            for i in ussp:
+                i.estado='Finalizado'
+                i.save()
+            print "lll"
+            notif=Notificaciones.objects.get(usuario=user,proyecto=proyecto)
+            if notif.activado is True:
+                mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+'  El SPRINT  '+ str(sprint.nro_sprint)+ " ha sido finalizado en el Proyecto: " + "'" +str(proyecto.nombre)
+                enviar_correo(request,request.user,mensaje,proyecto.usuario_scrum.usuario.email,proyecto.usuario_scrum.usuario.email)
+
+        return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/sprint_bk/")
+    else:
+         form = DeleteForm()
+         return render_to_response("conf/confirm_fin_sprint.html", {'form':form,'proyecto': proyecto,
+                                                                                   'sprint':sprint},
+                                  context_instance=RequestContext(request))
+
+    #return render_to_response("conf/sprint_bk.html",{'bandera':bandera,'suma':suma,'user':user,'flujo':flujo,'proyecto':proyecto,'actividades':actividades,'usflujo':usflujo}, context_instance=RequestContext(request))
+
+def prolongarsprint(request, proyecto_id,sprint_id):
+    """
+    Iniciar un sprint si cumple con los requerimientos: todos los user stories agregados al sprint, deben tener un flujo y responsable asignados.
+    :param request:
+    :param proyecto_id:
+	:param sprint_id:
+    :return:
+    """
+
+    sprint=Sprint.objects.get(id=sprint_id)
+    user=User.objects.get(id=request.user.id)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    form = ProlongacionForm(request.POST)
+    if request.method == 'POST':
+        print "ooooo"
+        if form.is_valid():
+            semanas= form.cleaned_data['fecha_fin']
+            sprint.fecha_fin=sprint.fecha_fin+ timedelta(weeks=semanas)
+            sprint.save()
+            print sprint.fecha_fin
+
+            semanas = rrule.rrule(rrule.WEEKLY,
+            dtstart=sprint.fecha_inicio, until=sprint.fecha_fin)
+            sprint.duracion=semanas.count()
+            sprint.save()
+            print "lll"
+            notif=Notificaciones.objects.get(usuario=user,proyecto=proyecto)
+            if notif.activado is True:
+                mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+'  El SPRINT  '+ str(sprint.nro_sprint)+ " ha sido prolongado en el Proyecto: " + "'" +str(proyecto.nombre)+" hasta la fecha: " + str(sprint.fecha_fin)
+                enviar_correo(request,request.user,mensaje,proyecto.usuario_scrum.usuario.email,proyecto.usuario_scrum.usuario.email)
+
+        return HttpResponseRedirect("/configuracion&id="+str(proyecto_id)+"/sprint_bk/")
+    else:
+         form = ProlongacionForm()
+         return render_to_response("conf/prolongar_sprint.html", {'form':form,'proyecto': proyecto,
+                                                                                   'sprint':sprint},
+                                  context_instance=RequestContext(request))
+
+
+def cancelar_proyecto(request,proyecto_id):
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    user=User.objects.get(username=request.user)
+    form = DeleteForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            print "tkm"
+            proyecto.descripcion= form.cleaned_data['descripcion']
+            proyecto.estado= 'Cancelado'
+            proyecto.save()
+            notif=Notificaciones.objects.get(usuario=user,proyecto=proyecto)
+            if notif.activado is True:
+                mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'El proyecto ' +str(proyecto.nombre)+ ' ha sido cancelado'
+                enviar_correo(request,request.user,mensaje,proyecto.usuario_scrum.usuario.email,proyecto.usuario_scrum.email)
+        return HttpResponseRedirect('/principal')
+    else:
+        form = DeleteForm()
+        return render_to_response("conf/confirm_cancelar.html", {'form':form,'proyecto': proyecto,
+                                                                                   },
+                                  context_instance=RequestContext(request))
+def finalizar_proyecto(request,proyecto_id):
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    user=User.objects.get(username=request.user)
+    form = DeleteForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            print "tkm"
+            proyecto.descripcion= form.cleaned_data['descripcion']
+            proyecto.estado= 'Finalizado'
+            proyecto.save()
+            notif=Notificaciones.objects.get(usuario=user,proyecto=proyecto)
+            if notif.activado is True:
+                mensaje= 'Scrum Master:' + str(proyecto.usuario_scrum.usuario.get_full_name()) + str("\n")+ 'El proyecto ' +str(proyecto.nombre)+ ' ha sido cancelado'
+                enviar_correo(request,request.user,mensaje,proyecto.usuario_scrum.usuario.email,proyecto.usuario_scrum.email)
+            return HttpResponseRedirect('/principal')
+    else:
+        form = DeleteForm()
+        return render_to_response("conf/confirm_finalizar.html", {'form':form,'proyecto': proyecto,
+                                                                                   },
+                                  context_instance=RequestContext(request))
+
+    #----------------------------------------------------GRAFICO BURNDOWNCHART----------------------------------------------
+import json
+
+def plot(request, proyecto_id,sprint_id):
+    '''
+Despliega el Grafico Burndownchart de un Sprint
+:param request:
+:param proyecto_id:
+:param sprint_id:
+:return:
+'''
+    #Trae los datos del sprint en formato json
+    data = get_sprint_data(sprint_id)
+    #print(data['nro_sprint'])
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    title = {"text":'Burndown Chart'}
+    subtitle={"text":'Sprint '+' '+ str(data['nro_sprint'])}
+    xAxis = { "categories": data['dias']}
+    yAxis = {"title": {"text": 'Horas'},"plotLines": [{ "value": 0, "width": 1}]}
+    tooltip = {"valueSuffix": ' hrs',"crosshairs": 'true',"shared": 'true'}
+    legend= {"layout": 'vertical',"align": 'right',"verticalAlign": 'middle',"borderWidth": 0}
+    series = [
+        {"name": 'Ideal Burn', "color": 'rgba(255,0,0,0.25)',"lineWidth": 2, "data": data['serieIdeal']},
+        {"name": 'Actual Burn',"color": 'rgba(0,120,200,0.75)',"marker": { "radius": 6 },"data":data['serieActual']},
+        #{"name":'Diferencia',"visible": false,"data":data['serieDiferencia']}
+        ]
+
+    return render(request, 'data_plot.html', {'proyecto':proyecto,
+                                                    'series': series,'data': data, 'title': title,'subtitle':subtitle,
+                                                    'xAxis': xAxis, 'yAxis': yAxis,'tooltip':tooltip,'legend':legend,'proyecto':proyecto})
+
+def get_sprint_data(sprint_id):
+        """
+        Captura los datos necesarios para Graficar el Burndownchart de un sprint dado
+        :param sprint_id: identificador del sprint
+        :return: datos en formato json , para desplegar Burndownchart
+        """
+
+        data = {'nro_sprint': [], 'duracion': [],'dias':[],
+                 'horastotal': [],'serieIdeal':[],'serieActual':[],'serieDiferencia':[]}
+        Diferencia = []
+        sprint=Sprint.objects.get(id=sprint_id)
+        d=sprint.duracion*5
+        #print(d)
+       # data['dias'].append('Dia 0')
+        for dia in range(1, d+1):
+            data['dias'].append('Dia '+str(dia))
+        #print(data['dias'])
+        data['nro_sprint'].append(sprint.nro_sprint)
+        data['duracion'].append(sprint.duracion)
+        data['horastotal'].append(sprint.horastotales)
+        Ideal = calculo_serie_ideal(sprint_id)
+        #Ideal=[100, 90, 80, 70, 60, 50, 40,100, 90, 80, 70, 60, 50, 40]
+        #print(data['serieIdeal'])
+
+        if sprint.estado != 'Preconfig':
+            Actual=calculo_serie_actual(sprint_id)
+            #Actual=[100, 110, 85, 60, 60, 30, 32,100, 110, 85, 60, 60, 30, 32]
+        print len(Actual)
+        print len(Ideal)
+        print "tamano"
+        Diferencia.append(0)
+        for a in range(1, d):
+            if a < len(Actual):
+                print "ii"
+
+                Diferencia.append(abs(Actual[a]-Actual[a-1]))
+                print Actual[a]
+                print Actual[a-1]
+                print Diferencia[a]
+                print "holiii"
+                print Diferencia[0]
+        print Actual
+        print Ideal
+        print Diferencia
+        print "detodo"
+        for i in range(0,d):
+            data['serieIdeal'].append( Ideal[i])
+            if sprint.estado != 'Preconfig' and i < len(Actual):
+                data['serieActual'].append(Actual[i])
+                data['serieDiferencia'].append(Diferencia[i])
+
+        return data
+def calculo_serie_ideal(sprint_id):
+        Ideal=[]
+        s=0
+        hd=0
+        sprint=Sprint.objects.get(id=sprint_id)
+        uss=UsSprint.objects.filter(sprint=sprint_id)
+        #Ideal.append(0)
+        print uss
+        d=sprint.duracion*5
+        for i in uss:
+            hd = hd+i.us.duracion
+            s=s+ (i.us.duracion*d)
+        print s,hd
+        while (s != 0):
+            Ideal.append(abs(s-hd))
+            s=s-hd
+       # Ideal[0]=Ideal[1]
+        print Ideal
+
+        return Ideal
+def calculo_serie_actual(sprint_id):
+        Actual=[]
+        Ideal = []
+        tareaus= []
+        h=0
+        diastranc=0
+        Ideal = calculo_serie_ideal(sprint_id)
+        Actual.append(Ideal[0])
+        sprint=Sprint.objects.get(id=sprint_id)
+
+        uss=UsSprint.objects.filter(sprint=sprint_id)#us que pertenecen a ese sprint
+
+        aux = 0
+        fechaini=sprint.fecha_inicio
+        diastranc=date.today()-fechaini
+        print diastranc.days
+
+        cont = diastranc.days
+       #se trae el tiempo que se invirtio por dia en cada user story
+       #este tiempo es el tiempo que se carga en las tareas que se realizan en el dia
+        while (cont >= 0):
+            fec = date.today()-timedelta(days=cont)
+            print aux
+            print "he aqui estoy"
+            aux = aux+1
+
+            print 'En la fecha '+ str(fec)
+            for i in uss:
+                tar = Tarea.objects.filter(us=i.us)
+                #print tar
+                for k in range(tar.count()):
+                    if fec == tar[k].fecha:
+                        print tar[k].fecha
+                        print "contando"
+                        h=h + tar[k].tiempo
+            print h
+                        #print 'que duro '+ str(h)
+            print "he aqui"
+            if aux < len(Ideal) :
+                Actual.append(abs(Actual[aux-1]-h))
+            h=0
+            cont = cont -1
+
+        print Actual
+        print "popo"
+        return Actual#---------------------------------REPORTE DE PROYECTO------------------------------------------
+def generar_reporte(request,proyecto_id):
+        '''
+:param request:
+:param proyecto_id: Identificador del Proyecto del cual se desea obtener el Reporte.
+:return:Un pdf con el reporte del Proyecto dado
+'''
+
+        #-------------PARA EL GRAFICO------------------------------------#
+        #from reportlab.platypus import Paragraph, Table, TableStyle, Image
+        from reportlab.platypus import Paragraph, Frame, Spacer, Image, Table, TableStyle, SimpleDocTemplate
+        from reportlab.lib import colors
+        from reportlab.lib.units import inch
+        from reportlab.graphics.shapes import Drawing
+        import graficoReporte
+
+
+        dra = Drawing()
+        d = graficoReporte.MyBarChartDrawing(proyecto_id)
+        #traemos la imagen del grafico generado en graficoReporte.py
+        imagen  = Image("barchart.png")
+        imagen.drawHeight = 2*inch
+        imagen.drawWidth = 2*inch
+        #---------------------------------------------------------------#
+        proyecto_actual= Proyecto.objects.get(id=proyecto_id)
+        sprint_del_proyecto = Sprint.objects.filter(proyecto = proyecto_id)
+        print sprint_del_proyecto
+        us_sprint_proyecto = UsSprint.objects.filter(proyecto = proyecto_id)
+        print us_sprint_proyecto
+
+        #Creamos un PageTemplate de ejemplo.
+
+        estiloHoja = getSampleStyleSheet()
+
+        style = [
+
+                       ('GRID',(0,0),(-1,-1),0.5,colors.white),
+
+                       ('BOX',(0,0),(-1,-1),2,colors.white),
+
+                       ('SPAN',(0,0),(-1,0)),
+
+                       ('ROWBACKGROUNDS', (0, 3), (-1, -1), (colors.Color(0.9, 0.9, 0.9),colors.white)),
+
+                       #('BACKGROUND', (0, 2), (-1, 2), colors.rgb2cmyk(r=6,g=62,b=193)),
+                       ('BACKGROUND', (0, 2), (-1, 2), colors.darkred),
+
+                       ('BACKGROUND', (0, 1), (-1, 1), colors.white),
+
+                       ('LINEABOVE',(0,0),(-1,0),1.5,colors.black),
+
+                       ('LINEBELOW',(0,0),(-1,0),1.5,colors.black),
+
+                       ('SIZE',(0,0),(-1,0),12),
+
+                       ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+
+                       ('VALIGN', (0, 0), (-1, 0), 'MIDDLE'),
+
+                       ('TEXTCOLOR', (0, 2), (-1, 2), colors.white),
+
+                       ]
+        #Inicializamos la lista Platypus Story.
+        story = []
+        #Definimos como queremos que sea el estilo de la PageTemplate.
+        cabecera = estiloHoja['Heading5']
+        cabecera.pageBreakBefore=0
+        cabecera.keepWithNext=0
+        cabecera.backColor=colors.white
+        cabecera.spaceAfter = 0
+        cabecera.spaceBefore = 0
+       #---------------------ENCABEZADO------------------------------------#
+        #parrafo = Paragraph('.',cabecera)
+
+        #story.append(parrafo)
+
+        #parrafo = Paragraph('REPORTE DEL PROYECTO  '+ proyecto_actual.nombre+' : ',cabecera)
+
+
+        #story.append(parrafo)
+
+        #parrafo = Paragraph('-'*193,cabecera)
+
+        #story.append(parrafo)
+        #------------------------------------------------------------------#
+        styles = getSampleStyleSheet()
+        normal = styles['Title']
+
+        normal.fontName = "Helvetica"
+        normal.fontSize = 15
+        normal.leading = 15
+        # Logo
+        im = Image("principal.jpg", width=8*inch, height=2*inch)
+        im.hAlign = 'CENTER'
+        story.append(im)
+
+        #add the title
+        story.append(Paragraph("<strong> REPORTE DEL PROYECTO  </strong>"+ proyecto_actual.nombre+"<strong> </strong>",normal))
+        story.append(Spacer(1,.25*inch))
+        #----------TITULO DEL GRAFICO
+
+        cabecera3 = estiloHoja['Heading3']
+        cabecera3.pageBreakBefore=0
+        cabecera3.keepWithNext=0
+        cabecera3.backColor=colors.white
+
+        parrafo = Paragraph('   ',cabecera3)
+        story.append(parrafo)
+        story.append(Spacer(0,20))
+        #----------------------AGREGAR GRAFICO
+        story.append(Image("barchart.png"))
+        normal1 = styles['Title']
+        normal1.fontName = "Helvetica"
+        normal1.fontSize = 10
+        normal1.leading = 10
+        parrafo = Paragraph('Semanas',normal1)
+        story.append(parrafo)
+        cabecera2 = estiloHoja['Heading3']
+        cabecera2.pageBreakBefore=0
+        cabecera2.keepWithNext=0
+        cabecera2.backColor=colors.white
+
+        parrafo = Paragraph('   ',cabecera2)
+
+
+        # Lo incluimos en el Platypus story.
+        story.append(parrafo)
+
+
+        story.append(Spacer(0,20))
+        # Definimos un parrafo. Vamos a crear un texto largo para demostrar como se genera mas de una hoja.
+       #--------------------------------------------------------------------------------------------------
+        #GENERAR LISTA DE TRABAJO POR EQUIPO
+        ltrabajoequipo = []
+
+        ltrabajoequipo.append(['TRABAJOS EN CURSO POR EQUIPO','','',''])
+
+        ltrabajoequipo.append([' ',' ',' ',' '])
+
+        ltrabajoequipo.append(['TRABAJO','DESCRIPCION','EQUIPO NRO','RESPONSABLE'])
+
+        canttrabajo = us_sprint_proyecto.count()
+
+        for trabajo in us_sprint_proyecto:
+            s = Sprint.objects.get(id=trabajo.sprint.id)
+            print s
+            if s.estado != "Terminado":
+                ltrabajoequipo.append([trabajo.us.nombre,trabajo.us.descripcion,trabajo.sprint.nro_sprint,trabajo.us.responsable])
+
+        #-------------------------------------------------------------------------------------------------
+        t=Table( ltrabajoequipo, style=style)
+
+        # Y lo incluimos en el story.
+        story.append(t)
+        #
+        # Dejamos espacio.
+
+        story.append(Spacer(0,20))
+        # Lo incluimos en el Platypus story.
+        story.append(parrafo)
+        ##########################################3333###333
+
+
+        #--------------------------------------------------------------------------------------------------
+        #GENERAR LISTA DE TRABAJO POR USUARIO
+        ltrabajousuario = []
+
+        ltrabajousuario.append(['TRABAJOS POR USUARIO','',''])
+
+        ltrabajousuario.append([' ',' ',' '])
+
+        ltrabajousuario.append(['TRABAJO','USUARIO','ESTADO'])
+
+        for trabajo in us_sprint_proyecto:
+
+                ltrabajousuario.append([trabajo.us.nombre,trabajo.us.responsable,trabajo.us.estado])
+
+
+        #-------------------------------------------------------------------------------------------------
+        t2=Table( ltrabajousuario,style=style)
+         # Y lo incluimos en el story.
+        story.append(t2)
+        # Dejamos espacio.
+        story.append(Spacer(0,20))
+        # Lo incluimos en el Platypus story.
+        story.append(parrafo)
+        #--------------------------------------------------------------------------------------------------
+        #GENERAR LISTA DE ACTIVIDADES PARA COMPLETAR UN PROYECTO
+        lactproyecto = []
+
+        lactproyecto.append(['ORDEN DE ACTIVIDADES PARA COMPLETAR EL PROYECTO',''])
+
+        lactproyecto.append([' ',' '])
+
+        lactproyecto.append(['ORDEN','ACTIVIDAD'])
+        actividades=Actividades.objects.filter(proyecto_id=proyecto_id)
+        for act in actividades:
+
+                lactproyecto.append([act.id,act.nombre])
+        #-------------------------------------------------------------------------------------------------
+        t3=Table( lactproyecto, style=style)
+         # Y lo incluimos en el story.
+        story.append(t3)
+        #
+        # Dejamos espacio.
+
+        story.append(Spacer(0,20))
+         # Lo incluimos en el Platypus story.
+        story.append(parrafo)
+        #--------------------------------------------------------------------------------------------------
+        #PRODUCT BACKLOG
+        lUSproyecto = []
+
+        lUSproyecto.append(['PRODUCT BACKLOG EL PROYECTO',''])
+
+        lUSproyecto.append([' ',' '])
+
+        lUSproyecto.append(['ORDEN','USER STORY'])
+        usp=UserStory.objects.filter(proyecto_id=proyecto_id).order_by('prioridad')
+        i=0
+        for u in usp:
+                i=i+1
+                lUSproyecto.append([i,u.nombre])
+        #-------------------------------------------------------------------------------------------------
+        t4=Table( lUSproyecto, style=style)
+         # Y lo incluimos en el story.
+        story.append(t4)
+        #
+        # Dejamos espacio.
+        story.append(Spacer(0,40))
+        story.append(Spacer(0,40))
+        # Lo incluimos en el Platypus story.
+        story.append(parrafo)
+        #--------------------------------------------------------------------------------------------------
+        #SPRINT BACKLOG
+        lUSsprintactual = []
+
+        lUSsprintactual.append(['SPRINT BACKLOG EL PROYECTO','','','',''])
+
+        lUSsprintactual.append([ ' ',' ',' ',' ',' '])
+
+        lUSsprintactual.append(['USER STORY','ASIGANDO A', 'FLUJO ', 'ACTIVIDAD ', 'ESTADO '])
+        for u in us_sprint_proyecto:
+            s = Sprint.objects.get(id=u.sprint.id)
+            if s.estado == "Iniciado":
+                lUSsprintactual.append([u.us.nombre,u.us.responsable,u.us.flujo,u.us.actividad,u.us.estado_actividad])
+
+        #-------------------------------------------------------------------------------------------------
+        t5=Table( lUSsprintactual, style=style)
+         # Y lo incluimos en el story.
+        story.append(t5)
+        #
+        # Dejamos espacio.
+
+        story.append(Spacer(0,20))
+
+
+        #################################################333333#################################################
+        # Creamos un DocTemplate en una hoja DIN A4, en la que se muestra el texto enmarcado (showBoundary=1) por un recuadro.
+
+        doc=SimpleDocTemplate("Reporte_proyecto.pdf",pagesize=A4, rightMargin=1, leftMargin=1, topMargin=0, bottomMargin=0)
+
+        parrafo = Paragraph('-'*193,cabecera)
+
+        story.append(parrafo)
+
+        #print ('a')
+
+        parrafo = Paragraph('Fin del Informe' + ' '*100 + '('+str(date.today()) + ')' ,cabecera)
+
+        story.append(parrafo)
+
+
+        # Construimos el Platypus story.
+        #doc.build(parts)
+        doc.build(story)
+
+        image_data = open("Reporte_proyecto.pdf", "rb").read()
+
+        return HttpResponse(image_data, mimetype="application/pdf")
