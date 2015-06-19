@@ -74,7 +74,7 @@ class AsignarRolesForm(forms.Form):
 class RolesForm(forms.Form):
     #Formulario de roles
 	nombre = forms.CharField(max_length=50, label='NOMBRE')
-	descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
+	descripcion = forms.CharField(widget=forms.Textarea(), required=True, label='DESCRIPCIÓN')
 	categoria = forms.CharField(max_length=1, widget=forms.Select(choices=CATEGORY_CHOICES), label='ELIJA UNA CATEGORIA')
 
 
@@ -86,6 +86,10 @@ class RolesForm(forms.Form):
 				if nombre == i.nombre:
 					raise forms.ValidationError('Ya existe ese nombre de rol. Elija otro')
 			return nombre
+
+class DeleteForm(forms.Form):
+    #Formulario de roles
+	descripcion = forms.CharField(widget=forms.Textarea(), required=True, label='Motivo')
 
 
 class PermisosForm(forms.Form):
@@ -118,7 +122,7 @@ class ProyectosForm(forms.Form):
     nombre = forms.CharField(max_length=50, label='NOMBRE')
     usuario_scrum = forms.ModelChoiceField(queryset=None, label='SCRUM MASTER')
     #product_owner = forms.ModelChoiceFiAeld(queryset=None, label='PRODUCT OWNER')
-    descripcion = forms.CharField(widget=forms.Textarea(), required=False, label='DESCRIPCIÓN')
+    descripcion = forms.CharField(widget=forms.Textarea(), required=True, label='DESCRIPCIÓN')
     fecha_inicio = forms.DateField(required=False, label='FECHA DE INICIO')
     def __init__(self,*args, **kwargs):
                 super(ProyectosForm, self).__init__(*args, **kwargs)
@@ -213,8 +217,8 @@ class UserStoryForm(forms.Form):
     prioridad = forms.IntegerField(min_value=1,max_value=10)
     valor_negocio=forms.IntegerField(min_value=1,max_value=10) #del 1 al 10 donde 10 es de mas valor que 1
     valor_tecnico=forms.IntegerField(min_value=1,max_value=10) #del 1 al 10 donde 10 es de mas valor que 1
-    duracion= forms.IntegerField(min_value=1,max_value=100) #Duracion estimativa en dias de la historia de usuario
-    descripcion= forms.CharField(widget=forms.Textarea(), required=False, label='Descripcion')
+    duracion= forms.IntegerField(min_value=1,max_value=100,label='Horas por dia') #Duracion estimativa en dias de la historia de usuario
+    descripcion= forms.CharField(widget=forms.Textarea(), required=True, label='Descripcion')
 
     """def clean_nombre(self):
 		if 'nombre' in self.cleaned_data:
@@ -239,7 +243,7 @@ class MiembroEquipoForm(forms.Form):
     usuario = forms.ModelChoiceField(queryset = None, label = 'Usuarios', required=True)
     proyecto = Proyecto()
     sprint = Sprint()
-    horas=forms.IntegerField(min_value=1, max_value=1000)
+    horas=forms.IntegerField(min_value=1, max_value=1000, label = 'Horas Por dia')
 
     def __init__(self, proyecto, *args, **kwargs):
         super(MiembroEquipoForm, self).__init__(*args, **kwargs)
@@ -292,7 +296,7 @@ class UserStoryFlujoForm(forms.Form):
             return self.cleaned_data['flujo']
 
 class SprintForm(forms.Form):
-    duracion = forms.IntegerField(label='Duracion Sprints(semanas)')
+    duracion = forms.IntegerField(min_value=1,label='Duracion Sprints(semanas)')
 
 
 
@@ -341,7 +345,7 @@ class duracionSprintForm(forms.Form):
     Duracion = forms.IntegerField(label='Duracion Sprints(semanas)')
 
 class duracionEstimadaForm(forms.Form):
-    duracion = forms.IntegerField(label='DuracionEstimada')
+    duracion = forms.IntegerField(min_value=1,label='DuracionEstimada')
 
 
 class RecambiarActividadForm(forms.Form):
@@ -353,3 +357,11 @@ class RecambiarActividadForm(forms.Form):
         
 class AdjuntoForm(forms.Form):
 	archivo = forms.FileField(required = False)
+
+class NotificacionesForm(forms.Form):
+    activacion=  forms.BooleanField()
+
+from django.forms.extras.widgets import SelectDateWidget
+class ProlongacionForm(forms.Form):
+    fecha_fin=  forms.IntegerField(min_value=1,required=True, label='Semanas a prolongar')
+
