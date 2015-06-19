@@ -269,18 +269,6 @@ class RespUserStoryForm(forms.Form):
         print "holis"
         self.fields['usuario'].queryset= Equipo.objects.filter(proyecto=proyecto.id,sprint=sprint.id)
 
-        print "tqm"
-    """def clean_usuario(self):
-        if 'usuario' in self.cleaned_data:
-            usuarios_existentes = ResponsableUS.objects.filter()
-            print "jajajajaja"
-            print self.cleaned_data['usuario']
-            for i in usuarios_existentes:
-                print "tttttt"
-                if(i.usuario == self.cleaned_data['usuario']):
-                    print "jajajajaaj"
-                    raise forms.ValidationError('Ya existe este usuario')
-            return self.cleaned_data['usuario']"""
 
 class UserStoryFlujoForm(forms.Form):
     flujo = forms.ModelChoiceField(queryset = None)
@@ -306,19 +294,11 @@ class USaSprintForm(forms.Form):
     def __init__(self, proyecto,*args, **kwargs):
         super(USaSprintForm, self).__init__(*args, **kwargs)
         self.fields['userStory'].queryset=UserStory.objects.filter(estado='En Espera', proyecto=proyecto.id)
-    """def clean_userStory(self):
-        if 'userStory' in self.cleaned_data:
-            us = UsSprint.objects.filter()
-            print "jajajajaja"
-            print self.cleaned_data['userStory']
-            for i in us:
-                print "tttttt"
-                if(i.us == self.cleaned_data['userStory']):
-                    print "jajajajaaj"
-                    raise forms.ValidationError('Ya existe este user en el sprint')
-            return self.cleaned_data['userStory']"""
-#--------TAREA
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 class DocumentoForm(forms.Form):
     docfile = forms.FileField(
         label = 'Select a file',
@@ -333,7 +313,6 @@ class ActividadesFlujoForm(forms.Form):
     act_flujo = forms.ModelChoiceField(queryset = None)
     def __init__(self, flujo, *args, **kwargs):
         super(ActividadesFlujoForm, self).__init__(*args, **kwargs)
-        print "alkdadladksjdflakfjdfa"
         self.fields['act_flujo'].queryset=ActividadesFlujo.objects.filter(flujo=flujo.id)
 
 class CambiarEstadoActividadForm(forms.Form):
@@ -360,6 +339,10 @@ class AdjuntoForm(forms.Form):
 class NotificacionesForm(forms.Form):
     activacion=  forms.BooleanField()
 
+<<<<<<< HEAD
+=======
+from django.forms.extras.widgets import SelectDateWidget
+>>>>>>> master
 class ProlongacionForm(forms.Form):
     fecha_fin=  forms.IntegerField(min_value=1,required=True, label='Semanas a prolongar')
 
