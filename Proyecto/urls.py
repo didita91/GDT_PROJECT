@@ -49,6 +49,13 @@ urlpatterns = patterns('',
      url(r'^configuracion/equipo&id=(?P<proyecto_id>\d+)/responsable&id=(?P<us_id>\d+)/sprint&id=(?P<sprint_id>\d+)$',responsable_us),
      url(r'^configuracion&id=(?P<proyecto_id>\d+)/flujo&id=(?P<us_id>\d+)/sprint&id=(?P<sprint_id>\d+)$',asignar_flujoUS),
      url(r'^configuracion&id=(?P<proyecto_id>\d+)/sprint&id=(?P<sprint_id>\d+)$',iniciarsprint),
+         url(r'^configuracion&id=(?P<proyecto_id>\d+)/terminarsprint&id=(?P<sprint_id>\d+)$',terminarsprint),
+         url(r'^configuracion&id=(?P<proyecto_id>\d+)/prolongarsprint&id=(?P<sprint_id>\d+)$',prolongarsprint),
+         url(r'^configuracion&id=(?P<proyecto_id>\d+)/cancelarproyecto$',cancelar_proyecto),
+             url(r'^configuracion&id=(?P<proyecto_id>\d+)/finalizarproyecto$', finalizar_proyecto),
+    #REPORTES
+  url(r'^proyectos/admin&id=(?P<proyecto_id>\d+)/reporte/$',generar_reporte),
+
 
         url(r'^configuracion&id=(?P<proyecto_id>\d+)/flujouser/$',flujo_user_sprint),
     #HISTORIAL
@@ -87,6 +94,13 @@ urlpatterns = patterns('',
 
    url (r'^userstories&id=(?P<proyecto_id>\d+)/adj&id=(?P<us_id>\d+)/quitar&id=(?P<arch_id>\d+)/$',quitar_archivo),
        url (r'^userstories&id=(?P<proyecto_id>\d+)/cancelar&id=(?P<us_id>\d+)/$',cancelar_us),
+           url (r'^configuracion&id=(?P<proyecto_id>\d+)/activar$',activarNotif),
+               url (r'^configuracion&id=(?P<proyecto_id>\d+)/desactivar$',desactivarNotif),
+
+
+      url(r'^configuracion&id=(?P<proyecto_id>\d+)/grafico/sprint&id=(?P<sprint_id>\d+)/$',plot)
+
+
 
 )
 

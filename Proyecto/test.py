@@ -236,4 +236,21 @@ class TestConfiguracion(TestCase):
         UsS=UsSprint(us=us,sprint=sprint,estado=estado,proyecto=proyecto)
         isinstance(UsS,UsSprint)
         print('Test para generar la relacion de  User Story-Sprint')
+#-----------------NOTIFICACIONES & REPORTES---------------------------#
+    def test_notificacion(self):
+        scrum=RolUsuario(1)
+        fecha = datetime.date(day=01,month=03,year=2015)
+        proyecto = Proyecto.objects.create(nombre='P1',usuario_scrum=scrum,descripcion='descripcion',fecha_inicio=fecha)
+        usuario = User.objects.create(username='AnonymousUser')
+        notificacion = Notificaciones.objects.create(activado=True,proyecto=proyecto,usuario=usuario)
+        isinstance(notificacion,Notificaciones)
+        print('Test probar modelo notificacion')
+    def test_release(self):
+        scrum=RolUsuario(1)
+        fecha = datetime.date(day=01,month=03,year=2015)
+        proyecto = Proyecto.objects.create(nombre='P1',usuario_scrum=scrum,descripcion='descripcion',fecha_inicio=fecha)
+        US = UserStory.objects.create(nombre='u1',version=1,descripcion='En Espera',estado='En Espera',prioridad=9,habilitado=True,duracion=4,proyecto=proyecto,valor_tecnico=8,valor_negocio=9)
+        release = Release.objects.create(us=US)
+        isinstance(release,Release)
+        print('Test para modelo de release')
 
