@@ -18,7 +18,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c4c4c4', end
         display: block;
 font-size: 15px;
 font-weight: bold;
-color: white;
+color: black;
 text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 margin-left: -5px;
 
@@ -104,7 +104,6 @@ select{
 	        <tr>
                     <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th>
 	            <th class="titulo"><b class="text-danger"><strong>SCRUM MASTER</strong></b></th>
-                    <th class="titulo"><b class="text-danger"><strong>PRODUCT OWNER</strong></b></th>
 		    <th class="titulo"><b class="text-danger"><strong>DESCRIPCIÓN</strong></b></th>
 	            <th class="titulo"><b class="text-danger"><strong>FECHA DE INICIO</strong></b></th>
 	        </tr>
@@ -118,7 +117,6 @@ select{
                            <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font></td>
                         {% endif %}
                          <td><strong>{{i.usuario_scrum}}</strong></td>
-			  <td><strong>{{i.product_owner}}</strong></td>
 		         <td><strong>{{i.descripcion}}</strong></td>
 		         <td><strong>{{i.fecha_inicio}}</strong></td>
 
