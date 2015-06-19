@@ -269,18 +269,7 @@ class RespUserStoryForm(forms.Form):
         print "holis"
         self.fields['usuario'].queryset= Equipo.objects.filter(proyecto=proyecto.id,sprint=sprint.id)
 
-        print "tqm"
-    """def clean_usuario(self):
-        if 'usuario' in self.cleaned_data:
-            usuarios_existentes = ResponsableUS.objects.filter()
-            print "jajajajaja"
-            print self.cleaned_data['usuario']
-            for i in usuarios_existentes:
-                print "tttttt"
-                if(i.usuario == self.cleaned_data['usuario']):
-                    print "jajajajaaj"
-                    raise forms.ValidationError('Ya existe este usuario')
-            return self.cleaned_data['usuario']"""
+
 
 class UserStoryFlujoForm(forms.Form):
     flujo = forms.ModelChoiceField(queryset = None)
