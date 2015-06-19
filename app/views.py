@@ -657,7 +657,11 @@ def login_redirect(request):
     return HttpResponseRedirect('/login')
 
 def logout_pagina(request):
-    """Pagina de logout"""
+    """
+
+    :param request:
+    :return:
+    """
     try:
         del request.session['nro_items']
     except KeyError:
