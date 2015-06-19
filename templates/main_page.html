@@ -23,7 +23,7 @@ font-weight: bold;
 color: white;
 text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 text-transform: uppercase;
-margin-left: -5px;
+margin-left: 500px;
 
         }
 
@@ -46,7 +46,7 @@ line-height: 18px;
 color: white;
 text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 text-transform: uppercase;
-margin-left: -5px;
+margin-left: 500px;
 
 
 }
@@ -59,15 +59,14 @@ margin-left: -5px;
 
 
 
-   <center><h2 class="text-danger"><strong> PROYECTO GDT </strong></h2>
+   <center><h2 class="text-danger"><strong> S I S T E M A &nbsp;&nbsp;&nbsp;    GDT </strong></h2>
            <h3><strong> Bienvenido, {{ user.username }} </strong></h3>
-           <h3 class="text-danger"><strong> ADMINISTRACIÓN DEL SISTEMA </strong></h3>
    </center>
 
 
    {% if roles or user or proyectos or tipo_item %}
     <div class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-8">
             {% if user.id == 1 %} <ul class="nav nav-list-tools">
                 <li class="nav-header-tools">Administración</li>
                 <li class="alert alert-danger">
@@ -100,29 +99,118 @@ margin-left: -5px;
             </ul>
                 {% endif %}
             </div>
-      <div class="col-sm-8">
-          <ul class="nav nav-list-tools">
-          <li class="nav-header-tools">LISTA DE PROYECTOS </li>
+            <center>  <div class="row" align="center">
+            <center><center><center> <div class="col-sm-12" >
+            <center> <div class="row">
+            <center><div class="col-sm-8">
+        <ul class="nav nav-list-tools">
+          <li class="nav-header-tools">MIS PROYECTOS </li>
           <li class="alert alert-danger">
+            <form action="." method="POST">
+
+         {% csrf_token %}
+          <table id="myTable" class="tablesorter table table-bordered" >
+              <thead>
+
+	        <tr>
+                                <th class="titulo"><b class="text-danger"><strong><center>NOMBRE</center></strong></b></th>
+                                                <th class="titulo"><b class="text-danger"><strong><center>ESTADO</center></strong></b></th>
+
+   </tr>
+               </thead>
           {% for proyecto in lista %}
              {% for i in permisos_proyecto %}
+                 {% if  proyecto.usuario_scrum.usuario == user %}
                 {% if proyecto.id == i %}
+                     <tr>
 
-                   <h4><br><a href="/proyectos/admin&id={{proyecto.id}}/"><font color="gray"><strong><em><u>{{proyecto.nombre}}</u></em></strong></font>
-                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <td> <center><a href="/proyectos/admin&id={{proyecto.id}}/"><font color="gray"><strong><em><u>{{proyecto.nombre}}</u></em></strong></font></a>   </center></td>                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<td> <center>{% if proyecto.estado == 'Preconf' %} <font color="#ff8c00">{{ proyecto.estado }}</font>{% endif %}
+                    {% if proyecto.estado == 'Iniciado' %} <font color=yellow>{{ proyecto.estado }}</font>{% endif %}
+                    {% if proyecto.estado == 'Finalizado' %} <font color=green>{{ proyecto.estado }}</font>{% endif %}
+                    {% if proyecto.estado == 'Cancelado' %} <font color=red>{{ proyecto.estado }}</font>{% endif %} </center> </td>
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                              {% endif %}
+                   {% endif %}
+                  </tr>
              {% endfor %}
              {% empty %}
                   <h4><strong>No hay proyectos</strong></h4>
           {% endfor %}
+  </table>
+          </form>
           </li>
       </ul>
-        </div>
+
+        </div><center>
+
           </div>
+
+            <center> <div class="row">
+            <center><div class="col-sm-8">
+         <center> <ul class="nav nav-list-tools">
+          <li class="nav-header-tools">PROYECTOS EN LOS QUE PARTICIPO </li>
+          <li class="alert alert-danger">
+            <form action="." method="POST">
+
+         {% csrf_token %}
+          <table id="myTable" class="tablesorter table table-bordered" >
+              <thead>
+
+	        <tr>
+                                <th class="titulo"><b class="text-danger"><strong><center>NOMBRE</center></strong></b></th>
+                                                <th class="titulo"><b class="text-danger"><strong><center>ESTADO</center></strong></b></th>
+                                                <th class="titulo"><b class="text-danger"><strong><center>SCRUM MASTER</center></strong></b></th>
+
+   </tr>
+               </thead>
+          {% for proyecto in lista %}
+             {% for i in permisos_proyecto %}
+       {% if proyecto.usuario_scrum.usuario != user %}
+
+                {% if proyecto.id == i %}
+                     <tr>
+
+                    <td> <center><a href="/proyectos/admin&id={{proyecto.id}}/"><font color="gray"><strong><em><u>{{proyecto.nombre}}</u></em></strong></font></a>   </center></td>                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<td> <center>{% if proyecto.estado == 'Preconf' %} <font color="#ff8c00">{{ proyecto.estado }}</font>{% endif %}
+                    {% if proyecto.estado == 'Iniciado' %} <font color=yellow>{{ proyecto.estado }}</font>{% endif %}
+                    {% if proyecto.estado == 'Finalizado' %} <font color=green>{{ proyecto.estado }}</font>{% endif %}
+                    {% if proyecto.estado == 'Cancelado' %} <font color=red>{{ proyecto.estado }}</font>{% endif %} </center> </td>
+ <td><center><font color=black>{{ proyecto.usuario_scrum }}</font></td>
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             {% endif %}
+
+                  </tr>
+                   {% endif %}
+             {% endfor %}
+             {% empty %}
+                  <h4><strong>No hay proyectos</strong></h4>
+          {% endfor %}
+  </table>
+          </form>
+          </li>
+      </ul>
+
+        </div><center>
+
+          </div><center>
 </div>
+</div>
+       </div>
+
    {% endif %}
 {% else %}
    <p>Bienvenido, visitante</p>
    <p>Puedes iniciar sesion <a href="/login/" class="text-danger"><strong> AQUI </strong></a></p>
 {% endif %}
+    <script>
+
+$(function(){
+  $("#myTable").tablesorter({ sortList: [[0,0], [1,0]]
+  })
+
+});
+</script>
 {% endblock %}

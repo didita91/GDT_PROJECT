@@ -295,7 +295,10 @@ class USaSprintForm(forms.Form):
         super(USaSprintForm, self).__init__(*args, **kwargs)
         self.fields['userStory'].queryset=UserStory.objects.filter(estado='En Espera', proyecto=proyecto.id)
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> master
 class DocumentoForm(forms.Form):
     docfile = forms.FileField(
         label = 'Select a file',
@@ -336,7 +339,10 @@ class AdjuntoForm(forms.Form):
 class NotificacionesForm(forms.Form):
     activacion=  forms.BooleanField()
 
+<<<<<<< HEAD
+=======
 from django.forms.extras.widgets import SelectDateWidget
+>>>>>>> master
 class ProlongacionForm(forms.Form):
     fecha_fin=  forms.IntegerField(min_value=1,required=True, label='Semanas a prolongar')
 

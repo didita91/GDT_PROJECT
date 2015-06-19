@@ -6,7 +6,7 @@
   <li><a class="text-danger" href="/principal"><strong>PÁGINA PRINCIPAL</strong></a></li>
   <li class="active"><strong>ADMIN PROYECTO</strong></li>
 </ol>
-<center><h2 class="text-danger"><strong> ADMINISTRACION DEL PROYECTO: "{{proyecto}}" </strong></h2></center>
+<center><h2 class="text-danger"><strong> ADMINISTRACION DEL PROYECTO: "{{proyecto}}"</strong> {% if proyecto.estado == 'Finalizado' %}(Estado: Finalizado){% endif %} </h2></center>
 <center><h2><span class="glyphicon glyphicon-book" aria-hidden="true"></span>&nbsp;<span class="glyphicon glyphicon-saved" aria-hidden="true"></span></h2></center><br>
 
 {% if ver_items or abm_items or ver_miembros or abm_miembros or asignar_roles or generarlb or ver_items_ant%}
@@ -29,6 +29,13 @@
        <a class="btn btn-default" href="/configuracion&id={{proyecto.id}}/sprint_bk"><strong>SPRINT BACKLOG</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
     {% endif %}
+       <div>
+       {% if proyecto.usuario_scrum.usuario == user or product == 6 %}
+         <center><h2><a class="btn btn-default" href="/proyectos/admin&id={{proyecto.id}}/reporte/">
+                <span class="glyphicon glyphicon-circle-arrow-down" aria-hidden="true"></span><strong> REPORTE</strong>{% endif %}
+                </a></h2><br><br></center>
+        </div>
+
 {% else %}
    <center><p><h4><strong>NO TIENES PERMISOS PARA VER ESTA SECCIÓN</strong></h4></center>
 {% endif %}

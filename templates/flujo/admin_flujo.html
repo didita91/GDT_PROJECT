@@ -73,23 +73,27 @@ select{
         <div class="row">
 
 
+                    {% if proyecto.usuario_scrum.usuario == user and proyecto.estado == 'Preconf' or proyecto.estado == 'Iniciado'%}
 
        <div class="col-sm-2">
            <ul class="nav nav-list-tools">
+
                 <li class="nav-header-tools">Barra de Herramientas</li>
                 <li class="alert alert-danger">
-                    {% if crear_actividades %}
+                    {% if proyecto.usuario_scrum.usuario == user %} {%if crear_actividades  and proyecto.estado == 'Preconf' or proyecto.estado == 'Iniciado' %}
                <a class="btn btn-default"  onClick ="location.href='/flujos&id={{proyecto.id}}/crear_actividades'"><strong>Crear Actividades</strong></a>
-                 {% endif %}<br>
-                    {% if crear_flujos %}
+                 {% endif %} {% endif %}<br>
+
+                    {% if proyecto.usuario_scrum.usuario == user %}{%if crear_flujos and proyecto.estado == 'Preconf' or proyecto.estado == 'Iniciado'%}
 
                     <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/crear/"><strong>Crear Flujos </strong></a>
-                {% endif %}<br>
+                {% endif %}{% endif %}<br>
 
                </li>
                </ul>
 
                 </div>
+        {% endif %}
 
 
 
@@ -144,9 +148,9 @@ select{
                <tbody>
 	                {%for i in lista%}<tr>
                         <td><font color="gray"><strong><em><u>{{i.nombre}}</u></em></strong></font>
-                              {% if Crear_Actividades or crear_actividades %}  <center><a class="btn btn-default" href="/flujos&id={{proyecto.id}}/add_actividades&id={{i.id}}"><strong>Agregar Actividades </strong></a>
+                              {% if  proyecto.usuario_scrum.usuario == user %}{%if Crear_Actividades or crear_actividades  and proyecto.estado == 'Preconf' or proyecto.estado == 'Iniciado' %}  <center><a class="btn btn-default" href="/flujos&id={{proyecto.id}}/add_actividades&id={{i.id}}"><strong>Agregar Actividades </strong></a>
                                                                 <a class="btn btn-default" href="/flujos&id={{proyecto.id}}/ver_actividades&id={{i.id}}"><strong>Ver Actividades del Flujo</strong></a></center></td>
-{% endif %}
+{% endif %}{% endif %}
                         </tr>
 	                {% endfor %}
                {% endif %}

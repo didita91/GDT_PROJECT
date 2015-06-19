@@ -75,18 +75,20 @@ select{
 
        <div class="row">
 
+
             {% if abm_user_story or abm_us or ver_us%}
+                {% if proyecto.usuario_scrum.usuario == user %} {%if proyecto.estado == 'Preconf' or proyecto.estado == 'Iniciado'%}
        <div class="col-sm-3">
            <ul class="nav nav-list-tools">
                 <li class="nav-header-tools">Barra de Herramientas</li>
                 <li class="alert alert-danger">
               {% if abm_user_story  or crear_us or Crear_US%}
-  <a class="btn btn-default" href="/userstories&id={{proyecto.id}}/crear/"><strong>CREAR NUEVO USER STORY </strong></a>{% endif %}
+                    <a class="btn btn-default" href="/userstories&id={{proyecto.id}}/crear/"><strong>CREAR NUEVO USER STORY </strong></a>{% endif %}
                 </li>
                </ul>
            </div>
-
-
+        {% endif %}
+{% endif %}
 <div class="col-sm-8">
  <ul class="nav nav-list-tools">
           <li class="nav-header-tools">User Stories </li>
@@ -107,7 +109,6 @@ select{
 	        <tr>
                      <th class="titulo"><b class="text-danger"><strong>NOMBRE</strong></b></th> 
                      <th class="titulo"><b class="text-danger"><strong>RESPONSABLE</strong></b></th>
-                     <th class="titulo"><b class="text-danger"><strong>VERSION</strong></b></th>
                      <th class="titulo"><b class="text-danger"><strong>ESTADO</strong></b></th>
                      <th class="titulo"><b class="text-danger"><strong>VALOR TECNICO</strong></b></th>
                      <th class="titulo"><b class="text-danger"><strong>VALOR NEGOCIO</strong></b></th>
@@ -127,7 +128,6 @@ select{
 
         <td><strong>{% if i.responsable == None %}-{% else %}{{ i.responsable }}{% endif %}</strong></td>
 
-                         <td><strong>{{i.version}}</strong></td>
                         <td><strong>{{ i.estado }}</strong></td>
 
 
