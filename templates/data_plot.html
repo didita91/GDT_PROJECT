@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Burdownchart{% endblock %}
+{% block content %}
+
+<style type="text/css">
+        .alert-danger {
+            background: rgba(196,196,196,1);
+background: -moz-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -webkit-gradient(left top, right top, color-stop(0%, rgba(196,196,196,1)), color-stop(0%, rgba(191,191,191,1)), color-stop(100%, rgba(181,181,181,1)));
+background: -webkit-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -o-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: -ms-linear-gradient(left, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+background: linear-gradient(to right, rgba(196,196,196,1) 0%, rgba(191,191,191,1) 0%, rgba(181,181,181,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c4c4c4', endColorstr='#b5b5b5', GradientType=1 );
+            border-color: #808080;
+        border-radius: 0px 0px 10px 0px;
+
+        display: block;
+font-size: 15px;
+font-weight: bold;
+color: white;
+text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+margin-left: -5px;
+
+        }
+
+
+        .nav-list-tools>li.nav-header-tools {
+background-color: #8B0000;
+background-position: 8px 5px !important;
+color: #FFF;
+-webkit-border-radius: 10px 0px 0px;
+-moz-border-radius: 10px 0px 0px;
+border-radius: 10px 0px 0px ;
+padding-top: 15px;
+padding-bottom: 15px;
+/* padding-left: 40px; */
+    display: block;
+padding: 8px 15px;
+font-size: 18px;
+font-weight: bold;
+line-height: 18px;
+color: white;
+text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+text-transform: uppercase;
+margin-left: -5px;
+
+
+}
+
+.btn-default{
+font-weight: bold;
+
+    }
+
+select{
+    color: black;
+    }
+
+    </style>
+
+
+<ol class="breadcrumb">
+  <li><a class="text-danger" href="/proyectos/admin&id={{ proyecto.id }}"><strong>ADMIN PROYECTO</strong></a></li>
+<li><a class="text-danger" href="/configuracion&id={{ proyecto.id }}/sprint_bk/"><strong>SPRINTS</strong></a></li>
+  <li class="active"><strong>GRAFICO</strong></li>
+</ol>
+
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+
+
+
+<!-- Maps the Python template context variables from views.py to the Highchart js variables -->
+<script>
+
+    var title = {{ title|safe }}
+    var subtitulo={{ subtitle|safe }}
+    var xAxis = {{ xAxis|safe }}
+    var yAxis = {{ yAxis|safe }}
+    var tooltip={{ tooltip|safe }}
+    var legend ={{ legend|safe }}
+    var series ={{ series|safe }}
+    var data = {{ data|safe }}
+
+</script>
+
+<!-- Highchart js. Variable map shown above -->
+<script>
+$(document).ready(function() {
+     $('#container').highcharts({
+
+        title: title,
+         //colors: ['blue', 'red'],
+         plotOptions: {
+          line: {lineWidth: 3},
+          tooltip: {hideDelay: 200}
+          },
+        subtitle:subtitulo,
+        xAxis: xAxis,
+         yAxis: yAxis,
+        tooltip:tooltip,
+        legend:legend,
+
+        series:[
+        {name: 'Hora ideal', color: 'rgba(255,0,0,0.25)',lineWidth: 2, data: data['serieIdeal']},
+        {name: 'Horas restantes',color: 'rgba(0,120,200,0.75)',marker: { radius: 6 },data:data['serieActual']},
+        {name:'Horas trabajadas',color: 'rgba(0,0,0,0)',visible: true,data:data['serieDiferencia']}]
+
+    });
+});
+
+
+</script>
+    <tr> <input type="button" class= "btn btn-default" value="Volver" onClick = "location.href='/configuracion&id={{proyecto.id}}/sprint_bk/'"/></tr>
+
+{% endblock %}

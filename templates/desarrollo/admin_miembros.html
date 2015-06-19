@@ -8,7 +8,7 @@
 </ol>
 <center><h2 class="text-danger"><strong> MIEMBROS DEL PROYECTO: "{{proyecto}}" </strong></h2></center><br><br>
 
-{% if ver_miembros or abm_miembros or Ver_Miembros %}
+{% if ver_miembros or abm_miembros or asignar_roles or Ver_Miembros %}
    <form action="." method="POST">
          {% csrf_token %}
             <table class="table table-bordered">
@@ -19,23 +19,35 @@
               </tr>
               <tr>
 		     <th class="titulo"><b class="text-danger"><strong>USUARIO</strong></b></th>
-                      
-	             <th class="titulo"><b class="text-danger"><strong>ACCIONES</strong></b></th>
+ {% if proyecto.estado == 'Finalizado' %}
+                  <th class="titulo"><b class="text-danger"><strong>ROL</strong></b></th>
+                  {% endif %}
+
+               {% if proyecto.estado == 'Iniciado' or proyecto.estado == 'Preconf' or proyecto.usuario_scrum != user%}
+	             <th class="titulo"><b class="text-danger"><strong>Rol</strong></b></th>
+                  {% endif%}
 	        </tr>
 	      </thead>
               <tbody>
 	       {% for i in miembros %}
 
                    <tr>
-                     <td><strong>{{i.username}}</strong></td>
+                     <td><strong>{{i.usuario}}</strong></td>
+
+                                        <td><strong>{{i.rol}}</strong></td>
 
 
-                     {% if abm_miembros %}
-                              {% ifnotequal proyecto.usuario_scrum.usuario.id i.id%}
- 		        <td><a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/cambiar&id={{i.id}}"><strong>ADMINISTRAR ROLES</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+                     {% if abm_miembros %}                           {% if proyecto.estado == 'Iniciado' or proyecto.estado == 'Preconf' %}
+
+
+                              {% ifnotequal proyecto.usuario_scrum.usuario.id i.usuario.id%}
+ 		        <td><a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/cambiar&id={{i.usuario.id}}"><strong>ADMINISTRAR ROLES</strong></a>&nbsp;&nbsp;&nbsp;&nbsp;
                             
-                         <a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/del&id={{i.id}}"><strong>QUITAR</strong></a>
+                         <a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/del&id={{i.usuario.id}}"><strong>QUITAR</strong></a>
                       {% endifnotequal%}
+                        {% endif %}
                      {% endif %}</td>
                    </tr>
 
@@ -59,7 +71,8 @@
       <div class="footer">
            <div class="volver">
                 <a class="btn btn-default" href="/proyectos/admin&id={{proyecto.id}}/"><strong> VOLVER </strong> </a>&nbsp;&nbsp;
-                <a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/nuevo/"><strong>AGREGAR NUEVO MIEMBRO </strong></a>
+                             {% if proyecto.estado == 'Iniciado' or proyecto.estado == 'Preconf' %}
+ <a class="btn btn-default" href="/proyectos/miembros&id={{proyecto.id}}/nuevo/"><strong>AGREGAR NUEVO MIEMBRO </strong></a> {% endif %}
            </div>
      </div>
    {% endif %}
