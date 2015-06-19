@@ -324,7 +324,6 @@ class ActividadesFlujoForm(forms.Form):
     act_flujo = forms.ModelChoiceField(queryset = None)
     def __init__(self, flujo, *args, **kwargs):
         super(ActividadesFlujoForm, self).__init__(*args, **kwargs)
-        print "alkdadladksjdflakfjdfa"
         self.fields['act_flujo'].queryset=ActividadesFlujo.objects.filter(flujo=flujo.id)
 
 class CambiarEstadoActividadForm(forms.Form):
