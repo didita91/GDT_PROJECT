@@ -3209,9 +3209,6 @@ def generar_reporte(request,proyecto_id):
         story.append(Spacer(0,20))
 
 
-        #################################################333333#################################################
-        # Creamos un DocTemplate en una hoja DIN A4, en la que se muestra el texto enmarcado (showBoundary=1) por un recuadro.
-
         doc=SimpleDocTemplate("Reporte_proyecto.pdf",pagesize=A4, rightMargin=1, leftMargin=1, topMargin=0, bottomMargin=0)
 
         parrafo = Paragraph('-'*193,cabecera)
