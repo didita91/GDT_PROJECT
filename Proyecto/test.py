@@ -137,7 +137,7 @@ class TestAdminActividades(TestCase):
     	w = self.add_Actividad(nombre='Act1')
     	data = {'nombre': w.nombre}
 	form = 	ActividadesForm(data=data)
-    	#elf.assertFalse(form.is_valid())
+
 	print('formulario valido')
     def test_add_Actividad(self):
         f = self.add_Actividad(nombre='test')
