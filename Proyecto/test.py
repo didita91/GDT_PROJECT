@@ -215,7 +215,7 @@ class TestConfiguracion(TestCase):
        res=ResponsableUS(usuario=usuario,us=us)
        isinstance(res,ResponsableUS)
        print('Test para reasignar responsable a un userstory')
-#-------------------------SPRINT----------------#
+#-------------------------SPRINT------------#
     def Generar_Sprint(self, nombre='test'):
         scrum=RolUsuario(1)
         fecha = datetime.date(day=01,month=03,year=2015)
