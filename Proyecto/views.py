@@ -2764,6 +2764,12 @@ def prolongarsprint(request, proyecto_id,sprint_id):
 
 
 def cancelar_proyecto(request,proyecto_id):
+    """
+Funcion para Cancelar un proyecto: se cancela en cualquier momento a pedido de un scrum.
+
+:param proyecto_id: identificador del proyecto
+:return:
+"""
     proyecto=Proyecto.objects.get(id=proyecto_id)
     user=User.objects.get(username=request.user)
     form = DeleteForm(request.POST)
@@ -2784,6 +2790,12 @@ def cancelar_proyecto(request,proyecto_id):
                                                                                    },
                                   context_instance=RequestContext(request))
 def finalizar_proyecto(request,proyecto_id):
+    """
+Funcion para finalizar un proyecto: se finaliza cuando todos los user stories asignados en el proyecto concluyen.
+
+:param proyecto_id: identificador de proyecto
+:return:
+"""
     proyecto=Proyecto.objects.get(id=proyecto_id)
     user=User.objects.get(username=request.user)
     form = DeleteForm(request.POST)
