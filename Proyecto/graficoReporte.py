@@ -6,6 +6,11 @@ from reportlab.lib import colors
 from app.models import *
 
 def MyBarChartDrawing(proyecto_id):
+        """
+Dibuja el grafico de tiempo estimado para el reporte, dentro de un proyecto
+:param proyecto_id: identificador de proyecto
+:return:
+"""
 
         Dra = Drawing()
         proyecto_actual= Proyecto.objects.get(id=proyecto_id)
