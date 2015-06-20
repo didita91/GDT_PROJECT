@@ -236,7 +236,7 @@ class TestConfiguracion(TestCase):
         UsS=UsSprint(us=us,sprint=sprint,estado=estado,proyecto=proyecto)
         isinstance(UsS,UsSprint)
         print('Test para generar la relacion de  User Story-Sprint')
-#-----------------NOTIFICACIONES & REPORTES---------------------------#
+#-----------------NOTIFICACIONES---------------------------#
     def test_notificacion(self):
         scrum=RolUsuario(1)
         fecha = datetime.date(day=01,month=03,year=2015)
