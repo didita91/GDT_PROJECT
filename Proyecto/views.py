@@ -2888,6 +2888,12 @@ def get_sprint_data(sprint_id):
 
         return data
 def calculo_serie_ideal(sprint_id):
+        """
+Calcula la serie Ideal necesaria para la generacion de la grafica burndownchart
+
+:param sprint_id:
+:return:
+"""
         Ideal=[]
         s=0
         hd=0
@@ -2908,6 +2914,12 @@ def calculo_serie_ideal(sprint_id):
 
         return Ideal
 def calculo_serie_actual(sprint_id):
+        """
+Calcula la serie Actual necesaria para la generacion de la grafica burndownchart
+
+:param sprint_id:
+:return:
+"""
         Actual=[]
         Ideal = []
         tareaus= []
